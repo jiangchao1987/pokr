@@ -2,10 +2,12 @@ package com.yanchuanli.games.pokr;
 
 import com.yanchuanli.games.pokr.core.Hand;
 import com.yanchuanli.games.pokr.core.HandEvaluator;
-
-import static org.junit.Assert.*;
-
 import org.apache.log4j.Logger;
+import org.junit.Before;
+import org.junit.Test;
+
+import static junit.framework.Assert.assertEquals;
+
 
 /**
  * Author: Yanchuan Li
@@ -17,7 +19,7 @@ public class HandEvaluatorTest {
     private HandEvaluator handEval;
     private static Logger log = Logger.getLogger(HandEvaluatorTest.class);
 
-
+    @Before
     public void setUp() throws Exception {
         handEval = new HandEvaluator();
     }
@@ -43,6 +45,7 @@ public class HandEvaluatorTest {
         log.info("Best Hand2[" + String.valueOf(score) + "]:" + besthand2.toChineseString());
         int result = handEval.compareHands(hand1, hand2);
         assertEquals(result, 1);
+
 
     }
 

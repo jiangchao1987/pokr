@@ -39,7 +39,7 @@ public class NetworkServerHandler extends IoHandlerAdapter {
 
     // 发送消息异常
     public void exceptionCaught(IoSession session, Throwable cause) {
-        session.close();
+//        session.close();
     }
 
     // //sessiong空闲
