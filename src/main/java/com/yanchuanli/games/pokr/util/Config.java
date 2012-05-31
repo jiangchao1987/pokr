@@ -7,5 +7,5 @@ package com.yanchuanli.games.pokr.util;
  */
 public class Config {
     public static int port = 9999;
-    public static String serverAddress = "192.168.1.2";
+    public static String serverAddress = "localhost";
 }

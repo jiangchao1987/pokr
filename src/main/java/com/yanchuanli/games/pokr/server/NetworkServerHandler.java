@@ -4,10 +4,11 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
+import com.yanchuanli.games.pokr.util.ServiceCenter;
+import com.yanchuanli.games.pokr.util.Memory;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.service.IoHandlerAdapter;
-import org.apache.mina.core.service.IoService;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 
@@ -28,35 +29,31 @@ public class NetworkServerHandler extends IoHandlerAdapter {
     }
 
     public void sessionOpened(IoSession session) throws Exception {
+        Memory.sessionsOnServer.put(String.valueOf(session.getId()), session);
         log.info("incomming client : " + session.getRemoteAddress());
-        initMQ();
+//        initMQ();
     }
 
     // 当一个客户端关闭时
     public void sessionClosed(IoSession session) {
+        Memory.sessionsOnServer.remove(String.valueOf(session.getId()));
         log.info("one Clinet Disconnect !");
     }
 
     // 当客户端发送的消息到达时:
     public void messageReceived(IoSession session, Object message) throws Exception {
         if (message instanceof IoBuffer) {
-            log.info("iobuffer");
+
             IoBuffer buffer = (IoBuffer) message;
             SocketAddress remoteAddress = session.getRemoteAddress();
             log.info(remoteAddress);
             log.info(new String(buffer.array()));
+            byte[] b = new byte[buffer.limit()];
+            buffer.get(b);
+            String cmd = new String(b);
+            log.info("received:" + cmd);
+            ServiceCenter.getInstance().processCommand(cmd);
 
-
-            for (int i = 0; i < 1000; i++) {
-                String result = "hello ".concat(String.valueOf(i));
-                IoBuffer answer = IoBuffer.allocate(result.getBytes().length, false);
-                answer.put(result.getBytes());
-                answer.flip();
-                session.write(answer);
-                answer.free();
-                Thread.sleep(10);
-                log.info("["+result + "] sent");
-            }
 
         }
 

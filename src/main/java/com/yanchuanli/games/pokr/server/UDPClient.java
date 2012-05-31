@@ -7,13 +7,9 @@ import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.future.IoFutureListener;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
-import org.apache.mina.filter.codec.ProtocolCodecFilter;
-import org.apache.mina.filter.codec.textline.LineDelimiter;
-import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
 import org.apache.mina.transport.socket.nio.NioDatagramConnector;
 
 import java.net.InetSocketAddress;
-import java.nio.charset.Charset;
 
 
 /**
@@ -21,22 +17,22 @@ import java.nio.charset.Charset;
  * Date: 5/18/12
  * Email: mail@yanchuanli.com
  */
-public class Client extends IoHandlerAdapter {
+public class UDPClient extends IoHandlerAdapter {
 
-    private static Logger log = Logger.getLogger(Client.class);
+    private static Logger log = Logger.getLogger(UDPClient.class);
 
     private ConnectFuture connFuture;
 
-    public Client() {
+    public UDPClient() throws InterruptedException {
         NioDatagramConnector connector = new NioDatagramConnector();
         connector.setHandler(new ClientHandler());
 
         DefaultIoFilterChainBuilder chain = connector.getFilterChain();
-        // chain.addLast("logger", new LoggingFilter());
-        chain.addLast("codec", new ProtocolCodecFilter(new TextLineCodecFactory(Charset.forName("UTF-8"), LineDelimiter.NUL, LineDelimiter.NUL)));
+
         log.debug("connecing to the server...");
         connFuture = connector.connect(new InetSocketAddress(Config.serverAddress, Config.port));
-        connFuture.awaitUninterruptibly();
+//        connFuture.awaitUninterruptibly();
+//        connFuture.await();
 
         connFuture.addListener(new IoFutureListener<ConnectFuture>() {
             public void operationComplete(ConnectFuture future) {
@@ -45,9 +41,9 @@ public class Client extends IoHandlerAdapter {
         });
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
-        Client c = new Client();
+        UDPClient c = new UDPClient();
         if (c.connFuture.isConnected()) {
             log.info("...connected");
             IoSession session = c.connFuture.getSession();
@@ -56,7 +52,7 @@ public class Client extends IoHandlerAdapter {
             session.getCloseFuture().awaitUninterruptibly();
             log.info("msg sent");
 
-         //   session.close(true);
+            //   session.close(true);
         } else {
             log.error("Not connected...exiting");
         }
