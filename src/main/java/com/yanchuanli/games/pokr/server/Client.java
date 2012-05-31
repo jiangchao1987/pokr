@@ -29,7 +29,7 @@ public class Client extends IoHandlerAdapter {
 
     public Client() {
         NioDatagramConnector connector = new NioDatagramConnector();
-        connector.setHandler(this);
+        connector.setHandler(new ClientHandler());
 
         DefaultIoFilterChainBuilder chain = connector.getFilterChain();
         // chain.addLast("logger", new LoggingFilter());
@@ -52,8 +52,11 @@ public class Client extends IoHandlerAdapter {
             log.info("...connected");
             IoSession session = c.connFuture.getSession();
             session.write("hallo");
+            session.getConfig().setUseReadOperation(true);
+            session.getCloseFuture().awaitUninterruptibly();
             log.info("msg sent");
-            session.close(true);
+
+         //   session.close(true);
         } else {
             log.error("Not connected...exiting");
         }

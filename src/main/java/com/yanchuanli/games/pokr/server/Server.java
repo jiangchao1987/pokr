@@ -3,6 +3,7 @@ package com.yanchuanli.games.pokr.server;
 import com.yanchuanli.games.pokr.util.Config;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder;
+import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.textline.LineDelimiter;
 import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
@@ -51,6 +52,7 @@ public class Server {
         // 绑定端口,启动服务器
         try {
             acceptor.bind(new InetSocketAddress(Config.port));
+            acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE,1000000);
         } catch (IOException e) {
             e.printStackTrace();
         }
