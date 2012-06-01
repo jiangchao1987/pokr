@@ -15,11 +15,13 @@ import java.util.List;
 public class Util {
 
     public static void sendMessage(IoSession session, String msg) {
-        IoBuffer answer = IoBuffer.allocate(msg.getBytes().length, false);
-        answer.put(msg.getBytes());
-        answer.flip();
-        session.write(answer);
-        answer.free();
+        synchronized (session){
+            IoBuffer answer = IoBuffer.allocate(msg.getBytes().length, false);
+            answer.put(msg.getBytes());
+            answer.flip();
+            session.write(answer);
+            answer.free();
+        }
     }
 
     public static String extractStringFromIoBuffer(IoBuffer buffer) {

@@ -26,13 +26,14 @@ public class TCPClient {
         connector.setHandler(new ClientHandler());
 
         DefaultIoFilterChainBuilder chain = connector.getFilterChain();
+//        chain.addLast("codec", new ProtocolCodecFilter(new TextLineCodecFactory()));
+
         log.debug("connecing to the server...");
         ConnectFuture connFuture = connector.connect(new InetSocketAddress(Config.serverAddress, Config.port));
         //等待连接成功
         connFuture.awaitUninterruptibly();
         if (connFuture.isConnected()) {
             log.debug("connected ...");
-
             Scanner scanner = new Scanner(System.in);
             String input = scanner.nextLine();
             while (!input.equalsIgnoreCase("quit")) {
