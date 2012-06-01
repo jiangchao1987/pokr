@@ -26,25 +26,24 @@ public class TCPClient {
         connector.setHandler(new ClientHandler());
 
         DefaultIoFilterChainBuilder chain = connector.getFilterChain();
-        //        chain.addLast("codec", new ProtocolCodecFilter(new TextLineCodecFactory(Charset.forName("UTF-8"), LineDelimiter.NUL, LineDelimiter.NUL)));
         log.debug("connecing to the server...");
         ConnectFuture connFuture = connector.connect(new InetSocketAddress(Config.serverAddress, Config.port));
-
+        //等待连接成功
         connFuture.awaitUninterruptibly();
         if (connFuture.isConnected()) {
             log.debug("connected ...");
 
             Scanner scanner = new Scanner(System.in);
-                   String input = scanner.nextLine();
-                   while (!input.equalsIgnoreCase("quit")) {
-                       log.info("INPUT:" + input);
-                       for (String s : Memory.sessionsOnClient.keySet()) {
-                           log.info("session:" + s);
-                           Util.sendMessage(Memory.sessionsOnClient.get(s),input);
-                       }
-                       input = scanner.nextLine();
-                   }
-        }else{
+            String input = scanner.nextLine();
+            while (!input.equalsIgnoreCase("quit")) {
+                log.info("INPUT:" + input);
+                for (String s : Memory.sessionsOnClient.keySet()) {
+                    log.info("session:" + s);
+                    Util.sendMessage(Memory.sessionsOnClient.get(s), input);
+                }
+                input = scanner.nextLine();
+            }
+        } else {
             log.debug("not connected");
         }
     }
