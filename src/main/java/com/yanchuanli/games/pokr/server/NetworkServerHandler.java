@@ -52,7 +52,7 @@ public class NetworkServerHandler extends IoHandlerAdapter {
             buffer.get(b);
             String cmd = new String(b);
             log.info("received:" + cmd);
-            ServiceCenter.getInstance().processCommand(cmd);
+            ServiceCenter.getInstance().processCommand(session,cmd);
 
 
         }

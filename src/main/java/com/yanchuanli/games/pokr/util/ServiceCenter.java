@@ -1,7 +1,9 @@
 package com.yanchuanli.games.pokr.util;
 
 import com.yanchuanli.games.pokr.core.Dealer;
+import com.yanchuanli.games.pokr.model.Player;
 import org.apache.log4j.Logger;
+import org.apache.mina.core.session.IoSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +41,7 @@ public class ServiceCenter {
         return instance;
     }
 
-    public void processCommand(String cmd) {
+    public void processCommand(IoSession session, String cmd) {
         log.debug("cmd:" + cmd);
         switch (cmd) {
             case "listrooms":
@@ -52,6 +54,14 @@ public class ServiceCenter {
             case "stopdealer":
                 log.debug("stop a room ...");
                 stopDealer();
+            case "start":
+                Dealer dealer = dealers.get(0);
+                dealer.start();
+                break;
+            case "join":
+                Player p = new Player(String.valueOf(session.getId()), "player" + session.getId());
+                p.setSession(session);
+                dealers.get(0).addPlayer(p);
         }
     }
 
@@ -62,13 +72,13 @@ public class ServiceCenter {
         }
     }
 
-    private void stopDealer(){
+    private void stopDealer() {
         Dealer dealer = dealers.get(0);
         dealer.setStarted(false);
 
     }
 
-    public void stopService(){
+    public void stopService() {
         dealerPool.shutdown();
     }
 }
