@@ -30,7 +30,7 @@ public class MyTimerTask {
         public void run() {
             log.debug("times up");
             timer.cancel(); //Terminate the timer thread
-            tt.setStop();
+            Centre.tp.setStop();
         }
     }
 

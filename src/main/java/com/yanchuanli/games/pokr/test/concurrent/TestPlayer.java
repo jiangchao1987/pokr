@@ -1,8 +1,9 @@
 package com.yanchuanli.games.pokr.test.concurrent;
 
+import com.google.code.tempusfugit.concurrency.Interrupter;
+import com.google.code.tempusfugit.temporal.Duration;
 import org.apache.log4j.Logger;
 
-import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -11,6 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Email: mail@yanchuanli.com
  * Date: 12-6-4
  */
+
 public class TestPlayer extends Thread {
 
     private static Logger log = Logger.getLogger(TestPlayer.class);
@@ -28,9 +30,11 @@ public class TestPlayer extends Thread {
 
     @Override
     public void run() {
-        while (!stop) {
+        while (!stop && !interrupted()) {
+            log.debug("running");
 
         }
+        log.info("thread ended ...");
     }
 
     public synchronized void next() {
@@ -44,21 +48,34 @@ public class TestPlayer extends Thread {
         stop = true;
     }
 
-    public static void main(String[] args) {
-        TestPlayer tp = new TestPlayer();
-        tp.start();
+    public static void main(String[] args) throws InterruptedException {
+        Centre.tp.start();
 
-        log.debug("system started ...");
+        log.info("system started ...");
+        /*
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
-        if(!input.equalsIgnoreCase("quit")){
+        if (!input.equalsIgnoreCase("quit")) {
             log.debug(input);
-            tp.next();
+            Centre.tp.next();
         }
-        tp.setStop();
+        Centre.tp.setStop();
 //        while (!input.equalsIgnoreCase("quit")) {
 //            tp.next();
 //            input = scanner.nextLine();
 //        }
+*/
+
+        Duration duration = Duration.seconds(3);
+        Interrupter interrupter = Interrupter.interrupt(Centre.tp).after(duration);
+        try {
+            while (!currentThread().isInterrupted()) {
+                // some long running process
+//                log.info("I am watching ...");
+//                Thread.sleep(1000);
+            }
+        } finally {
+            interrupter.cancel();
+        }
     }
 }
