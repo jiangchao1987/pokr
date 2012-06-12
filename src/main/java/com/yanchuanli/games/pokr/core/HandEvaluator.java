@@ -64,6 +64,10 @@ public class HandEvaluator {
         return name_hand(rankHand(h));
     }
 
+    public static String nameHandInChinese(Hand h) {
+        return name_hand(rankHand(h));
+    }
+
     /**
      * Compares two hands against each other.
      *

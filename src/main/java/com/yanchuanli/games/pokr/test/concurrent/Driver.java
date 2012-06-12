@@ -1,5 +1,6 @@
 package com.yanchuanli.games.pokr.test.concurrent;
 
+import com.google.code.tempusfugit.temporal.Duration;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ public class Driver {
     private static Logger log = Logger.getLogger(Driver.class);
 
     private static int workersCount = 5;
+
+    private static Duration duration = Duration.seconds(3);
 
     public static void main(String[] args) throws InterruptedException {
 

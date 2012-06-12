@@ -29,7 +29,7 @@ public class StartGame {
             Card card = deck.dealCard();
             cardsOnDesk.add(card);
         }
-        printCards(cardsOnDesk);
+        log.debug("table:" + printCards(cardsOnDesk));
 
         Hand hand1 = new Hand();
         Hand hand2 = new Hand();
@@ -77,7 +77,7 @@ public class StartGame {
                 hand.addCard(card);
             }
 
-            Hand bestHand=handEval.getBest5CardHand(hand);
+            Hand bestHand = handEval.getBest5CardHand(hand);
             log.info(bestHand.toChineseString());
             log.info(handEval.nameHand(bestHand));
         }

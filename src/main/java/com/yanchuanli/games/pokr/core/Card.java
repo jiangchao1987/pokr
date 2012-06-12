@@ -8,8 +8,6 @@ package com.yanchuanli.games.pokr.core;
  See "Liscence.txt"
  ***************************************************************************/
 
-import java.lang.String;
-
 /**
  * Represents a playing card
  * from a set of cards {0..51} which map to cards having a suit
@@ -355,6 +353,8 @@ public class Card {
         }
         return s;
     }
+
+
 
 }
 
