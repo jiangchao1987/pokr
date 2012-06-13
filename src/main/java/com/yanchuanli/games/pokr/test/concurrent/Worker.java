@@ -68,7 +68,7 @@ public class Worker implements Runnable {
         } catch (InterruptedException | TimeoutException e) {
             if (e instanceof TimeoutException) {
                 log.info("worker #" + getId() + " timed out ...");
-                step1 = true;
+                finishStep1();
             } else {
                 log.error(e);
             }

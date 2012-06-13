@@ -39,7 +39,7 @@ public class Driver {
         log.info("workers ready ...");
 
 
-        doneSignal.await();           // wait for all to finish
+//        doneSignal.await();           // wait for all to finish
 
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
@@ -47,7 +47,8 @@ public class Driver {
             log.debug("input:" + input);
             if (input.equalsIgnoreCase("start")) {
                 for (int i = 0; i < startSignals.size(); i++) {
-
+                    startSignals.get(i).countDown();
+                    Thread.sleep(duration.inMillis());
                 }
             } else {
                 int id = Integer.parseInt(input);

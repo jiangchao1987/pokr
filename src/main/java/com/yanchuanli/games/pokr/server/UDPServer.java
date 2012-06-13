@@ -1,6 +1,8 @@
 package com.yanchuanli.games.pokr.server;
 
 import com.yanchuanli.games.pokr.util.Config;
+import com.yanchuanli.games.pokr.util.Memory;
+import com.yanchuanli.games.pokr.util.Util;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder;
 import org.apache.mina.filter.executor.ExecutorFilter;
@@ -40,6 +42,10 @@ public class UDPServer {
         String input = scanner.nextLine();
         while (!input.equalsIgnoreCase("quit")) {
             log.info("INPUT:" + input);
+
+            for (String s : Memory.sessionsOnServer.keySet()) {
+                Util.sendMessage(Memory.sessionsOnServer.get(s), input);
+            }
             input = scanner.nextLine();
         }
     }
