@@ -50,10 +50,10 @@ public class Game {
         // rotate dealer position
         rotateDealer();
         // post the big blind and small blind
-        // deal the 2 cards per player
+        // deal 2 cards per player
         deal2Cards();
         // pre flop betting round
-        // deal the 3 flp cards on the table
+        // deal 3 flp cards on the table
         deal3FlipCards();
         // flop the betting round
         // deal the turn card (4th) on the table
