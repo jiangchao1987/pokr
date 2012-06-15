@@ -93,13 +93,13 @@ public class Game {
     private void dealTurnCard() {
         Card card = deck.dealCard();
         cardsOnTable.add(card);
-        log.debug("OnTable:" + Util.cardsToString(cardsOnTable));
+        log.debug("OnTable-Turn:" + Util.cardsToString(cardsOnTable));
     }
 
     private void dealRiverCard() {
         Card card = deck.dealCard();
         cardsOnTable.add(card);
-        log.debug("OnTable:" + Util.cardsToString(cardsOnTable));
+        log.debug("OnTable-River:" + Util.cardsToString(cardsOnTable));
     }
 
     private void gameover() {
@@ -118,6 +118,8 @@ public class Game {
             log.debug("#" + String.valueOf(i + 1) + " " + player.getName() + " " + player.getHandRank() + " " + player.getBestHand().toChineseString());
         }
 
+        log.debug(players.get(0).getName() + " wins!");
+
     }
 
     private void reset() {
@@ -135,17 +137,31 @@ public class Game {
         actorPosition = dealerPosition;
         bet = 0;
         while (playersToAct > 0) {
+            //rotate the actor
             rotateActor();
             Set<Action> allowedActions = getAllowedActions(actor);
             Action action = actor.act(allowedActions, MIN_BET, bet);
             log.debug(actor.getName() + " " + action.getVerb());
             playersToAct--;
             switch (action) {
+                case CHECK:
+                    // do nothing
+                    break;
+                case CALL:
+                    moneyOnTable += actor.getBet();
+                    break;
+                case BET:
+                    bet = actor.getBet();
+                    moneyOnTable += actor.getBet();
+                    playersToAct = activePlayers.size();
+                    break;
+                case RAISE:
+                    break;
                 case FOLD:
                     actor.getHand().makeEmpty();
                     players.remove(actor);
                     if (players.size() == 1) {
-                        log.debug("win");
+                        log.debug(players.get(0).getName() + " win");
                         playersToAct = 0;
                     }
                     break;
