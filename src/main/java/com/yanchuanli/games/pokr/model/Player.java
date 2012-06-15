@@ -24,6 +24,7 @@ public class Player {
     private int handRank;
     private boolean alive;
     private int money;
+    private int bet;
 
 
     public Player(String id, String name) {
@@ -101,13 +102,17 @@ public class Player {
     public Action act(Set<Action> actions, int minBet, int currentBet) {
         String actionStr = "";
         Action result;
+
         for (Action action : actions) {
             actionStr = actionStr + action.getVerb() + " ";
         }
-        log.debug("allowed actions:" + actionStr);
+
+        log.debug("allowed actions for \"" + getName() + "\" :" + actionStr);
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
-        if (input.startsWith("c")) {
+        if (input.startsWith("ca")) {
+            result = Action.CALL;
+        } else if (input.startsWith("c")) {
             result = Action.CHECK;
         } else if (input.startsWith("f")) {
             result = Action.FOLD;
@@ -115,5 +120,13 @@ public class Player {
             result = Action.BET;
         }
         return result;
+    }
+
+    public int getBet() {
+        return bet;
+    }
+
+    public void setBet(int bet) {
+        this.bet = bet;
     }
 }
