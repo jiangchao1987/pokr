@@ -4,9 +4,9 @@ import com.yanchuanli.games.pokr.core.Card;
 import com.yanchuanli.games.pokr.core.Deck;
 import com.yanchuanli.games.pokr.core.Hand;
 import com.yanchuanli.games.pokr.core.HandEvaluator;
+import com.yanchuanli.games.pokr.model.Player;
 import org.apache.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,36 +21,13 @@ public class StartGame {
 
 
     public static void main(String[] args) {
-        Deck deck = new Deck();
-        deck.shuffle();
+        Player player1=new Player("1","yanchuan");
+        Player player2=new Player("2","wangqi");
 
-        List<Card> cardsOnDesk = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            Card card = deck.dealCard();
-            cardsOnDesk.add(card);
-        }
-        log.debug("table:" + printCards(cardsOnDesk));
-
-        Hand hand1 = new Hand();
-        Hand hand2 = new Hand();
-        List<Hand> hands = new ArrayList<>();
-        hands.add(hand1);
-        hands.add(hand2);
-
-        round(hands, deck, 2);
-        log.debug("起手牌 ...");
-        log.debug("hand1:" + hand1.toChineseString());
-        log.debug("hand2:" + hand2.toChineseString());
-
-        Card card4 = deck.dealCard();
-        cardsOnDesk.add(card4);
-        log.debug("table:" + printCards(cardsOnDesk));
-
-        Card card5 = deck.dealCard();
-        cardsOnDesk.add(card5);
-        log.debug("table:" + printCards(cardsOnDesk));
-
-        compare(hands, cardsOnDesk);
+        Game game = new Game();
+        game.addPlayer(player1);
+        game.addPlayer(player2);
+        game.start();
     }
 
     private static String printCards(List<Card> cardList) {

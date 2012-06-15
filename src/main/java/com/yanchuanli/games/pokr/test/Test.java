@@ -2,6 +2,8 @@ package com.yanchuanli.games.pokr.test;
 
 import org.apache.log4j.Logger;
 
+import java.util.Scanner;
+
 /**
  * Copyright Candou.com
  * Author: Yanchuan Li
@@ -14,5 +16,8 @@ public class Test {
 
     public static void main(String[] args) {
 //        ServiceCenter.getInstance().processCommand("createroom");
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.nextLine();
+        log.debug("input:" + input);
     }
 }

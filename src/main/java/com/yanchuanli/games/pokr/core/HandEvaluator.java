@@ -73,16 +73,16 @@ public class HandEvaluator {
      *
      * @param h1 The first hand
      * @param h2 The second hand
-     * @return 1 = first hand is best, 2 = second hand is best, 0 = tie
+     * @return -1 = first hand is best, 1 = second hand is best, 0 = tie
      */
     public int compareHands(Hand h1, Hand h2) {
         int r1 = rankHand(h1);
         int r2 = rankHand(h2);
 
         if (r1 > r2)
-            return 1;
+            return -1;
         if (r1 < r2)
-            return 2;
+            return 1;
         return 0;
     }
 

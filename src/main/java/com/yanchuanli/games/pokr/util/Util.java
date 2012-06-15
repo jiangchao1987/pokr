@@ -15,7 +15,7 @@ import java.util.List;
 public class Util {
 
     public static void sendMessage(IoSession session, String msg) {
-        synchronized (session){
+        synchronized (session) {
             IoBuffer answer = IoBuffer.allocate(msg.getBytes().length, false);
             answer.put(msg.getBytes());
             answer.flip();
@@ -37,4 +37,5 @@ public class Util {
         }
         return result;
     }
+
 }
