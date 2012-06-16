@@ -151,6 +151,9 @@ public class Player {
             result = Action.BET;
             money -= bet;
         }
+
+        input = null;
+
         return result;
 
 

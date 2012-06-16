@@ -110,18 +110,21 @@ public class Game {
             cardsOnTable.add(card);
         }
         log.debug("OnTable:" + Util.cardsToString(cardsOnTable));
+        Util.sendToAll("OnTable:" + Util.cardsToString(cardsOnTable));
     }
 
     private void dealTurnCard() {
         Card card = deck.dealCard();
         cardsOnTable.add(card);
         log.debug("OnTable-Turn:" + Util.cardsToString(cardsOnTable));
+        Util.sendToAll("OnTable-Turn:" + Util.cardsToString(cardsOnTable));
     }
 
     private void dealRiverCard() {
         Card card = deck.dealCard();
         cardsOnTable.add(card);
         log.debug("OnTable-River:" + Util.cardsToString(cardsOnTable));
+        Util.sendToAll("OnTable-River:" + Util.cardsToString(cardsOnTable));
     }
 
     private void gameover() {

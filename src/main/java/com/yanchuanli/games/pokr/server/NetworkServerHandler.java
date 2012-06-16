@@ -33,6 +33,7 @@ public class NetworkServerHandler extends IoHandlerAdapter {
     public void sessionOpened(IoSession session) throws Exception {
 //        Memory.sessionsOnServer.put(String.valueOf(session.getId()), session);
         Player player = new Player(String.valueOf(session.getId()), String.valueOf("Player" + session.getId()), false);
+        player.setMoney(10000);
         player.setSession(session);
         Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);
         log.info("incomming client : " + session.getRemoteAddress());
