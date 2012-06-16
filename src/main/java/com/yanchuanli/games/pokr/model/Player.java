@@ -117,7 +117,10 @@ public class Player {
         } else if (input.startsWith("f")) {
             result = Action.FOLD;
         } else {
+            String[] inputs = input.split(" ");
+            setBet(Integer.parseInt(inputs[1]));
             result = Action.BET;
+            money -= bet;
         }
         return result;
     }
@@ -128,5 +131,9 @@ public class Player {
 
     public void setBet(int bet) {
         this.bet = bet;
+    }
+
+    public void win(int bet) {
+        this.money += bet;
     }
 }

@@ -28,7 +28,7 @@ public class Game {
     private int bet;
     private int moneyOnTable;
     private Player actor;
-    private int MAX_RAISES = 100;
+    private int MAX_RAISES = 1000;
     private int MIN_BET = 10;
     private int actorPosition;
 
@@ -49,21 +49,41 @@ public class Game {
         reset();
         // rotate dealer position
         rotateDealer();
+
         // post the big blind and small blind
+        rotateActor();
+        postSmallBlind();
+
+        rotateActor();
+        postBigBlind();
+
         // deal 2 cards per player
         deal2Cards();
+        doBettingRound();
+
         // pre flop betting round
         // deal 3 flp cards on the table
-        deal3FlipCards();
-        // flop the betting round
-        // deal the turn card (4th) on the table
-        doBettingRound();
-        dealTurnCard();
-        doBettingRound();
-        // deal the river card (5th) on the table
-        dealRiverCard();
-        // river betting round
-        gameover();
+        if (players.size() > 1) {
+            deal3FlipCards();
+            doBettingRound();
+            // flop the betting round
+            // deal the turn card (4th) on the table
+            if (players.size() > 1) {
+
+                dealTurnCard();
+                doBettingRound();
+                if (players.size() > 1) {
+
+                    dealRiverCard();
+                    doBettingRound();
+                    if (players.size() > 1) {
+                        bet = 0;
+                        gameover();
+                    }
+                }
+            }
+        }
+
 
     }
 
@@ -138,8 +158,10 @@ public class Game {
         bet = 0;
         while (playersToAct > 0) {
             //rotate the actor
+            log.debug("playersToAct:" + playersToAct);
             rotateActor();
             Set<Action> allowedActions = getAllowedActions(actor);
+
             Action action = actor.act(allowedActions, MIN_BET, bet);
             log.debug(actor.getName() + " " + action.getVerb());
             playersToAct--;
@@ -153,15 +175,18 @@ public class Game {
                 case BET:
                     bet = actor.getBet();
                     moneyOnTable += actor.getBet();
-                    playersToAct = activePlayers.size();
+                    playersToAct = activePlayers.size() - 1;
                     break;
                 case RAISE:
+                    bet = actor.getBet();
+                    moneyOnTable += actor.getBet();
+                    playersToAct = activePlayers.size() - 1;
                     break;
                 case FOLD:
                     actor.getHand().makeEmpty();
                     players.remove(actor);
                     if (players.size() == 1) {
-                        log.debug(players.get(0).getName() + " win");
+                        log.debug(players.get(0).getName() + " win ...");
                         playersToAct = 0;
                     }
                     break;
@@ -175,9 +200,7 @@ public class Game {
         Set<Action> actions = new HashSet<Action>();
         if (bet == 0) {
             actions.add(Action.CHECK);
-            if (player.getMoney() < MAX_RAISES) {
-                actions.add(Action.BET);
-            }
+            actions.add(Action.RAISE);
         } else {
             /*
             if (actorBet < bet) {
@@ -192,9 +215,11 @@ public class Game {
                 }
             }
             */
+
+
             actions.add(Action.CALL);
-            actions.add(Action.CHECK);
-            if (player.getMoney() < MAX_RAISES) {
+
+            if (player.getMoney() > bet) {
                 actions.add(Action.RAISE);
             }
 
@@ -224,5 +249,13 @@ public class Game {
             }
         }
         return activePlayers;
+    }
+
+    private void postSmallBlind() {
+
+    }
+
+    private void postBigBlind() {
+
     }
 }
