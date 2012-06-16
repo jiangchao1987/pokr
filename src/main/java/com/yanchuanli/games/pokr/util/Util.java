@@ -28,13 +28,13 @@ public class Util {
 
     public static void sendMessage(IoSession session, String input) {
         log.debug("socket sent:" + input);
-        synchronized (session) {
+//        synchronized (session) {
             IoBuffer answer = IoBuffer.allocate(toByte(input).length, false);
             answer.put(toByte(input));
             answer.flip();
             session.write(answer);
             answer.free();
-        }
+//        }
     }
 
     public static String extractStringFromIoBuffer(IoBuffer buffer) {

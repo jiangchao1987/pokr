@@ -46,6 +46,7 @@ public class Game {
 
     public void start() {
 
+        sayHello();
         reset();
         // rotate dealer position
         rotateDealer();
@@ -136,10 +137,21 @@ public class Game {
         Collections.sort(players, comparator);
         for (int i = 0; i < players.size(); i++) {
             Player player = players.get(i);
-            log.debug("#" + String.valueOf(i + 1) + " " + player.getName() + " " + player.getHandRank() + " " + player.getBestHand().toChineseString());
+            String wininfo = "#" + String.valueOf(i + 1) + " " + player.getName() + " " + player.getHandRank() + " " + player.getBestHand().toChineseString();
+            log.debug(wininfo);
+            Util.sendMessage(player.getSession(), wininfo);
         }
 
-        log.debug(players.get(0).getName() + " wins!");
+        for (int i = 0; i < players.size(); i++) {
+            if (i == 0) {
+                log.debug(players.get(i).getName() + " wins!");
+                Util.sendMessage(players.get(i).getSession(), "you win");
+            } else {
+                log.debug(players.get(i).getName() + " loses!");
+                Util.sendMessage(players.get(i).getSession(), "you lose");
+            }
+        }
+
 
     }
 
@@ -257,6 +269,10 @@ public class Game {
     }
 
     private void postBigBlind() {
+
+    }
+
+    private void sayHello() {
 
     }
 }

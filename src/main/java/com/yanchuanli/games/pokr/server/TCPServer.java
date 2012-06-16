@@ -26,7 +26,7 @@ public class TCPServer {
     private static Logger log = Logger.getLogger(TCPServer.class);
 
     public static void main(String[] args) throws IOException {
-        NioSocketAcceptor acceptor = new NioSocketAcceptor();
+        NioSocketAcceptor acceptor = new NioSocketAcceptor(5);
         acceptor.setHandler(new NetworkServerHandler());
 
         DefaultIoFilterChainBuilder chain = acceptor.getFilterChain();

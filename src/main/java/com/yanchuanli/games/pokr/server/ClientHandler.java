@@ -29,6 +29,7 @@ public class ClientHandler extends IoHandlerAdapter {
 
     @Override
     public void messageReceived(IoSession session, Object message) throws Exception {
+        log.info("msg received");
         super.messageReceived(session, message);
         if (message instanceof IoBuffer) {
             IoBuffer buffer = (IoBuffer) message;

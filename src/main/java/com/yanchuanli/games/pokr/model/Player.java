@@ -137,7 +137,9 @@ public class Player {
                 }
             }
         }
+
         if (input.startsWith("ca")) {
+            money -= currentBet;
             result = Action.CALL;
         } else if (input.startsWith("c")) {
             result = Action.CHECK;

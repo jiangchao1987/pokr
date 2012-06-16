@@ -7,10 +7,10 @@ import com.rabbitmq.client.QueueingConsumer;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.util.Memory;
 import com.yanchuanli.games.pokr.util.ServiceCenter;
+import com.yanchuanli.games.pokr.util.Util;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.service.IoHandlerAdapter;
-import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 
 import java.io.IOException;
@@ -36,13 +36,14 @@ public class NetworkServerHandler extends IoHandlerAdapter {
         player.setSession(session);
         Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);
         log.info("incomming client : " + session.getRemoteAddress());
+        Util.sendMessage(session, "Hello Player" + String.valueOf("Player" + session.getId()));
 //        initMQ();
     }
 
     // 当一个客户端关闭时
     public void sessionClosed(IoSession session) {
         Memory.sessionsOnServer.remove(String.valueOf(session.getId()));
-        log.info("one Clinet Disconnect !");
+        log.info("one Client Disconnect !");
     }
 
     // 当客户端发送的消息到达时:
@@ -53,9 +54,8 @@ public class NetworkServerHandler extends IoHandlerAdapter {
             SocketAddress remoteAddress = session.getRemoteAddress();
             log.info(remoteAddress);
             log.info(new String(buffer.array()));
-            byte[] b = new byte[buffer.limit()];
-            buffer.get(b);
-            String cmd = new String(b);
+
+            String cmd = Util.extractStringFromIoBuffer(buffer);
             log.info("received:" + cmd);
             ServiceCenter.getInstance().processCommand(session, cmd);
 
@@ -90,7 +90,7 @@ public class NetworkServerHandler extends IoHandlerAdapter {
     // 创建 session
     public void sessionCreated(IoSession session) {
         log.info("sessioncreated ...");
-        session.getConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);
+//        session.getConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);
     }
 
     private void initMQ() throws IOException {
