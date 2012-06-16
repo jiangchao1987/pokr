@@ -1,6 +1,6 @@
 package com.yanchuanli.games.pokr.server;
 
-import com.yanchuanli.games.pokr.util.ServiceCenter;
+import com.yanchuanli.games.pokr.game.Game;
 import com.yanchuanli.games.pokr.util.Config;
 import com.yanchuanli.games.pokr.util.Memory;
 import com.yanchuanli.games.pokr.util.Util;
@@ -40,17 +40,26 @@ public class TCPServer {
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
         while (!input.equalsIgnoreCase("quit")) {
-            log.info("INPUT:" + input);
-            for (String s : Memory.sessionsOnServer.keySet()) {
-                log.info("session:" + s);
-                Util.sendMessage(Memory.sessionsOnServer.get(s), input);
+            if (input.startsWith("start")) {
+                Game game = new Game();
+
+                for (String s : Memory.sessionsOnServer.keySet()) {
+                    game.addPlayer(Memory.sessionsOnServer.get(s));
+                }
+                log.debug(Memory.sessionsOnServer.keySet().size() + " players joined ...");
+                game.start();
+                break;
+            } else {
+                log.info("INPUT:" + input);
+                Util.sendToAll(input);
             }
+
             input = scanner.nextLine();
         }
         log.info("quitting now ...");
         acceptor.unbind();
         acceptor.dispose();
-        ServiceCenter.getInstance().stopService();
+//        ServiceCenter.getInstance().stopService();
     }
 
 }

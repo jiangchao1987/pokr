@@ -31,7 +31,7 @@ public class NetworkServerHandler extends IoHandlerAdapter {
     }
 
     public void sessionOpened(IoSession session) throws Exception {
-        Memory.sessionsOnServer.put(String.valueOf(session.getId()), session);
+//        Memory.sessionsOnServer.put(String.valueOf(session.getId()), session);
         log.info("incomming client : " + session.getRemoteAddress());
 //        initMQ();
     }

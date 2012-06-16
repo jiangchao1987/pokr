@@ -4,8 +4,9 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
-import com.yanchuanli.games.pokr.util.ServiceCenter;
+import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.util.Memory;
+import com.yanchuanli.games.pokr.util.ServiceCenter;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.service.IoHandlerAdapter;
@@ -24,12 +25,16 @@ public class NetworkServerHandler extends IoHandlerAdapter {
     private Channel channel;
     private QueueingConsumer consumer;
 
+
     public NetworkServerHandler() {
         super();
     }
 
     public void sessionOpened(IoSession session) throws Exception {
-        Memory.sessionsOnServer.put(String.valueOf(session.getId()), session);
+//        Memory.sessionsOnServer.put(String.valueOf(session.getId()), session);
+        Player player = new Player(String.valueOf(session.getId()), String.valueOf("Player" + session.getId()), false);
+        player.setSession(session);
+        Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);
         log.info("incomming client : " + session.getRemoteAddress());
 //        initMQ();
     }
@@ -52,7 +57,7 @@ public class NetworkServerHandler extends IoHandlerAdapter {
             buffer.get(b);
             String cmd = new String(b);
             log.info("received:" + cmd);
-            ServiceCenter.getInstance().processCommand(session,cmd);
+            ServiceCenter.getInstance().processCommand(session, cmd);
 
 
         }

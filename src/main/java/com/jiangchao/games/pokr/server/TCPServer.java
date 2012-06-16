@@ -1,19 +1,17 @@
 package com.jiangchao.games.pokr.server;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.util.Scanner;
-import java.util.concurrent.Executors;
-
+import com.yanchuanli.games.pokr.util.Config;
+import com.yanchuanli.games.pokr.util.Memory;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder;
 import org.apache.mina.filter.executor.ExecutorFilter;
 import org.apache.mina.transport.socket.SocketSessionConfig;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 
-import com.yanchuanli.games.pokr.util.Config;
-import com.yanchuanli.games.pokr.util.Memory;
-import com.jiangchao.games.pokr.util.Util;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.Scanner;
+import java.util.concurrent.Executors;
 
 /**
  * Copyright Candou.com
@@ -47,7 +45,7 @@ public class TCPServer {
 //                	log.info("running!");
                 	if (!Memory.sessionsOnServer.keySet().isEmpty()) {
                 		for (String s : Memory.sessionsOnServer.keySet()) {
-                        	Util.sendMessage(Memory.sessionsOnServer.get(s), input);
+//                        	Util.sendMessage(Memory.sessionsOnServer.get(s), input);
                         }
                 	}
 //                	try {

@@ -32,6 +32,8 @@ public class StartGame {
         game.start();
     }
 
+
+
     private static String printCards(List<Card> cardList) {
         String result = "";
         for (Card card : cardList) {

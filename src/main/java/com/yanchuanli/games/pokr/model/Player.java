@@ -1,6 +1,7 @@
 package com.yanchuanli.games.pokr.model;
 
 import com.yanchuanli.games.pokr.core.Hand;
+import com.yanchuanli.games.pokr.util.Util;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.session.IoSession;
 
@@ -25,14 +26,26 @@ public class Player {
     private boolean alive;
     private int money;
     private int bet;
+    private boolean offline;
+    private String input;
 
 
     public Player(String id, String name) {
         this.id = id;
         this.name = name;
         hand = new Hand();
-        handRank = Integer.MIN_VALUE;
-        alive = true;
+        this.handRank = Integer.MIN_VALUE;
+        this.alive = true;
+        offline = true;
+    }
+
+    public Player(String id, String name, boolean offline) {
+        this.id = id;
+        this.name = name;
+        hand = new Hand();
+        this.handRank = Integer.MIN_VALUE;
+        this.alive = true;
+        this.offline = offline;
     }
 
     public String getId() {
@@ -100,16 +113,30 @@ public class Player {
     }
 
     public Action act(Set<Action> actions, int minBet, int currentBet) {
+
         String actionStr = "";
         Action result;
 
         for (Action action : actions) {
             actionStr = actionStr + action.getVerb() + " ";
         }
-
         log.debug("allowed actions for \"" + getName() + "\" :" + actionStr);
-        Scanner scanner = new Scanner(System.in);
-        String input = scanner.nextLine();
+        Util.sendMessage(session, actionStr);
+
+        if (offline) {
+            Scanner scanner = new Scanner(System.in);
+            input = scanner.nextLine();
+
+        } else {
+            int counter = 0;
+            while (getInput() == null && counter < 20) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    log.error(e);
+                }
+            }
+        }
         if (input.startsWith("ca")) {
             result = Action.CALL;
         } else if (input.startsWith("c")) {
@@ -123,6 +150,8 @@ public class Player {
             money -= bet;
         }
         return result;
+
+
     }
 
     public int getBet() {
@@ -135,5 +164,13 @@ public class Player {
 
     public void win(int bet) {
         this.money += bet;
+    }
+
+    public String getInput() {
+        return input;
+    }
+
+    public void setInput(String input) {
+        this.input = input;
     }
 }

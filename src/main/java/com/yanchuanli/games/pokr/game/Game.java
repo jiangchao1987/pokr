@@ -99,6 +99,7 @@ public class Game {
                 player.getHand().addCard(card);
             }
             log.debug(player.getName() + " got " + player.getHand().toChineseString());
+            Util.sendToAll(player.getName() + " got " + player.getHand().toChineseString());
         }
     }
 

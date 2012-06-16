@@ -62,6 +62,12 @@ public class ServiceCenter {
                 Player p = new Player(String.valueOf(session.getId()), "player" + session.getId());
                 p.setSession(session);
                 dealers.get(0).addPlayer(p);
+                break;
+            default:
+                Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
+                player.setInput(cmd);
+                break;
+//                NotificationCenter.notify(Memory.playersOnServer, cmd, session);
         }
     }
 
