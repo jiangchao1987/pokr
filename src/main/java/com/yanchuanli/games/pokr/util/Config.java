@@ -10,5 +10,5 @@ public class Config {
     public static String serverAddress = "localhost";
     public static final byte START = '$' & 0xFF;
     public static final byte SPLIT = '|' & 0xFF;
-    public static boolean offlineDebug = true;
+    public static boolean offlineDebug = false;
 }
