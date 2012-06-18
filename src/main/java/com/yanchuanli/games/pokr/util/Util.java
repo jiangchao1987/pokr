@@ -20,27 +20,21 @@ public class Util {
     private static Logger log = Logger.getLogger(Util.class);
 
     public static void sendToAll(String message) {
-        if (!Config.offlineDebug) {
-            for (String s : Memory.sessionsOnServer.keySet()) {
-                Player player = Memory.sessionsOnServer.get(s);
-                Util.sendMessage(player.getSession(), message);
-            }
+        for (String s : Memory.sessionsOnServer.keySet()) {
+            Player player = Memory.sessionsOnServer.get(s);
+            Util.sendMessage(player.getSession(), message);
         }
     }
 
     public static void sendMessage(IoSession session, String input) {
-
-        if (!Config.offlineDebug) {
-            synchronized (session) {
-                IoBuffer answer = IoBuffer.allocate(toByte(input).length, false);
-                answer.put(toByte(input));
-                answer.flip();
-                session.write(answer);
-                answer.free();
-                log.debug("socket sent:" + input);
-            }
+        synchronized (session) {
+            IoBuffer answer = IoBuffer.allocate(toByte(input).length, false);
+            answer.put(toByte(input));
+            answer.flip();
+            session.write(answer);
+            answer.free();
+            log.debug("socket sent:" + input);
         }
-
     }
 
     public static List<String> extractStringFromIoBuffer(IoBuffer buffer) {

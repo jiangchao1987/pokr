@@ -11,11 +11,17 @@ import java.util.List;
  * Date: 12-6-16
  */
 public class NotificationCenter {
-    public static void notifiAllPlayersOnTable(List<Player> players, String info) {
 
+    public static void notifiAllPlayersOnTable(List<Player> players, String info) {
+        for (Player player : players) {
+            notifyPlayer(player, info);
+        }
     }
 
     public static void notifyPlayer(Player player, String info) {
-
+        if (!Config.offlineDebug) {
+            Util.sendMessage(player.getSession(), info);
+        }
     }
+
 }

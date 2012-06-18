@@ -2,7 +2,7 @@ package com.yanchuanli.games.pokr.model;
 
 import com.yanchuanli.games.pokr.core.Hand;
 import com.yanchuanli.games.pokr.util.Config;
-import com.yanchuanli.games.pokr.util.Util;
+import com.yanchuanli.games.pokr.util.NotificationCenter;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.session.IoSession;
 
@@ -15,6 +15,7 @@ import java.util.Set;
  * Email: mail@yanchuanli.com
  * Date: 12-5-31
  */
+
 public class Player {
 
     private static Logger log = Logger.getLogger(Player.class);
@@ -112,12 +113,11 @@ public class Player {
             actionStr = actionStr + action.getVerb() + " ";
         }
         log.debug("allowed actions for \"" + getName() + "\" :" + actionStr);
-        Util.sendMessage(session, actionStr);
+        NotificationCenter.notifyPlayer(this, actionStr);
 
         if (Config.offlineDebug) {
             Scanner scanner = new Scanner(System.in);
             input = scanner.nextLine();
-
         } else {
             int counter = 0;
             while (getInput() == null && counter < 20) {
@@ -169,5 +169,18 @@ public class Player {
 
     public void setInput(String input) {
         this.input = input;
+    }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", bestHand=" + bestHand.toChineseString() +
+                ", handRank=" + handRank +
+                ", alive=" + alive +
+                ", money=" + money +
+                ", bet=" + bet +
+                '}';
     }
 }
