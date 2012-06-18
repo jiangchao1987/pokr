@@ -29,6 +29,7 @@ public class Player {
     private int money;
     private int bet;
     private String input;
+    private String nameOfHand;
 
 
     public Player(String id, String name) {
@@ -169,6 +170,14 @@ public class Player {
 
     public void setInput(String input) {
         this.input = input;
+    }
+
+    public String getNameOfHand() {
+        return nameOfHand;
+    }
+
+    public void setNameOfHand(String nameOfHand) {
+        this.nameOfHand = nameOfHand;
     }
 
     @Override
