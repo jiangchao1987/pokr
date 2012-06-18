@@ -5,6 +5,7 @@ import com.yanchuanli.games.pokr.core.Deck;
 import com.yanchuanli.games.pokr.core.PlayerRankComparator;
 import com.yanchuanli.games.pokr.model.Action;
 import com.yanchuanli.games.pokr.model.Player;
+import com.yanchuanli.games.pokr.util.NotificationCenter;
 import com.yanchuanli.games.pokr.util.Util;
 import org.apache.log4j.Logger;
 
@@ -109,22 +110,22 @@ public class Game {
             Card card = deck.dealCard();
             cardsOnTable.add(card);
         }
-        log.debug("OnTable:" + Util.cardsToString(cardsOnTable));
-        Util.sendToAll("OnTable:" + Util.cardsToString(cardsOnTable));
+        log.debug("OnTable:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
+        Util.sendToAll("OnTable:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
     }
 
     private void dealTurnCard() {
         Card card = deck.dealCard();
         cardsOnTable.add(card);
-        log.debug("OnTable-Turn:" + Util.cardsToString(cardsOnTable));
-        Util.sendToAll("OnTable-Turn:" + Util.cardsToString(cardsOnTable));
+        log.debug("OnTable-Turn:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
+        Util.sendToAll("OnTable-Turn:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
     }
 
     private void dealRiverCard() {
         Card card = deck.dealCard();
         cardsOnTable.add(card);
-        log.debug("OnTable-River:" + Util.cardsToString(cardsOnTable));
-        Util.sendToAll("OnTable-River:" + Util.cardsToString(cardsOnTable));
+        log.debug("OnTable-River:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
+        Util.sendToAll("OnTable-River:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
     }
 
     private void gameover() {
@@ -276,6 +277,6 @@ public class Game {
     }
 
     private void sayHello() {
-
+        NotificationCenter.notifiAllPlayersOnTable(players, "started ...");
     }
 }

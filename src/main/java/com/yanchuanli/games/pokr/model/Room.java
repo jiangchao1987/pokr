@@ -1,6 +1,5 @@
 package com.yanchuanli.games.pokr.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,16 +12,14 @@ public class Room {
 
     private String id;
     private String name;
-    private List<Table> tables;
-    private int numOfTables = 4;
+    private List<Player> players;
+    private int bet;
+    private int moneyOnTable;
 
     public Room(String id, String name) {
         this.id = id;
         this.name = name;
-        tables = new ArrayList<Table>();
-        for (int i = 0; i < numOfTables; i++) {
-            tables.add(new Table(id, name + i));
-        }
+
     }
 
     public String getId() {
@@ -41,8 +38,12 @@ public class Room {
         this.name = name;
     }
 
-    public List<Table> getTables() {
-        return tables;
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public void addPlayer(Player player) {
+        players.add(player);
     }
 
 
