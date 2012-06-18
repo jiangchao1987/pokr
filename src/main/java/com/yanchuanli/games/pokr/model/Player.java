@@ -139,7 +139,7 @@ public class Player {
         } else if (input.startsWith("f")) {
             result = Action.FOLD;
         } else {
-            String[] inputs = input.split(" ");
+            String[] inputs = input.split(":");
             setBet(Integer.parseInt(inputs[1]));
             result = Action.BET;
             money -= bet;

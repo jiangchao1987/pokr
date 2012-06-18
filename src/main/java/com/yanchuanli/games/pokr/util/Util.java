@@ -27,14 +27,14 @@ public class Util {
     }
 
     public static void sendMessage(IoSession session, String input) {
-        synchronized (session) {
+//        synchronized (session) {
             IoBuffer answer = IoBuffer.allocate(toByte(6, input).length, false);
             answer.put(toByte(6, input));
             answer.flip();
             session.write(answer);
             answer.free();
             log.debug("socket sent:" + input);
-        }
+//        }
     }
 
 
