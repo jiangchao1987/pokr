@@ -15,6 +15,7 @@ import org.apache.mina.core.session.IoSession;
 
 import java.io.IOException;
 import java.net.SocketAddress;
+import java.util.List;
 
 public class NetworkServerHandler extends IoHandlerAdapter {
     // 当一个客端端连结进入时
@@ -32,7 +33,7 @@ public class NetworkServerHandler extends IoHandlerAdapter {
 
     public void sessionOpened(IoSession session) throws Exception {
 //        Memory.sessionsOnServer.put(String.valueOf(session.getId()), session);
-        Player player = new Player(String.valueOf(session.getId()), String.valueOf("Player" + session.getId()), false);
+        Player player = new Player(String.valueOf(session.getId()), String.valueOf("Player" + session.getId()));
         player.setMoney(10000);
         player.setSession(session);
         Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);
@@ -56,9 +57,12 @@ public class NetworkServerHandler extends IoHandlerAdapter {
             log.info(remoteAddress);
             log.info(new String(buffer.array()));
 
-            String cmd = Util.extractStringFromIoBuffer(buffer);
-            log.info("received:" + cmd);
-            ServiceCenter.getInstance().processCommand(session, cmd);
+            List<String> cmds = Util.extractStringFromIoBuffer(buffer);
+
+            for (String cmd : cmds) {
+                log.info("received:" + cmd);
+                ServiceCenter.getInstance().processCommand(session, cmd);
+            }
 
 
         }

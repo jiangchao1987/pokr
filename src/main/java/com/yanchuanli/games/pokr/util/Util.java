@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,36 +20,53 @@ public class Util {
     private static Logger log = Logger.getLogger(Util.class);
 
     public static void sendToAll(String message) {
-        for (String s : Memory.sessionsOnServer.keySet()) {
-            Player player = Memory.sessionsOnServer.get(s);
-            Util.sendMessage(player.getSession(), message);
+        if (!Config.offlineDebug) {
+            for (String s : Memory.sessionsOnServer.keySet()) {
+                Player player = Memory.sessionsOnServer.get(s);
+                Util.sendMessage(player.getSession(), message);
+            }
         }
-
     }
 
     public static void sendMessage(IoSession session, String input) {
-        log.debug("socket sent:" + input);
-//        synchronized (session) {
-            IoBuffer answer = IoBuffer.allocate(toByte(input).length, false);
-            answer.put(toByte(input));
-            answer.flip();
-            session.write(answer);
-            answer.free();
-//        }
+
+        if (!Config.offlineDebug) {
+            synchronized (session) {
+                IoBuffer answer = IoBuffer.allocate(toByte(input).length, false);
+                answer.put(toByte(input));
+                answer.flip();
+                session.write(answer);
+                answer.free();
+                log.debug("socket sent:" + input);
+            }
+        }
+
     }
 
-    public static String extractStringFromIoBuffer(IoBuffer buffer) {
-        System.out.println(buffer.get(0) + "-" + buffer.get(2) + "-" + (int) buffer.get(1) + "-" + buffer.get((int) buffer.get(1) + 3));
-        if (buffer.get(0) == Config.START && buffer.get(2) == Config.SPLIT
-                && buffer.get((int) buffer.get(1) + 3) == Config.START) {
-            byte[] b = new byte[(int) buffer.get(1)];
-            System.out.println(b.length);
-            for (int index = 0; index < b.length; index++) {
-                b[index] = buffer.get(index + 3);
+    public static List<String> extractStringFromIoBuffer(IoBuffer buffer) {
+        List<String> list = new ArrayList<String>();
+        try {
+            boolean flag = true;
+            int part = 0;
+            while (flag) {
+                if (buffer.get(part + 0) == Config.START && buffer.get(part + 2) == Config.SPLIT) {
+                    int size = (int) buffer.get(part + 1);
+                    if (buffer.get(part + size + 3) == Config.START) {
+                        byte[] b = new byte[size];
+                        for (int index = 0; index < b.length; index++) {
+                            b[index] = buffer.get(part + index + 3);
+                        }
+                        list.add(new String(b));
+                    }
+                    part = part + size + 4;
+                } else {
+                    flag = false;
+                }
             }
-            return new String(b);
+        } catch (Exception e) {
+            log.error(e);
         }
-        return null;
+        return list;
     }
 
     public static String cardsToString(List<Card> cardList) {

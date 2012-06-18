@@ -1,6 +1,7 @@
 package com.yanchuanli.games.pokr.model;
 
 import com.yanchuanli.games.pokr.core.Hand;
+import com.yanchuanli.games.pokr.util.Config;
 import com.yanchuanli.games.pokr.util.Util;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.session.IoSession;
@@ -26,7 +27,6 @@ public class Player {
     private boolean alive;
     private int money;
     private int bet;
-    private boolean offline;
     private String input;
 
 
@@ -36,17 +36,8 @@ public class Player {
         hand = new Hand();
         this.handRank = Integer.MIN_VALUE;
         this.alive = true;
-        offline = true;
     }
 
-    public Player(String id, String name, boolean offline) {
-        this.id = id;
-        this.name = name;
-        hand = new Hand();
-        this.handRank = Integer.MIN_VALUE;
-        this.alive = true;
-        this.offline = offline;
-    }
 
     public String getId() {
         return id;
@@ -123,7 +114,7 @@ public class Player {
         log.debug("allowed actions for \"" + getName() + "\" :" + actionStr);
         Util.sendMessage(session, actionStr);
 
-        if (offline) {
+        if (Config.offlineDebug) {
             Scanner scanner = new Scanner(System.in);
             input = scanner.nextLine();
 

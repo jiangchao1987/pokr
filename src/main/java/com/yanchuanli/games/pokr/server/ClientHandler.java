@@ -7,6 +7,8 @@ import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
+import java.util.List;
+
 /**
  * Author: Yanchuan Li
  * Date: 5/27/12
@@ -33,7 +35,7 @@ public class ClientHandler extends IoHandlerAdapter {
         super.messageReceived(session, message);
         if (message instanceof IoBuffer) {
             IoBuffer buffer = (IoBuffer) message;
-            String info = Util.extractStringFromIoBuffer(buffer);
+            List<String> info = Util.extractStringFromIoBuffer(buffer);
             log.info("[messageReceived]" + info);
         } else {
             log.info("[messageReceived]illegal");
