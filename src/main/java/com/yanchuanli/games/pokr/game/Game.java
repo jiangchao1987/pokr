@@ -178,6 +178,8 @@ public class Game {
             //rotate the actor
             log.debug("playersToAct:" + playersToAct);
             rotateActor();
+            actor.setBetThisRound(0);
+            actor.setBetThisTime(0);
             Set<Action> allowedActions = getAllowedActions(actor);
 
             Action action = actor.act(allowedActions, MIN_BET, bet);

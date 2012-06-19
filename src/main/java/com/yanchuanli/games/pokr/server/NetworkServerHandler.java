@@ -38,7 +38,7 @@ public class NetworkServerHandler extends IoHandlerAdapter {
         player.setSession(session);
         Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);
         log.info("incomming client : " + session.getRemoteAddress());
-        Util.sendMessage(session, "Hello Player" + String.valueOf("Player" + session.getId()));
+        Util.sendMessage(session, "Hello Player" + String.valueOf(session.getId()));
 //        initMQ();
     }
 
