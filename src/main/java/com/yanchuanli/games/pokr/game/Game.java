@@ -80,7 +80,7 @@ public class Game {
                     doBettingRound();
                     if (players.size() > 1) {
                         bet = 0;
-                        gameover();
+                        shutdown();
                     }
                 }
             }
@@ -129,7 +129,7 @@ public class Game {
         NotificationCenter.notifiAllPlayersOnTable(players, "OnTable-River:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
     }
 
-    private void gameover() {
+    private void shutdown() {
 
         log.debug("OnTable: " + Util.cardsToString(cardsOnTable));
 
@@ -189,16 +189,19 @@ public class Game {
                     // do nothing
                     break;
                 case CALL:
-                    moneyOnTable += actor.getBet();
+                    moneyOnTable += actor.getBetThisTime();
                     break;
                 case BET:
-                    bet = actor.getBet();
-                    moneyOnTable += actor.getBet();
-                    playersToAct = activePlayers.size() - 1;
+                    if (actor.getBetThisTime() > bet) {
+                        bet = actor.getBetThisTime();
+                        moneyOnTable += actor.getBetThisTime();
+                        playersToAct = activePlayers.size() - 1;
+                    }
+
                     break;
                 case RAISE:
-                    bet = actor.getBet();
-                    moneyOnTable += actor.getBet();
+                    bet = actor.getBetThisTime();
+                    moneyOnTable += actor.getBetThisTime();
                     playersToAct = activePlayers.size() - 1;
                     break;
                 case FOLD:
@@ -215,7 +218,7 @@ public class Game {
 
 
     public Set<Action> getAllowedActions(Player player) {
-//        int actorBet = actor.getBet();
+//        int actorBet = actor.getBetThisTime();
         Set<Action> actions = new HashSet<Action>();
         if (bet == 0) {
             actions.add(Action.CHECK);

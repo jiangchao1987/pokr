@@ -162,7 +162,7 @@ public class Game {
 
 
     public Set<Action> getAllowedActions(Player player) {
-//        int actorBet = actor.getBet();
+//        int actorBet = actor.getBetThisTime();
         Set<Action> actions = new HashSet<Action>();
         if (bet == 0) {
             actions.add(Action.CHECK);

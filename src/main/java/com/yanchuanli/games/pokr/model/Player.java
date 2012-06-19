@@ -27,9 +27,11 @@ public class Player {
     private int handRank;
     private boolean alive;
     private int money;
-    private int bet;
+    private int betThisTime;
+    private int betThisRound;
     private String input;
     private String nameOfHand;
+    private String avatar;
 
 
     public Player(String id, String name) {
@@ -121,9 +123,9 @@ public class Player {
             input = scanner.nextLine();
         } else {
             int counter = 0;
-            while (getInput() == null && counter < 20) {
+            while (getInput() == null && counter < 30) {
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     log.error(e);
                 }
@@ -131,8 +133,10 @@ public class Player {
         }
 
         if (input.startsWith("ca")) {
-            money -= currentBet;
-            setBet(currentBet);
+            int diff = currentBet - betThisRound;
+            betThisRound = currentBet;
+            money -= diff;
+            setBetThisTime(diff);
             result = Action.CALL;
         } else if (input.startsWith("c")) {
             result = Action.CHECK;
@@ -140,9 +144,10 @@ public class Player {
             result = Action.FOLD;
         } else {
             String[] inputs = input.split(":");
-            setBet(Integer.parseInt(inputs[1]));
-            result = Action.BET;
-            money -= bet;
+            setBetThisTime(Integer.parseInt(inputs[1]));
+            result = Action.RAISE;
+            money -= betThisTime;
+            betThisRound += betThisTime;
         }
 
         input = null;
@@ -152,12 +157,12 @@ public class Player {
 
     }
 
-    public int getBet() {
-        return bet;
+    public int getBetThisTime() {
+        return betThisTime;
     }
 
-    public void setBet(int bet) {
-        this.bet = bet;
+    public void setBetThisTime(int betThisTime) {
+        this.betThisTime = betThisTime;
     }
 
     public void win(int bet) {
@@ -180,6 +185,22 @@ public class Player {
         this.nameOfHand = nameOfHand;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public int getBetThisRound() {
+        return betThisRound;
+    }
+
+    public void setBetThisRound(int betThisRound) {
+        this.betThisRound = betThisRound;
+    }
+
     @Override
     public String toString() {
         return "Player{" +
@@ -189,7 +210,7 @@ public class Player {
                 ", handRank=" + handRank +
                 ", alive=" + alive +
                 ", money=" + money +
-                ", bet=" + bet +
+                ", betThisTime=" + betThisTime +
                 '}';
     }
 }
