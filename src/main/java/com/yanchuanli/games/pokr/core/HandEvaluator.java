@@ -65,7 +65,7 @@ public class HandEvaluator {
     }
 
     public static String nameHandInChinese(Hand h) {
-        return name_hand(rankHand(h));
+        return name_hand_in_chinese(rankHand(h));
     }
 
     /**
@@ -1174,8 +1174,14 @@ public class HandEvaluator {
             "THREE KIND", "STRAIGHT", "FLUSH", "FULL HOUSE", "FOUR KIND",
             "STRAIGHT FLUSH", "FIVE KIND"};
 
+	private static final String[] hand_name_in_chinese = {"高牌", "对子", "两对",
+			"三条", "顺子", "同花", "葫芦", "四条", "同花顺", "皇家同花顺"};
+
     private static final String[] rank_name = {"Two", "Three", "Four", "Five",
             "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King", "Ace"};
+
+	private static final String[] rank_name_in_chinese = {"2", "3", "4", "5", "6",
+			"7", "8", "9", "10", "J", "Q", "K", "A"};
 
     /**
      * Return a string naming the hand
@@ -1190,46 +1196,98 @@ public class HandEvaluator {
         String t = new String();
 
         switch (type) {
-            case HIGH:
+            case HIGH:	
                 ident /= NUM_RANKS * NUM_RANKS * NUM_RANKS * NUM_RANKS;
                 t = rank_name[ident] + " High";
                 break;
-            case FLUSH:
+            case FLUSH:	
                 ident /= NUM_RANKS * NUM_RANKS * NUM_RANKS * NUM_RANKS;
                 t = "a Flush, " + rank_name[ident] + " High";
                 break;
-            case PAIR:
+            case PAIR:	
                 ident /= NUM_RANKS * NUM_RANKS * NUM_RANKS;
                 t = "a Pair of " + rank_name[ident] + "s";
                 break;
-            case TWOPAIR:
+            case TWOPAIR:	
                 ident2 = ident / (NUM_RANKS * NUM_RANKS);
                 ident = (ident % (NUM_RANKS * NUM_RANKS)) / NUM_RANKS;
                 t = "Two Pair, " + rank_name[ident2] + "s and " + rank_name[ident]
                         + "s";
                 break;
-            case THREEKIND:
+            case THREEKIND:	
                 t = "Three of a Kind, " + rank_name[ident / (NUM_RANKS * NUM_RANKS)]
                         + "s";
                 break;
-            case FULLHOUSE:
+            case FULLHOUSE:	
                 t = "a Full House, " + rank_name[ident / NUM_RANKS] + "s over "
                         + rank_name[ident % NUM_RANKS] + "s";
                 break;
-            case FOURKIND:
+            case FOURKIND:	
                 t = "Four of a Kind, " + rank_name[ident / NUM_RANKS] + "s";
                 break;
-            case STRAIGHT:
+            case STRAIGHT:	
                 t = "a " + rank_name[ident] + " High Straight";
                 break;
-            case STRAIGHTFLUSH:
+            case STRAIGHTFLUSH:		
                 t = "a " + rank_name[ident] + " High Straight Flush";
                 break;
-            case FIVEKIND:
+            case FIVEKIND:	
                 t = "Five of a Kind, " + rank_name[ident] + "s";
                 break;
             default:
                 t = hand_name[type];
+        }
+
+        return t;
+    }
+    
+    private static String name_hand_in_chinese(int rank) {
+
+        int type = (int) (rank / ID_GROUP_SIZE);
+        int ident = (int) (rank % ID_GROUP_SIZE), ident2;
+
+        String t = new String();
+
+        switch (type) {
+            case HIGH:	//高牌
+                ident /= NUM_RANKS * NUM_RANKS * NUM_RANKS * NUM_RANKS;
+                t = "高牌 " + rank_name_in_chinese[ident];
+                break;
+            case FLUSH:	//同花
+                ident /= NUM_RANKS * NUM_RANKS * NUM_RANKS * NUM_RANKS;
+                t = "同花, 最大 " + rank_name_in_chinese[ident];
+                break;
+            case PAIR:	//对子
+                ident /= NUM_RANKS * NUM_RANKS * NUM_RANKS;
+                t = "一对 " + rank_name_in_chinese[ident];
+                break;
+            case TWOPAIR:	//两对
+                ident2 = ident / (NUM_RANKS * NUM_RANKS);
+                ident = (ident % (NUM_RANKS * NUM_RANKS)) / NUM_RANKS;
+                t = "两对, " + rank_name_in_chinese[ident2] + " 一对, " + rank_name_in_chinese[ident]
+                        + " 一对";
+                break;
+            case THREEKIND:	//三条
+                t = "三条, " + rank_name_in_chinese[ident / (NUM_RANKS * NUM_RANKS)];
+                break;
+            case FULLHOUSE:	//葫芦
+                t = "葫芦, " + rank_name_in_chinese[ident / NUM_RANKS] + " 和 "
+                        + rank_name_in_chinese[ident % NUM_RANKS];
+                break;
+            case FOURKIND:	//四条
+                t = "四条, " + rank_name_in_chinese[ident / NUM_RANKS];
+                break;
+            case STRAIGHT:	//顺子
+                t = "顺子 " + rank_name_in_chinese[ident];
+                break;
+            case STRAIGHTFLUSH:	//同花顺
+                t = "同花顺 " + rank_name_in_chinese[ident];
+                break;
+            case FIVEKIND:	//皇家同花顺
+                t = "皇家同花顺, " + rank_name_in_chinese[ident];
+                break;
+            default:
+                t = hand_name_in_chinese[type];
         }
 
         return t;
