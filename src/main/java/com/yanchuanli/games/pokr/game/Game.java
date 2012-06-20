@@ -220,6 +220,7 @@ public class Game {
                     if (players.size() == 1) {
                         log.debug(players.get(0).getName() + " win ...");
                         playersToAct = 0;
+                        NotificationCenter.winorlose(players.get(0).getSession(), players.get(0).getId() + "," + players.get(0).getName() + ",1", 10);
                     }
                     break;
             }
