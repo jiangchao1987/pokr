@@ -3,13 +3,13 @@ package com.jiangchao.games.pokr.game.client;
 import java.net.InetSocketAddress;
 import java.util.Scanner;
 
+import org.apache.log4j.Logger;
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 
 import com.jiangchao.games.pokr.game.handler.TexasCHandler;
+import com.jiangchao.games.pokr.util.Config;
 import com.jiangchao.games.pokr.util.Util;
-import com.yanchuanli.games.pokr.util.Config;
-import com.yanchuanli.games.pokr.util.Memory;
 
 /**
  * Note: Texas DummyClient
@@ -18,14 +18,14 @@ import com.yanchuanli.games.pokr.util.Memory;
  * Email: chaojiang@candou.com
  */
 public class TexasClient {
-	NioSocketConnector connector;
+    private static Logger log = Logger.getLogger(TexasClient.class);
+    private NioSocketConnector connector;
 
 	public TexasClient() {
 		connector = new NioSocketConnector();
 	}
 
 	public boolean connect() {
-		System.out.println("[TexasClient] connect now!");
 		connector.setHandler(new TexasCHandler());
 		ConnectFuture connFuture = connector.connect(new InetSocketAddress(
 				Config.serverAddress, Config.port));
@@ -41,9 +41,8 @@ public class TexasClient {
 		Scanner scanner = new Scanner(System.in);
 		String input = scanner.nextLine();
 		while (true) {
-			for (String s : Memory.sessionsOnClient.keySet()) {
-				Util.sendMessage(Memory.sessionsOnClient.get(s), input);
-			}
+			log.info("client input: " + input);
+            Util.sendToAll(input);
 			input = scanner.nextLine();
 		}
 	}

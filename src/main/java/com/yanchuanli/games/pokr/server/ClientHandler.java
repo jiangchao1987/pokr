@@ -46,7 +46,7 @@ public class ClientHandler extends IoHandlerAdapter {
             List<Map<Integer, String>> list = Util.ioBufferToString(buffer);
             for (Map<Integer, String> map : list) {
             	for (Integer key : map.keySet()) {
-            		log.info("[messageReceived]" + map.get(key));
+            		log.info("[messageReceived] status code: [" + key + "] " + map.get(key));
             	}
             }
         } else {

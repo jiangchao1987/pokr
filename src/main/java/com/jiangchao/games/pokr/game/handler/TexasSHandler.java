@@ -1,13 +1,17 @@
 package com.jiangchao.games.pokr.game.handler;
 
-import com.jiangchao.games.pokr.util.Memory;
-import com.jiangchao.games.pokr.util.Util;
-import com.yanchuanli.games.pokr.model.Player;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
+
+import com.jiangchao.games.pokr.util.Memory;
+import com.jiangchao.games.pokr.util.ServiceCenter;
+import com.jiangchao.games.pokr.util.Util;
+import com.yanchuanli.games.pokr.model.Player;
 
 /**
  * Note: Server Handler 
@@ -18,7 +22,6 @@ import org.apache.mina.core.session.IoSession;
 public class TexasSHandler extends IoHandlerAdapter {
 
 	private static Logger log = Logger.getLogger(TexasSHandler.class);
-	private Player player;
 
 	@Override
 	public void exceptionCaught(IoSession session, Throwable cause)
@@ -30,11 +33,16 @@ public class TexasSHandler extends IoHandlerAdapter {
 			throws Exception {
 		if (message instanceof IoBuffer) {
             IoBuffer buffer = (IoBuffer) message;
-            String cmd = Util.extractStringFromIoBuffer(buffer);
+//            String cmd = Util.extractStringFromIoBuffer(buffer);
 //            ServiceCenter.getInstance().processCommand(session, cmd);
-            Util.sendMessage(session, "candou915" + cmd);
+//            Util.sendMessage(session, "candou915" + cmd);
+//            List<String> cmds = Util.extractStringFromIoBuffer(buffer);
+            List<String> cmds = Util.byteToString(buffer);
+            for (String cmd : cmds) {
+            	ServiceCenter.getInstance().processCommand(session, cmd);
+            	log.info("[messageReceived]" + cmd);
+            }
         }
-		log.info("[messageReceived]");
 	}
 
 	@Override
@@ -43,13 +51,11 @@ public class TexasSHandler extends IoHandlerAdapter {
 
 	@Override
 	public void sessionClosed(IoSession session) throws Exception {
-		Memory.playersOnServer.remove(player);
-		log.info("[sessionClosed]");
+		Memory.playersOnServer.remove(String.valueOf(session.getId()));
 	}
 
 	@Override
 	public void sessionCreated(IoSession session) throws Exception {
-		log.info("[sessionCreated]");
 		session.getConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);
 	}
 
@@ -60,10 +66,10 @@ public class TexasSHandler extends IoHandlerAdapter {
 
 	@Override
 	public void sessionOpened(IoSession session) throws Exception {
-		player = new Player(String.valueOf(session.getId()),
+		Player player = new Player(String.valueOf(session.getId()),
 				String.valueOf(session.getId()));
-		Memory.playersOnServer.put(player, session);
-		log.info("[sessionOpened]" + session.getRemoteAddress() + "; " + player);
+		player.setSession(session);
+		Memory.playersOnServer.put(String.valueOf(session.getId()), player);
 	}
 
 }

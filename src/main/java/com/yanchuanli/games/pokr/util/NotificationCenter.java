@@ -26,19 +26,19 @@ public class NotificationCenter {
     }*/
 	
 	public static void winorlose(IoSession session, String info) {
-    	notifyOneOnTable(session, info, Config.TYPE_CARD_INGAME);
+    	notifyOneOnTable(session, info, Config.TYPE_WINORLOSE_INGAME);
     }
 	
 	public static void gameover(List<Player> players, String info) {
-		notifyAllOnTable(players, info, Config.TYPE_CARD_INGAME);
+		notifyAllOnTable(players, info, Config.TYPE_GAMEOVER_INGAME);
 	}
 	
 	public static void dealRiverCard(List<Player> players, String info) {
-		notifyAllOnTable(players, info, Config.TYPE_ACTION_INGAME);
+		notifyAllOnTable(players, info, Config.TYPE_CARD_INGAME);
 	}
 	
 	public static void dealTurnCard(List<Player> players, String info) {
-		notifyAllOnTable(players, info, Config.TYPE_ACTION_INGAME);
+		notifyAllOnTable(players, info, Config.TYPE_CARD_INGAME);
 	}
 	
 	public static void deal3FlipCards(List<Player> players, String info) {
@@ -54,7 +54,7 @@ public class NotificationCenter {
 	}
 	
 	public static void deal2Cards(IoSession session, String info) {
-		notifyOneOnTable(session, info, Config.TYPE_CARD_INGAME);
+		notifyOneOnTable(session, info, Config.TYPE_HOLE_INGAME);
 	}
     
 	public static void sayHello(List<Player> players, String info) {

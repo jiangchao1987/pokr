@@ -16,7 +16,7 @@ import java.util.Map;
 public class Memory {
     public static Map<String, IoSession> sessionsOnServer = new HashMap<String, IoSession>();
     public static Map<String, IoSession> sessionsOnClient = new HashMap<String, IoSession>();
-	public static Map<Player, IoSession> playersOnServer = new HashMap<Player, IoSession>();
-	public static Map<Player, IoSession> playersOnClient = new HashMap<Player, IoSession>();
+	public static Map<String, Player> playersOnServer = new HashMap<String, Player>();
+	public static Map<String, Player> playersOnClient = new HashMap<String, Player>();
 	
 }

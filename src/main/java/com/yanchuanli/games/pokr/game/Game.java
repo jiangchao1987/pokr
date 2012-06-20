@@ -185,12 +185,16 @@ public class Game {
         bet = 0;
         while (playersToAct > 0) {
             //rotate the actor
-            log.debug("playersToAct:" + playersToAct);
+			log.debug("playersToAct: " + playersToAct + " id: " + actor.getId()
+					+ " sessionId: " + actor.getSession().getId() + " name: "
+					+ actor.getName());
             rotateActor();
             Set<Action> allowedActions = getAllowedActions(actor);
 
             Action action = actor.act(allowedActions, MIN_BET, bet, moneyOnTable);
-            log.debug(actor.getName() + " " + action.getVerb());
+			log.debug(" id: " + actor.getId() + " sessionId: "
+					+ actor.getSession().getId() + " name: " + actor.getName()
+					+ " action: " + action.getVerb());
             playersToAct--;
 
             switch (action) {

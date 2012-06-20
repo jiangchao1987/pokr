@@ -1,14 +1,16 @@
 package com.jiangchao.games.pokr.game.handler;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 
+import com.jiangchao.games.pokr.util.Memory;
 import com.jiangchao.games.pokr.util.Util;
 import com.yanchuanli.games.pokr.model.Player;
-import com.jiangchao.games.pokr.util.Memory;
 
 /**
  * Note: Client Handler 
@@ -18,7 +20,6 @@ import com.jiangchao.games.pokr.util.Memory;
  */
 public class TexasCHandler extends IoHandlerAdapter {
     private static Logger log = Logger.getLogger(TexasCHandler.class);
-    private Player player;
 
 	@Override
 	public void exceptionCaught(IoSession session, Throwable cause)
@@ -30,10 +31,13 @@ public class TexasCHandler extends IoHandlerAdapter {
 			throws Exception {
 		if (message instanceof IoBuffer) {
 			IoBuffer buffer = (IoBuffer) message;
-	        String info = Util.extractStringFromIoBuffer(buffer);
-	        log.info("[messageReceived]" + info);
-		} else {
-			log.info("[messageReceived]illegal");
+//	        String info = Util.extractStringFromIoBuffer(buffer);
+//	        log.info("[messageReceived]" + info);
+//			List<String> infos = Util.extractStringFromIoBuffer(buffer);
+			List<String> infos = Util.byteToString(buffer);
+			for (String info : infos) {
+				log.info("[messageReceived]" + info);
+			}
 		}
 	}
 
@@ -43,13 +47,11 @@ public class TexasCHandler extends IoHandlerAdapter {
 
 	@Override
 	public void sessionClosed(IoSession session) throws Exception {
-		Memory.playersOnClient.remove(player);
-		log.info("[sessionClosed]");
+		Memory.playersOnClient.remove(String.valueOf(session.getId()));
 	}
 
 	@Override
 	public void sessionCreated(IoSession session) throws Exception {
-		log.info("[sessionCreated]");
 	}
 
 	@Override
@@ -59,10 +61,10 @@ public class TexasCHandler extends IoHandlerAdapter {
 
 	@Override
 	public void sessionOpened(IoSession session) throws Exception {
-		player = new Player(String.valueOf(session.getId()),
+		Player player = new Player(String.valueOf(session.getId()),
 				String.valueOf(session.getId()));
-		Memory.playersOnClient.put(player, session);
-		log.info("[sessionOpened]");
+		player.setSession(session);
+		Memory.playersOnClient.put(String.valueOf(session.getId()), player);
 	}
 
 }

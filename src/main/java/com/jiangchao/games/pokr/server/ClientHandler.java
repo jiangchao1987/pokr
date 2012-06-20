@@ -9,6 +9,7 @@ import org.apache.mina.core.session.IoSession;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.List;
 
 /**
  * Author: Yanchuan Li
@@ -37,8 +38,11 @@ public class ClientHandler extends IoHandlerAdapter {
         InetSocketAddress isa = (InetSocketAddress) sa;
 
         IoBuffer buffer = (IoBuffer) message;
-        String receivedInfo = Util.extractStringFromIoBuffer(buffer);
-        log.info("received [" + receivedInfo + "] from " + isa.getHostName() + ":" + String.valueOf(isa.getPort()));
+        List<String> infos = Util.byteToString(buffer);
+//        log.info("received [" + receivedInfo + "] from " + isa.getHostName() + ":" + String.valueOf(isa.getPort()));
+        for (String info : infos) {
+        	System.out.println("info->" + info);
+        }
     }
 
     @Override

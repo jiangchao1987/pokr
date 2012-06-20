@@ -1,11 +1,13 @@
 package com.jiangchao.games.pokr.server;
 
-import com.jiangchao.games.pokr.util.Util;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
-import com.yanchuanli.games.pokr.util.Memory;
+import com.yanchuanli.games.pokr.util.ServiceCenter;
+import com.jiangchao.games.pokr.util.Memory;
+import com.jiangchao.games.pokr.util.Util;
+
 import org.apache.log4j.Logger;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.service.IoHandlerAdapter;
@@ -14,6 +16,7 @@ import org.apache.mina.core.session.IoSession;
 
 import java.io.IOException;
 import java.net.SocketAddress;
+import java.util.List;
 
 public class NetworkServerHandler extends IoHandlerAdapter {
     // 当一个客端端连结进入时
@@ -29,7 +32,7 @@ public class NetworkServerHandler extends IoHandlerAdapter {
     }
 
     public void sessionOpened(IoSession session) throws Exception {
-//        Memory.sessionsOnServer.put(String.valueOf(session.getId()), session);
+        Memory.sessionsOnServer.put(String.valueOf(session.getId()), session);
         log.info("incomming client : " + session.getRemoteAddress());
 //        initMQ();
     }
@@ -51,12 +54,16 @@ public class NetworkServerHandler extends IoHandlerAdapter {
 //            byte[] b = new byte[buffer.limit()];
 //            buffer.get(b);
 //            String cmd = new String(b);
-            log.info("original:" + com.yanchuanli.games.pokr.util.Util.extractStringFromIoBuffer(buffer));
-            String cmd = Util.extractStringFromIoBuffer(buffer);
-            log.info("received:" + cmd);
-//            ServiceCenter.getInstance() .processCommand(session, cmd);
-
-            Util.sendMessage(session, "candou915" + cmd);
+//            log.info("original:" + com.yanchuanli.games.pokr.util.Util.extractStringFromIoBuffer(buffer));
+//            List<String> cmd = Util.extractStringFromIoBuffer(buffer);
+            List<String> cmd = Util.byteToString(buffer);
+            System.out.println("cmd.size:" + cmd.size());
+            for (String str : cmd) {
+            	log.info("received:" + str);
+            	Util.sendMessage(session, str);
+            }
+//            ServiceCenter.getInstance().processCommand(session, cmd);
+//
         }
 
 

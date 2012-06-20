@@ -1,23 +1,26 @@
 package com.jiangchao.games.pokr.game;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
+
+import com.jiangchao.games.pokr.util.Util;
 import com.yanchuanli.games.pokr.core.Card;
 import com.yanchuanli.games.pokr.core.Deck;
 import com.yanchuanli.games.pokr.core.PlayerRankComparator;
 import com.yanchuanli.games.pokr.model.Action;
 import com.yanchuanli.games.pokr.model.Player;
-import com.jiangchao.games.pokr.util.Memory;
-import com.jiangchao.games.pokr.util.Util;
-import org.apache.log4j.Logger;
-
-import java.util.*;
 
 /**
- * Copyright Candou.com
- * Author: Yanchuan Li
- * Email: mail@yanchuanli.com
- * Date: 12-6-13
+ * Note: Game Main
+ * Author: JiangChao 
+ * Date: 2012/6/15/13 
+ * Email: chaojiang@candou.com
  */
-
 public class Game {
 
     private static Logger log = Logger.getLogger(Game.class);
@@ -29,7 +32,7 @@ public class Game {
     private int bet;
     private int moneyOnTable;
     private Player actor;
-    private int MAX_RAISES = 100;
+    private int MAX_RAISES = 1000;
     private int MIN_BET = 10;
     private int actorPosition;
 
@@ -47,32 +50,51 @@ public class Game {
 
     public void start() {
 
+        sayHello();
         reset();
         // rotate dealer position
         rotateDealer();
+
         // post the big blind and small blind
+        rotateActor();
+        postSmallBlind();
+
+        rotateActor();
+        postBigBlind();
+
         // deal 2 cards per player
         deal2Cards();
+        doBettingRound();
+
         // pre flop betting round
         // deal 3 flp cards on the table
-        deal3FlipCards();
-        // flop the betting round
-        // deal the turn card (4th) on the table
-        doBettingRound();
-        dealTurnCard();
-        doBettingRound();
-        // deal the river card (5th) on the table
-        dealRiverCard();
-        // river betting round
-        gameover();
+        if (players.size() > 1) {
+            deal3FlipCards();
+            doBettingRound();
+            // flop the betting round
+            // deal the turn card (4th) on the table
+            if (players.size() > 1) {
+
+                dealTurnCard();
+                doBettingRound();
+                if (players.size() > 1) {
+
+                    dealRiverCard();
+                    doBettingRound();
+                    if (players.size() > 1) {
+                        bet = 0;
+                        gameover();
+                    }
+                }
+            }
+        }
+
 
     }
 
     private void rotateDealer() {
-		dealerPosition = dealerPosition++ % players.size();
-		log.debug("[rotateDealer] dealerPosition:" + dealerPosition);
-		
-		sendMsg("[rotateDealer] dealerPosition:" + dealerPosition);
+        dealerPosition = dealerPosition++ % players.size();
+        log.debug("[RotateDealer] current dealer:" + dealerPosition);
     }
 
     private void deal2Cards() {
@@ -82,8 +104,7 @@ public class Game {
                 player.getHand().addCard(card);
             }
             log.debug(player.getName() + " got " + player.getHand().toChineseString());
-            
-            sendMsg(player.getName() + " got " + player.getHand().toChineseString());
+            Util.sendToAll(player.getName() + " got " + player.getHand().toChineseString());
         }
     }
 
@@ -93,18 +114,21 @@ public class Game {
             cardsOnTable.add(card);
         }
         log.debug("OnTable:" + Util.cardsToString(cardsOnTable));
+        Util.sendToAll("OnTable:" + Util.cardsToString(cardsOnTable));
     }
 
     private void dealTurnCard() {
         Card card = deck.dealCard();
         cardsOnTable.add(card);
-        log.debug("OnTable:" + Util.cardsToString(cardsOnTable));
+        log.debug("OnTable-Turn:" + Util.cardsToString(cardsOnTable));
+        Util.sendToAll("OnTable-Turn:" + Util.cardsToString(cardsOnTable));
     }
 
     private void dealRiverCard() {
         Card card = deck.dealCard();
         cardsOnTable.add(card);
-        log.debug("OnTable:" + Util.cardsToString(cardsOnTable));
+        log.debug("OnTable-River:" + Util.cardsToString(cardsOnTable));
+        Util.sendToAll("OnTable-River:" + Util.cardsToString(cardsOnTable));
     }
 
     private void gameover() {
@@ -120,20 +144,31 @@ public class Game {
         Collections.sort(players, comparator);
         for (int i = 0; i < players.size(); i++) {
             Player player = players.get(i);
-            log.debug("#" + String.valueOf(i + 1) + " " + player.getName() + " " + player.getHandRank() + " " + player.getBestHand().toChineseString());
+            String wininfo = "#" + String.valueOf(i + 1) + " " + player.getName() + " " + player.getHandRank() + " " + player.getBestHand().toChineseString();
+            log.debug(wininfo);
+            Util.sendMessage(player.getSession(), wininfo);
         }
+
+        for (int i = 0; i < players.size(); i++) {
+            if (i == 0) {
+                log.debug(players.get(i).getName() + " wins!");
+                Util.sendMessage(players.get(i).getSession(), "you win");
+            } else {
+                log.debug(players.get(i).getName() + " loses!");
+                Util.sendMessage(players.get(i).getSession(), "you lose");
+            }
+        }
+
 
     }
 
     private void reset() {
-		deck.reset();
-		deck.shuffle();
-		dealerPosition = 0;
-		actorPosition = 0;
-		cardsOnTable.clear();
-		log.debug("[reset] Game resetted");
-		
-		sendMsg("[reset] Game resetted");
+        deck.reset();
+        deck.shuffle();
+        dealerPosition = 0;
+        actorPosition = 0;
+        cardsOnTable.clear();
+        log.debug("Game has been resetted ...");
     }
 
     private void doBettingRound() {
@@ -142,33 +177,50 @@ public class Game {
         actorPosition = dealerPosition;
         bet = 0;
         while (playersToAct > 0) {
-//            rotateActor();
-//            Set<Action> allowedActions = getAllowedActions(actor);
-//            Action action = actor.act(allowedActions, MIN_BET, bet);
-//            log.debug(actor.getName() + " " + action.getVerb());
-//            playersToAct--;
-//            switch (action) {
-//                case FOLD:
-//                    actor.getHand().makeEmpty();
-//                    players.remove(actor);
-//                    if (players.size() == 1) {
-//                        log.debug("win");
-//                        playersToAct = 0;
-//                    }
-//                    break;
-//            }
+            //rotate the actor
+            log.debug("playersToAct:" + playersToAct);
+            rotateActor();
+            Set<Action> allowedActions = getAllowedActions(actor);
+
+            Action action = actor.act(allowedActions, MIN_BET, bet, moneyOnTable);
+            log.debug(actor.getName() + " " + action.getVerb());
+            playersToAct--;
+            switch (action) {
+                case CHECK:
+                    // do nothing
+                    break;
+                case CALL:
+                    moneyOnTable += actor.getBet();
+                    break;
+                case BET:
+                    bet = actor.getBet();
+                    moneyOnTable += actor.getBet();
+                    playersToAct = activePlayers.size() - 1;
+                    break;
+                case RAISE:
+                    bet = actor.getBet();
+                    moneyOnTable += actor.getBet();
+                    playersToAct = activePlayers.size() - 1;
+                    break;
+                case FOLD:
+                    actor.getHand().makeEmpty();
+                    players.remove(actor);
+                    if (players.size() == 1) {
+                        log.debug(players.get(0).getName() + " win ...");
+                        playersToAct = 0;
+                    }
+                    break;
+            }
         }
     }
 
 
     public Set<Action> getAllowedActions(Player player) {
-//        int actorBet = actor.getBetThisTime();
+//        int actorBet = actor.getBet();
         Set<Action> actions = new HashSet<Action>();
         if (bet == 0) {
             actions.add(Action.CHECK);
-            if (player.getMoney() < MAX_RAISES) {
-                actions.add(Action.BET);
-            }
+            actions.add(Action.RAISE);
         } else {
             /*
             if (actorBet < bet) {
@@ -183,9 +235,11 @@ public class Game {
                 }
             }
             */
+
+
             actions.add(Action.CALL);
-            actions.add(Action.CHECK);
-            if (player.getMoney() < MAX_RAISES) {
+
+            if (player.getMoney() > bet) {
                 actions.add(Action.RAISE);
             }
 
@@ -216,11 +270,16 @@ public class Game {
         }
         return activePlayers;
     }
-    
-	private void sendMsg(String message) {
-		System.out.println(Memory.playersOnServer.keySet().size() + " sendMsg");
-		for (Player player : Memory.playersOnServer.keySet()) {
-			Util.sendMessage(Memory.playersOnServer.get(player), message);
-		}
-	}
+
+    private void postSmallBlind() {
+
+    }
+
+    private void postBigBlind() {
+
+    }
+
+    private void sayHello() {
+    	
+    }
 }

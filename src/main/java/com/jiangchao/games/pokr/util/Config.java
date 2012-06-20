@@ -12,4 +12,6 @@ public class Config {
     
     public static final byte START = '$' & 0xFF;
     public static final byte SPLIT = '|' & 0xFF;
+    public static final byte HEAD = '#' & 0xFF;
+    public static boolean offlineDebug = false;
 }

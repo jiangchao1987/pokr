@@ -1,7 +1,10 @@
 package com.jiangchao.games.pokr.server;
 
+import com.jiangchao.games.pokr.util.Util;
+import com.yanchuanli.games.pokr.model.MiniPlayerProtos.MiniPlayer;
+import com.yanchuanli.games.pokr.model.MiniRoomProtos.MiniRoom;
 import com.yanchuanli.games.pokr.util.Config;
-import com.yanchuanli.games.pokr.util.Memory;
+import com.jiangchao.games.pokr.util.Memory;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder;
 import org.apache.mina.filter.executor.ExecutorFilter;
@@ -10,6 +13,8 @@ import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
 
@@ -45,7 +50,7 @@ public class TCPServer {
 //                	log.info("running!");
                 	if (!Memory.sessionsOnServer.keySet().isEmpty()) {
                 		for (String s : Memory.sessionsOnServer.keySet()) {
-//                        	Util.sendMessage(Memory.sessionsOnServer.get(s), input);
+                        	Util.sendMessage(Memory.sessionsOnServer.get(s), input);
                         }
                 	}
 //                	try {
@@ -60,6 +65,27 @@ public class TCPServer {
 //        acceptor.unbind();
 //        acceptor.dispose();
 //        ServiceCenter.getInstance().stopService();
+    }
+    
+    private static byte[] getData() {
+		List<MiniPlayer> miniPlayers = new ArrayList<MiniPlayer>();
+		MiniPlayer miniPlayer1 = MiniPlayer.newBuilder().setId("1000")
+				.setName("player-1000").setMoney(1000).setBet(200)
+				.setInput("c").build();
+		MiniPlayer miniPlayer2 = MiniPlayer.newBuilder().setId("1001")
+				.setName("player-1001").setMoney(1001).setBet(200)
+				.setInput("c").build();
+		MiniPlayer miniPlayer3 = MiniPlayer.newBuilder().setId("1002")
+				.setName("player-1002").setMoney(1002).setBet(200)
+				.setInput("c").build();
+		miniPlayers.add(miniPlayer1);
+		miniPlayers.add(miniPlayer2);
+		miniPlayers.add(miniPlayer3);
+		
+		MiniRoom miniRoom = MiniRoom.newBuilder().setId("1").setName("room-1")
+				.addAllMiniPlayers(miniPlayers).build();
+		byte[] data = miniRoom.toByteArray();
+		return data;
     }
 
 }
