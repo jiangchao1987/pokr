@@ -80,7 +80,7 @@ public class Game {
                     doBettingRound();
                     if (players.size() > 1) {
                         bet = 0;
-                        gameover();
+                        shutdown();
                     }
                 }
             }
@@ -132,7 +132,7 @@ public class Game {
         NotificationCenter.dealRiverCard(players, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
     }
 
-    private void gameover() {
+    private void shutdown() {
 
         log.debug("OnTable: " + Util.cardsToString(cardsOnTable));
 
@@ -148,18 +148,18 @@ public class Game {
             String wininfo = "#" + String.valueOf(i + 1) + " " + player.getName() + " " + player.getHandRank() + " " + player.getBestHand().toChineseString() + " " + player.getNameOfHand();
             log.debug(wininfo);
 //          NotificationCenter.notifyPlayer(player, wininfo);
-          NotificationCenter.gameover(player.getSession(), wininfo);
+            NotificationCenter.gameover(player.getSession(), wininfo);
         }
 
         for (int i = 0; i < players.size(); i++) {
             if (i == 0) {
                 log.debug(players.get(i).getName() + " wins!");
 //              NotificationCenter.notifyPlayer(players.get(i), "you win");
-              NotificationCenter.gameover(players.get(i).getSession(), "you win");
+                NotificationCenter.gameover(players.get(i).getSession(), "you win");
             } else {
                 log.debug(players.get(i).getName() + " loses!");
 //              NotificationCenter.notifyPlayer(players.get(i), "you lose");
-              NotificationCenter.gameover(players.get(i).getSession(), "you lose");
+                NotificationCenter.gameover(players.get(i).getSession(), "you lose");
             }
         }
 
@@ -216,7 +216,7 @@ public class Game {
                     }
                     break;
             }
-            NotificationCenter.doBettingRound(players, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
+//            NotificationCenter.doBettingRound(players, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
         }
     }
 
