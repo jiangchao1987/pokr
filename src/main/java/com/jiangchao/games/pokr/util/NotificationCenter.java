@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.apache.mina.core.session.IoSession;
 
+import com.yanchuanli.games.pokr.model.MiniRoomProtos.MiniRoom;
 import com.yanchuanli.games.pokr.model.Player;
 
 /**
@@ -22,4 +23,13 @@ public class NotificationCenter {
 			}
 		}
 	}
+	
+	public static void sendMiniRoom(IoSession session, MiniRoom miniRoom) {
+		notifyOneOnTable(session, Util.miniRoomToByteArray(3, miniRoom));
+	}
+	
+	/** 通知指定玩家。*/
+    public static void notifyOneOnTable(IoSession session, byte[] byteArray) {
+    	Util.sendMsg(session, byteArray);
+    }
 }

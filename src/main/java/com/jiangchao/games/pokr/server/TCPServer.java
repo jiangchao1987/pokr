@@ -1,5 +1,7 @@
 package com.jiangchao.games.pokr.server;
 
+import com.jiangchao.games.pokr.util.NotificationCenter;
+import com.jiangchao.games.pokr.util.ServiceCenter;
 import com.jiangchao.games.pokr.util.Util;
 import com.yanchuanli.games.pokr.model.MiniPlayerProtos.MiniPlayer;
 import com.yanchuanli.games.pokr.model.MiniRoomProtos.MiniRoom;
@@ -45,29 +47,21 @@ public class TCPServer {
         while (!input.equalsIgnoreCase("quit")) {
             log.info("INPUT:" + input);
             System.out.println(Memory.sessionsOnServer.keySet().size());
-//                log.info("session:" + s);
-//                for (int index = 0; index < 60000; index ++) {
-//                	log.info("running!");
                 	if (!Memory.sessionsOnServer.keySet().isEmpty()) {
                 		for (String s : Memory.sessionsOnServer.keySet()) {
-                        	Util.sendMessage(Memory.sessionsOnServer.get(s), input);
+//                        	Util.sendMessage(Memory.sessionsOnServer.get(s), input);
+                			NotificationCenter.sendMiniRoom(Memory.sessionsOnServer.get(s), getDummyRoomData());
                         }
                 	}
-//                	try {
-//						Thread.sleep(5 * 1000);
-//					} catch (InterruptedException e) {
-//						e.printStackTrace();
-//					}
-//                }
             input = scanner.nextLine();
         }
-//        log.info("quitting now ...");
-//        acceptor.unbind();
-//        acceptor.dispose();
-//        ServiceCenter.getInstance().stopService();
+        log.info("quitting now ...");
+        acceptor.unbind();
+        acceptor.dispose();
+        ServiceCenter.getInstance().stopService();
     }
     
-    private static byte[] getData() {
+	private static MiniRoom getDummyRoomData() {
 		List<MiniPlayer> miniPlayers = new ArrayList<MiniPlayer>();
 		MiniPlayer miniPlayer1 = MiniPlayer.newBuilder().setId("1000")
 				.setName("player-1000").setMoney(1000).setBet(200)
@@ -84,8 +78,7 @@ public class TCPServer {
 		
 		MiniRoom miniRoom = MiniRoom.newBuilder().setId("1").setName("room-1")
 				.addAllMiniPlayers(miniPlayers).build();
-		byte[] data = miniRoom.toByteArray();
-		return data;
+		return miniRoom;
     }
 
 }

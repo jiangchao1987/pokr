@@ -289,6 +289,15 @@ public class Util {
 	
 	//------------------------------google protocol buffers---------------------------------
 	
+	public static void sendMsg(IoSession session, byte[] byteArray) {
+            IoBuffer answer = IoBuffer.allocate(
+            		byteArray.length, false);
+            answer.put(byteArray);
+            answer.flip();
+            session.write(answer);
+            answer.free();
+    }
+	
 	public static byte[] miniRoomToByteArray(int type, MiniRoom miniRoom) {
 		return encodeByteArray(type, miniRoom.toByteArray());
 	}
