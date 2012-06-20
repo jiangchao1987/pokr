@@ -26,6 +26,10 @@ public class MoneyPool {
         this.money = money;
     }
 
+    public void addMoney(int bet) {
+        this.money += bet;
+    }
+
     public List<Player> getPlayers() {
         return players;
     }
