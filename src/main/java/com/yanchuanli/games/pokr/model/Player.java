@@ -27,11 +27,9 @@ public class Player {
     private int handRank;
     private boolean alive;
     private int money;
-    private int betThisTime;
-    private int betThisRound;
+    private int bet;
     private String input;
     private String nameOfHand;
-    private String avatar;
 
 
     public Player(String id, String name) {
@@ -107,25 +105,26 @@ public class Player {
         this.money = money;
     }
 
-    public Action act(Set<Action> actions, int minBet, int currentBet) {
+    public Action act(Set<Action> actions, int minBet, int currentBet, int moneyOnTable) {
 
         String actionStr = "";
         Action result;
 
         for (Action action : actions) {
-            actionStr = actionStr + action.getVerb() + " ";
+            actionStr = actionStr + action.getVerb() + "_";
         }
-        log.debug("allowed actions for \"" + getName() + "\" :" + actionStr);
-        NotificationCenter.notifyPlayer(this, actionStr);
+        log.debug(actionStr);
+//        NotificationCenter.notifyPlayer(this, actionStr);
+        NotificationCenter.act(this.getSession(), this.getId() + "," + this.getName() + "," + actionStr + "," + moneyOnTable);
 
         if (Config.offlineDebug) {
             Scanner scanner = new Scanner(System.in);
             input = scanner.nextLine();
         } else {
             int counter = 0;
-            while (getInput() == null && counter < 30) {
+            while (getInput() == null && counter < 20) {
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     log.error(e);
                 }
@@ -133,10 +132,8 @@ public class Player {
         }
 
         if (input.startsWith("ca")) {
-            int diff = currentBet - betThisRound;
-            betThisRound = currentBet;
-            money -= diff;
-            setBetThisTime(diff);
+            money -= currentBet;
+            setBet(currentBet);
             result = Action.CALL;
         } else if (input.startsWith("c")) {
             result = Action.CHECK;
@@ -144,10 +141,9 @@ public class Player {
             result = Action.FOLD;
         } else {
             String[] inputs = input.split(":");
-            setBetThisTime(Integer.parseInt(inputs[1]));
-            result = Action.RAISE;
-            money -= betThisTime;
-            betThisRound += betThisTime;
+            setBet(Integer.parseInt(inputs[1]));
+            result = Action.BET;
+            money -= bet;
         }
 
         input = null;
@@ -157,12 +153,12 @@ public class Player {
 
     }
 
-    public int getBetThisTime() {
-        return betThisTime;
+    public int getBet() {
+        return bet;
     }
 
-    public void setBetThisTime(int betThisTime) {
-        this.betThisTime = betThisTime;
+    public void setBet(int bet) {
+        this.bet = bet;
     }
 
     public void win(int bet) {
@@ -185,22 +181,6 @@ public class Player {
         this.nameOfHand = nameOfHand;
     }
 
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public int getBetThisRound() {
-        return betThisRound;
-    }
-
-    public void setBetThisRound(int betThisRound) {
-        this.betThisRound = betThisRound;
-    }
-
     @Override
     public String toString() {
         return "Player{" +
@@ -210,7 +190,7 @@ public class Player {
                 ", handRank=" + handRank +
                 ", alive=" + alive +
                 ", money=" + money +
-                ", betThisTime=" + betThisTime +
+                ", bet=" + bet +
                 '}';
     }
 }

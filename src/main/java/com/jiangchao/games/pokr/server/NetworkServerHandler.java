@@ -1,13 +1,11 @@
 package com.jiangchao.games.pokr.server;
 
+import com.jiangchao.games.pokr.util.Util;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
-import com.yanchuanli.games.pokr.util.ServiceCenter;
 import com.yanchuanli.games.pokr.util.Memory;
-import com.jiangchao.games.pokr.util.Util;
-
 import org.apache.log4j.Logger;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.service.IoHandlerAdapter;
@@ -56,7 +54,7 @@ public class NetworkServerHandler extends IoHandlerAdapter {
             log.info("original:" + com.yanchuanli.games.pokr.util.Util.extractStringFromIoBuffer(buffer));
             String cmd = Util.extractStringFromIoBuffer(buffer);
             log.info("received:" + cmd);
-            ServiceCenter.getInstance().processCommand(session, cmd);
+//            ServiceCenter.getInstance() .processCommand(session, cmd);
 
             Util.sendMessage(session, "candou915" + cmd);
         }

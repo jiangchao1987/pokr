@@ -1,6 +1,7 @@
 package com.yanchuanli.games.pokr.core;
 
 import com.yanchuanli.games.pokr.model.Player;
+import com.yanchuanli.games.pokr.util.NotificationCenter;
 import com.yanchuanli.games.pokr.util.Util;
 import org.apache.log4j.Logger;
 
@@ -41,7 +42,8 @@ public class Dealer extends Thread {
         log.info("Table:" + Util.cardsToString(cardsOnDesk));
 
         for (Player p : players) {
-            Util.sendMessage(p.getSession(), Util.cardsToString(cardsOnDesk) + "\n");
+//            Util.sendMessage(p.getSession(), Util.cardsToString(cardsOnDesk) + "\n");
+        	NotificationCenter.act(p.getSession(), Util.cardsToString(cardsOnDesk) + "\n");
         }
 
         round(players, deck, 2);
@@ -53,7 +55,8 @@ public class Dealer extends Thread {
         cardsOnDesk.add(card4);
         log.debug("table:" + Util.cardsToString(cardsOnDesk));
         for (Player p : players) {
-            Util.sendMessage(p.getSession(), Util.cardsToString(cardsOnDesk) + "\n");
+//            Util.sendMessage(p.getSession(), Util.cardsToString(cardsOnDesk) + "\n");
+        	NotificationCenter.act(p.getSession(), Util.cardsToString(cardsOnDesk) + "\n");
         }
 
         Card card5 = deck.dealCard();
@@ -97,8 +100,10 @@ public class Dealer extends Thread {
             p.setBestHand(bestHand);
             log.info(bestHand.toChineseString());
             log.info(handEval.nameHand(bestHand));
-            Util.sendMessage(p.getSession(), bestHand.toChineseString()+ "\n");
-            Util.sendMessage(p.getSession(), handEval.nameHand(bestHand)+ "\n");
+//            Util.sendMessage(p.getSession(), bestHand.toChineseString()+ "\n");
+//            Util.sendMessage(p.getSession(), handEval.nameHand(bestHand)+ "\n");
+            NotificationCenter.act(p.getSession(), bestHand.toChineseString()+ "\n");
+            NotificationCenter.act(p.getSession(), handEval.nameHand(bestHand)+ "\n");
         }
 
 
@@ -108,18 +113,24 @@ public class Dealer extends Thread {
         switch (result) {
             case 1:
                 log.debug("hand1 win");
-                Util.sendMessage(players.get(0).getSession(), "you win");
-                Util.sendMessage(players.get(1).getSession(), "you lose");
+//                Util.sendMessage(players.get(0).getSession(), "you win");
+//                Util.sendMessage(players.get(1).getSession(), "you lose");
+                NotificationCenter.act(players.get(0).getSession(), "you win");
+                NotificationCenter.act(players.get(1).getSession(), "you lose");
                 break;
             case 2:
                 log.debug("hand2 win");
-                Util.sendMessage(players.get(1).getSession(), "you lose");
-                Util.sendMessage(players.get(0).getSession(), "you win");
+//                Util.sendMessage(players.get(1).getSession(), "you lose");
+//                Util.sendMessage(players.get(0).getSession(), "you win");
+                NotificationCenter.act(players.get(1).getSession(), "you lose");
+                NotificationCenter.act(players.get(0).getSession(), "you win");
                 break;
             case 0:
                 log.debug("tie");
-                Util.sendMessage(players.get(0).getSession(), "tie");
-                Util.sendMessage(players.get(1).getSession(), "tie");
+//                Util.sendMessage(players.get(0).getSession(), "tie");
+//                Util.sendMessage(players.get(1).getSession(), "tie");
+                NotificationCenter.act(players.get(0).getSession(), "tie");
+                NotificationCenter.act(players.get(1).getSession(), "tie");
                 break;
         }
     }

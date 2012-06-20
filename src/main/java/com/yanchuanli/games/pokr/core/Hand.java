@@ -191,5 +191,13 @@ public class Hand {
             s += " " + getCard(i).toChineseString();
         return s;
     }
+    
+    public String getGIndexes() {
+    	StringBuffer sb = new StringBuffer();
+    	for (int i = 1; i <= cards[0]; i++) {
+    		sb.append(getCard(i).getIndex() + "_");
+    	}
+    	return sb.toString();
+    }
 }
 

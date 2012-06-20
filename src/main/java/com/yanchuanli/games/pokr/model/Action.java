@@ -37,27 +37,27 @@ public enum Action {
     /**
      * Checking.
      */
-    CHECK("Check", "[c]heck"),
+    CHECK("Check", "c"),
 
     /**
      * Calling a bet.
      */
-    CALL("Call", "[ca]ll"),
+    CALL("Call", "ca"),
 
     /**
      * Place an initial bet.
      */
-    BET("Bet", "[b]et"),
+    BET("Bet", "b"),
 
     /**
      * Raising the current bet.
      */
-    RAISE("Raise", "[r]aise"),
+    RAISE("Raise", "r"),
 
     /**
      * Folding.
      */
-    FOLD("Fold", "[f]old"),
+    FOLD("Fold", "f"),
 
     /**
      * Continuing the game.

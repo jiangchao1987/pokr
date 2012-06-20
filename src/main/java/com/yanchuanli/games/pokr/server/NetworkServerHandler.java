@@ -16,6 +16,7 @@ import org.apache.mina.core.session.IoSession;
 import java.io.IOException;
 import java.net.SocketAddress;
 import java.util.List;
+import java.util.Map;
 
 public class NetworkServerHandler extends IoHandlerAdapter {
     // 当一个客端端连结进入时
@@ -33,12 +34,12 @@ public class NetworkServerHandler extends IoHandlerAdapter {
 
     public void sessionOpened(IoSession session) throws Exception {
 //        Memory.sessionsOnServer.put(String.valueOf(session.getId()), session);
-        Player player = new Player(String.valueOf(session.getId()), String.valueOf("Player" + session.getId()));
-        player.setMoney(10000);
-        player.setSession(session);
-        Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);
+//        Player player = new Player(String.valueOf(session.getId()), String.valueOf("Player" + session.getId()));
+//        player.setMoney(10000);
+//        player.setSession(session);
+//        Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);
         log.info("incomming client : " + session.getRemoteAddress());
-        Util.sendMessage(session, "Hello Player" + String.valueOf(session.getId()));
+//        Util.sendMessage(session, "Hello Player" + String.valueOf("Player" + session.getId()));
 //        initMQ();
     }
 
@@ -57,13 +58,17 @@ public class NetworkServerHandler extends IoHandlerAdapter {
             log.info(remoteAddress);
             log.info(new String(buffer.array()));
 
-            List<String> cmds = Util.extractStringFromIoBuffer(buffer);
-
-            for (String cmd : cmds) {
-                log.info("received:" + cmd);
-                ServiceCenter.getInstance().processCommand(session, cmd);
+//            List<String> cmds = Util.extractStringFromIoBuffer(buffer);
+//
+//            for (String cmd : cmds) {
+//                log.info("received:" + cmd);
+//                ServiceCenter.getInstance().processCommand(session, cmd);
+//            }
+            
+            List<Map<Integer, String>> list = Util.ioBufferToString(buffer);
+            for (Map<Integer, String> map : list) {
+            	ServiceCenter.getInstance().processCommand(session, map);
             }
-
 
         }
 

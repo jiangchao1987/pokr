@@ -38,9 +38,13 @@ public class TCPClient {
             String input = scanner.nextLine();
             while (!input.equalsIgnoreCase("quit")) {
                 log.info("INPUT:" + input);
+                
+                String[] strings = input.split("\\|");
+                
                 for (String s : Memory.sessionsOnClient.keySet()) {
                     log.info("session:" + s);
-                    Util.sendMessage(Memory.sessionsOnClient.get(s), input);
+//                    Util.sendMessage(Memory.sessionsOnClient.get(s), input);
+                    Util.sendMsg(Memory.sessionsOnClient.get(s), strings[0], Integer.parseInt(strings[1]));
                 }
                 input = scanner.nextLine();
             }

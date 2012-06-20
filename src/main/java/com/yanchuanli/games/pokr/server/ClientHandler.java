@@ -8,6 +8,7 @@ import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Author: Yanchuan Li
@@ -26,17 +27,28 @@ public class ClientHandler extends IoHandlerAdapter {
     public void sessionCreated(IoSession session) throws Exception {
         super.sessionCreated(session);
         Memory.sessionsOnClient.put(String.valueOf(session.getId()), session);
-        log.info("sessionCreated ...");
+//        log.info("sessionCreated ...");
     }
 
     @Override
     public void messageReceived(IoSession session, Object message) throws Exception {
-        log.info("msg received");
+//        log.info("msg received");
         super.messageReceived(session, message);
+//        if (message instanceof IoBuffer) {
+//            IoBuffer buffer = (IoBuffer) message;
+//            List<String> info = Util.extractStringFromIoBuffer(buffer);
+//            log.info("[messageReceived]" + info);
+//        } else {
+//            log.info("[messageReceived]illegal");
+//        }
         if (message instanceof IoBuffer) {
             IoBuffer buffer = (IoBuffer) message;
-            List<String> info = Util.extractStringFromIoBuffer(buffer);
-            log.info("[messageReceived]" + info);
+            List<Map<Integer, String>> list = Util.ioBufferToString(buffer);
+            for (Map<Integer, String> map : list) {
+            	for (Integer key : map.keySet()) {
+            		log.info("[messageReceived]" + map.get(key));
+            	}
+            }
         } else {
             log.info("[messageReceived]illegal");
         }
@@ -44,7 +56,7 @@ public class ClientHandler extends IoHandlerAdapter {
 
     @Override
     public void sessionClosed(IoSession session) throws Exception {
-        log.info("sessionClosed");
+//        log.info("sessionClosed");
         super.sessionClosed(session);
         Memory.sessionsOnClient.remove(String.valueOf(session.getId()));
     }

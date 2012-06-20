@@ -142,21 +142,21 @@ public class Game {
         actorPosition = dealerPosition;
         bet = 0;
         while (playersToAct > 0) {
-            rotateActor();
-            Set<Action> allowedActions = getAllowedActions(actor);
-            Action action = actor.act(allowedActions, MIN_BET, bet);
-            log.debug(actor.getName() + " " + action.getVerb());
-            playersToAct--;
-            switch (action) {
-                case FOLD:
-                    actor.getHand().makeEmpty();
-                    players.remove(actor);
-                    if (players.size() == 1) {
-                        log.debug("win");
-                        playersToAct = 0;
-                    }
-                    break;
-            }
+//            rotateActor();
+//            Set<Action> allowedActions = getAllowedActions(actor);
+//            Action action = actor.act(allowedActions, MIN_BET, bet);
+//            log.debug(actor.getName() + " " + action.getVerb());
+//            playersToAct--;
+//            switch (action) {
+//                case FOLD:
+//                    actor.getHand().makeEmpty();
+//                    players.remove(actor);
+//                    if (players.size() == 1) {
+//                        log.debug("win");
+//                        playersToAct = 0;
+//                    }
+//                    break;
+//            }
         }
     }
 

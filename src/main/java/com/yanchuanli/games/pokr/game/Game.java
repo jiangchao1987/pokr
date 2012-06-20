@@ -80,7 +80,7 @@ public class Game {
                     doBettingRound();
                     if (players.size() > 1) {
                         bet = 0;
-                        shutdown();
+                        gameover();
                     }
                 }
             }
@@ -101,7 +101,8 @@ public class Game {
                 player.getHand().addCard(card);
             }
             log.debug(player.getName() + " got " + player.getHand().toChineseString());
-            NotificationCenter.notifiAllPlayersOnTable(players, player.getName() + " got " + player.getHand().toChineseString());
+//            NotificationCenter.notifiAllPlayersOnTable(players, player.getName() + " got " + player.getHand().toChineseString());
+            NotificationCenter.deal2Cards(player.getSession(), player.getId() + "," + player.getName() + "," + player.getHand().getGIndexes());
         }
     }
 
@@ -111,25 +112,27 @@ public class Game {
             cardsOnTable.add(card);
         }
         log.debug("OnTable:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
-        NotificationCenter.notifiAllPlayersOnTable(players, "OnTable:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
+//        NotificationCenter.notifiAllPlayersOnTable(players, "OnTable:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
+        NotificationCenter.deal3FlipCards(players, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
     }
 
     private void dealTurnCard() {
         Card card = deck.dealCard();
         cardsOnTable.add(card);
         log.debug("OnTable-Turn:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
-        NotificationCenter.notifiAllPlayersOnTable(players, "OnTable-Turn:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
-
+//        NotificationCenter.notifiAllPlayersOnTable(players, "OnTable-Turn:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
+        NotificationCenter.dealTurnCard(players, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
     }
 
     private void dealRiverCard() {
         Card card = deck.dealCard();
         cardsOnTable.add(card);
         log.debug("OnTable-River:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
-        NotificationCenter.notifiAllPlayersOnTable(players, "OnTable-River:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
+//        NotificationCenter.notifiAllPlayersOnTable(players, "OnTable-River:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
+        NotificationCenter.dealRiverCard(players, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
     }
 
-    private void shutdown() {
+    private void gameover() {
 
         log.debug("OnTable: " + Util.cardsToString(cardsOnTable));
 
@@ -144,16 +147,19 @@ public class Game {
             Player player = players.get(i);
             String wininfo = "#" + String.valueOf(i + 1) + " " + player.getName() + " " + player.getHandRank() + " " + player.getBestHand().toChineseString() + " " + player.getNameOfHand();
             log.debug(wininfo);
-            NotificationCenter.notifyPlayer(player, wininfo);
+//          NotificationCenter.notifyPlayer(player, wininfo);
+          NotificationCenter.gameover(player.getSession(), wininfo);
         }
 
         for (int i = 0; i < players.size(); i++) {
             if (i == 0) {
                 log.debug(players.get(i).getName() + " wins!");
-                NotificationCenter.notifyPlayer(players.get(i), "you win");
+//              NotificationCenter.notifyPlayer(players.get(i), "you win");
+              NotificationCenter.gameover(players.get(i).getSession(), "you win");
             } else {
                 log.debug(players.get(i).getName() + " loses!");
-                NotificationCenter.notifyPlayer(players.get(i), "you lose");
+//              NotificationCenter.notifyPlayer(players.get(i), "you lose");
+              NotificationCenter.gameover(players.get(i).getSession(), "you lose");
             }
         }
 
@@ -178,11 +184,9 @@ public class Game {
             //rotate the actor
             log.debug("playersToAct:" + playersToAct);
             rotateActor();
-            actor.setBetThisRound(0);
-            actor.setBetThisTime(0);
             Set<Action> allowedActions = getAllowedActions(actor);
 
-            Action action = actor.act(allowedActions, MIN_BET, bet);
+            Action action = actor.act(allowedActions, MIN_BET, bet, moneyOnTable);
             log.debug(actor.getName() + " " + action.getVerb());
             playersToAct--;
 
@@ -191,19 +195,16 @@ public class Game {
                     // do nothing
                     break;
                 case CALL:
-                    moneyOnTable += actor.getBetThisTime();
+                    moneyOnTable += actor.getBet();
                     break;
                 case BET:
-                    if (actor.getBetThisTime() > bet) {
-                        bet = actor.getBetThisTime();
-                        moneyOnTable += actor.getBetThisTime();
-                        playersToAct = activePlayers.size() - 1;
-                    }
-
+                    bet = actor.getBet();
+                    moneyOnTable += actor.getBet();
+                    playersToAct = activePlayers.size() - 1;
                     break;
                 case RAISE:
-                    bet = actor.getBetThisTime();
-                    moneyOnTable += actor.getBetThisTime();
+                    bet = actor.getBet();
+                    moneyOnTable += actor.getBet();
                     playersToAct = activePlayers.size() - 1;
                     break;
                 case FOLD:
@@ -215,12 +216,13 @@ public class Game {
                     }
                     break;
             }
+            NotificationCenter.doBettingRound(players, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
         }
     }
 
 
     public Set<Action> getAllowedActions(Player player) {
-//        int actorBet = actor.getBetThisTime();
+//        int actorBet = actor.getBet();
         Set<Action> actions = new HashSet<Action>();
         if (bet == 0) {
             actions.add(Action.CHECK);
@@ -286,9 +288,9 @@ public class Game {
     private void sayHello() {
         String info = "";
         for (Player player : players) {
-            info = info + player.getId() + ":" + player.getMoney() + ";";
+            info = info + player.getId() + "," + player.getName() + "," + player.getMoney() + ";";
         }
-        NotificationCenter.notifiAllPlayersOnTable(players, "started ...");
-        NotificationCenter.notifiAllPlayersOnTable(players, info);
+//        NotificationCenter.sayHello(players, "started ...");
+        NotificationCenter.sayHello(players, info);
     }
 }

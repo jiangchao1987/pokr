@@ -1,6 +1,7 @@
 package com.yanchuanli.games.pokr.server;
 
 import com.yanchuanli.games.pokr.game.Game;
+import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.util.Config;
 import com.yanchuanli.games.pokr.util.Memory;
 import com.yanchuanli.games.pokr.util.Util;
@@ -51,7 +52,11 @@ public class TCPServer {
                 break;
             } else {
                 log.info("INPUT:" + input);
-                Util.sendToAll(input);
+//                Util.sendToAll(input);
+                for (String s : Memory.sessionsOnServer.keySet()) {
+                    Player player = Memory.sessionsOnServer.get(s);
+                    Util.sendMsg(player.getSession(), input, Config.TYPE_USER_INGAME);
+                }
             }
 
             input = scanner.nextLine();

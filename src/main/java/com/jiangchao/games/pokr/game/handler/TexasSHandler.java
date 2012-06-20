@@ -1,15 +1,13 @@
 package com.jiangchao.games.pokr.game.handler;
 
+import com.jiangchao.games.pokr.util.Memory;
+import com.jiangchao.games.pokr.util.Util;
+import com.yanchuanli.games.pokr.model.Player;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
-
-import com.jiangchao.games.pokr.util.Util;
-import com.yanchuanli.games.pokr.model.Player;
-import com.jiangchao.games.pokr.util.Memory;
-import com.yanchuanli.games.pokr.util.ServiceCenter;
 
 /**
  * Note: Server Handler 
@@ -33,7 +31,7 @@ public class TexasSHandler extends IoHandlerAdapter {
 		if (message instanceof IoBuffer) {
             IoBuffer buffer = (IoBuffer) message;
             String cmd = Util.extractStringFromIoBuffer(buffer);
-            ServiceCenter.getInstance().processCommand(session, cmd);
+//            ServiceCenter.getInstance().processCommand(session, cmd);
             Util.sendMessage(session, "candou915" + cmd);
         }
 		log.info("[messageReceived]");
