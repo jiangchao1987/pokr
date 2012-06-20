@@ -143,23 +143,26 @@ public class Game {
         }
 
         Collections.sort(players, comparator);
+        
+        StringBuffer sb = new StringBuffer();
         for (int i = 0; i < players.size(); i++) {
             Player player = players.get(i);
             String wininfo = "#" + String.valueOf(i + 1) + " " + player.getName() + " " + player.getHandRank() + " " + player.getBestHand().toChineseString() + " " + player.getNameOfHand();
             log.debug(wininfo);
 //          NotificationCenter.notifyPlayer(player, wininfo);
-            NotificationCenter.gameover(player.getSession(), wininfo);
+            sb.append(player.getId() + "," + player.getName() + "," + player.getNameOfHand() + ";");
         }
+        NotificationCenter.gameover(players, sb.toString());
 
         for (int i = 0; i < players.size(); i++) {
             if (i == 0) {
                 log.debug(players.get(i).getName() + " wins!");
 //              NotificationCenter.notifyPlayer(players.get(i), "you win");
-                NotificationCenter.gameover(players.get(i).getSession(), "you win");
+                NotificationCenter.winorlose(players.get(i).getSession(), players.get(i).getId() + "," + players.get(i).getName() + ",1");
             } else {
                 log.debug(players.get(i).getName() + " loses!");
 //              NotificationCenter.notifyPlayer(players.get(i), "you lose");
-                NotificationCenter.gameover(players.get(i).getSession(), "you lose");
+                NotificationCenter.winorlose(players.get(i).getSession(), players.get(i).getId() + "," + players.get(i).getName() + ",0");
             }
         }
 

@@ -25,9 +25,13 @@ public class NotificationCenter {
         }
     }*/
 	
-	public static void gameover(IoSession session, String info) {
-    	notifyOneOnTable(session, info, Config.TYPE_ACTION_INGAME);
+	public static void winorlose(IoSession session, String info) {
+    	notifyOneOnTable(session, info, Config.TYPE_CARD_INGAME);
     }
+	
+	public static void gameover(List<Player> players, String info) {
+		notifyAllOnTable(players, info, Config.TYPE_CARD_INGAME);
+	}
 	
 	public static void dealRiverCard(List<Player> players, String info) {
 		notifyAllOnTable(players, info, Config.TYPE_ACTION_INGAME);
