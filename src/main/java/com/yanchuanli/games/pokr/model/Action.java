@@ -17,7 +17,7 @@
 
 package com.yanchuanli.games.pokr.model;
 
-import java.lang.Override;import java.lang.String; /**
+/**
  * A Texas Hold'em poker action.
  *
  * @author Oscar Stigter
@@ -33,6 +33,12 @@ public enum Action {
      * Posting the big blind.
      */
     BIG_BLIND("Big Blind", "posts the big blind"),
+
+
+    /**
+     * Checking.
+     */
+    ALLIN("Allin", "a"),
 
     /**
      * Checking.
@@ -63,6 +69,7 @@ public enum Action {
      * Continuing the game.
      */
     CONTINUE("Continue", "continues"),;
+
 
     /**
      * The name.
