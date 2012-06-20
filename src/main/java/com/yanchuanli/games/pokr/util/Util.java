@@ -1,6 +1,6 @@
 package com.yanchuanli.games.pokr.util;
 
-import com.jiangchao.games.pokr.util.Config;
+import com.yanchuanli.games.pokr.util.Config;
 import com.yanchuanli.games.pokr.core.Card;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.buffer.IoBuffer;
@@ -211,7 +211,7 @@ public class Util {
     }
 
     public static void sendMsg(IoSession session, String input, int type) {
-        if (!com.yanchuanli.games.pokr.util.Config.offlineDebug) {
+        if (!Config.offlineDebug) {
             IoBuffer answer = IoBuffer.allocate(
                     stringToByteArray(type, input).length, false);
             answer.put(stringToByteArray(type, input));
