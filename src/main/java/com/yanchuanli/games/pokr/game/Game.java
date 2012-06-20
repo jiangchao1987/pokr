@@ -143,7 +143,7 @@ public class Game {
         }
 
         Collections.sort(players, comparator);
-        
+
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < players.size(); i++) {
             Player player = players.get(i);
@@ -158,11 +158,11 @@ public class Game {
             if (i == 0) {
                 log.debug(players.get(i).getName() + " wins!");
 //              NotificationCenter.notifyPlayer(players.get(i), "you win");
-                NotificationCenter.winorlose(players.get(i).getSession(), players.get(i).getId() + "," + players.get(i).getName() + ",1");
+                NotificationCenter.winorlose(players.get(i).getSession(), players.get(i).getId() + "," + players.get(i).getName() + ",1", 10);
             } else {
                 log.debug(players.get(i).getName() + " loses!");
 //              NotificationCenter.notifyPlayer(players.get(i), "you lose");
-                NotificationCenter.winorlose(players.get(i).getSession(), players.get(i).getId() + "," + players.get(i).getName() + ",0");
+                NotificationCenter.winorlose(players.get(i).getSession(), players.get(i).getId() + "," + players.get(i).getName() + ",0", 10);
             }
         }
 
@@ -185,16 +185,16 @@ public class Game {
         bet = 0;
         while (playersToAct > 0) {
             //rotate the actor
-			log.debug("playersToAct: " + playersToAct + " id: " + actor.getId()
-					+ " sessionId: " + actor.getSession().getId() + " name: "
-					+ actor.getName());
+            log.debug("playersToAct: " + playersToAct + " id: " + actor.getId()
+                    + " sessionId: " + actor.getSession().getId() + " name: "
+                    + actor.getName());
             rotateActor();
             Set<Action> allowedActions = getAllowedActions(actor);
 
             Action action = actor.act(allowedActions, MIN_BET, bet, moneyOnTable);
-			log.debug(" id: " + actor.getId() + " sessionId: "
-					+ actor.getSession().getId() + " name: " + actor.getName()
-					+ " action: " + action.getVerb());
+            log.debug(" id: " + actor.getId() + " sessionId: "
+                    + actor.getSession().getId() + " name: " + actor.getName()
+                    + " action: " + action.getVerb());
             playersToAct--;
 
             switch (action) {
