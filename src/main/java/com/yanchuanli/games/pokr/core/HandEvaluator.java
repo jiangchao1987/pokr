@@ -1253,37 +1253,37 @@ public class HandEvaluator {
         switch (type) {
             case HIGH:    //高牌
                 ident /= NUM_RANKS * NUM_RANKS * NUM_RANKS * NUM_RANKS;
-                t = "高牌 " + rank_name_in_chinese[ident];
+                t = "高牌";
                 break;
             case FLUSH:    //同花
                 ident /= NUM_RANKS * NUM_RANKS * NUM_RANKS * NUM_RANKS;
-                t = "同花, 最大 " + rank_name_in_chinese[ident];
+                t = "同花";
                 break;
             case PAIR:    //对子
                 ident /= NUM_RANKS * NUM_RANKS * NUM_RANKS;
-                t = "一对 " + rank_name_in_chinese[ident];
+                t = "一对" + rank_name_in_chinese[ident];
                 break;
             case TWOPAIR:    //两对
                 ident2 = ident / (NUM_RANKS * NUM_RANKS);
                 ident = (ident % (NUM_RANKS * NUM_RANKS)) / NUM_RANKS;
-                t = "两对" + rank_name_in_chinese[ident2] + " 一对, " + rank_name_in_chinese[ident]
-                        + " 一对";
+                t = "两对    " + rank_name_in_chinese[ident2] + "一对和" + rank_name_in_chinese[ident]
+                        + "一对";
                 break;
             case THREEKIND:    //三条
                 t = "三条" + rank_name_in_chinese[ident / (NUM_RANKS * NUM_RANKS)];
                 break;
             case FULLHOUSE:    //葫芦
-                t = "葫芦, " + rank_name_in_chinese[ident / NUM_RANKS] + " 和 "
+                t = "葫芦" + rank_name_in_chinese[ident / NUM_RANKS] + "和 "
                         + rank_name_in_chinese[ident % NUM_RANKS];
                 break;
             case FOURKIND:    //四条
                 t = "四条" + rank_name_in_chinese[ident / NUM_RANKS];
                 break;
             case STRAIGHT:    //顺子
-                t = "顺子 " + rank_name_in_chinese[ident];
+                t = "顺子";
                 break;
             case STRAIGHTFLUSH:    //同花顺
-                t = "同花顺 " + rank_name_in_chinese[ident];
+                t = "同花顺";
                 break;
             case FIVEKIND:    //皇家同花顺
                 t = "皇家同花顺";
