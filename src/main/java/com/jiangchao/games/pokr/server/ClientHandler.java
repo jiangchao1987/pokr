@@ -1,5 +1,6 @@
 package com.jiangchao.games.pokr.server;
 
+import com.yanchuanli.games.pokr.model.MiniRoomProtos.MiniRoom;
 import com.yanchuanli.games.pokr.util.Memory;
 import com.jiangchao.games.pokr.util.Util;
 import org.apache.log4j.Logger;
@@ -34,7 +35,7 @@ public class ClientHandler extends IoHandlerAdapter {
     @Override
     public void messageReceived(IoSession session, Object message) throws Exception {
         super.messageReceived(session, message);
-        SocketAddress sa = session.getLocalAddress();
+        /*SocketAddress sa = session.getLocalAddress();
         InetSocketAddress isa = (InetSocketAddress) sa;
 
         IoBuffer buffer = (IoBuffer) message;
@@ -42,6 +43,11 @@ public class ClientHandler extends IoHandlerAdapter {
 //        log.info("received [" + receivedInfo + "] from " + isa.getHostName() + ":" + String.valueOf(isa.getPort()));
         for (String info : infos) {
         	System.out.println("info->" + info);
+        }*/
+        if (message instanceof IoBuffer) {
+        	IoBuffer buffer = (IoBuffer) message;
+        	List<MiniRoom> miniRooms = Util.ioBufferToMiniRoom(buffer);
+        	System.out.println(miniRooms);
         }
     }
 

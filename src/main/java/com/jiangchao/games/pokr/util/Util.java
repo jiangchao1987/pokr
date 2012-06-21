@@ -290,12 +290,11 @@ public class Util {
 	//------------------------------google protocol buffers---------------------------------
 	
 	public static void sendMsg(IoSession session, byte[] byteArray) {
-            IoBuffer answer = IoBuffer.allocate(
-            		byteArray.length, false);
-            answer.put(byteArray);
-            answer.flip();
-            session.write(answer);
-            answer.free();
+		IoBuffer answer = IoBuffer.allocate(byteArray.length, false);
+		answer.put(byteArray);
+		answer.flip();
+		session.write(answer);
+		answer.free();
     }
 	
 	public static byte[] miniRoomToByteArray(int type, MiniRoom miniRoom) {
@@ -336,7 +335,7 @@ public class Util {
 		b[2] = Config.SPLIT;
 
 		b[b.length - 1] = (byte) Config.START;
-		return byteArray;
+		return b;
 	}
 	
 	/** 从接收到的数据中解析出内容byteArray的集合。*/
