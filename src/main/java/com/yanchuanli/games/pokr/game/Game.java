@@ -217,6 +217,7 @@ public class Game {
                 case FOLD:
                     actor.getHand().makeEmpty();
                     players.remove(actor);
+                    actorPosition--;
                     if (players.size() == 1) {
                         log.debug(players.get(0).getName() + " win ...");
                         playersToAct = 0;

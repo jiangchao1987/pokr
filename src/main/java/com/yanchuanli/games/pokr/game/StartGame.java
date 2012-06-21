@@ -19,14 +19,13 @@ public class StartGame {
 
     private static Logger log = Logger.getLogger(StartGame.class);
 
-
     public static void main(String[] args) {
-        Player player1 = new Player("1", "yanchuan");
-        player1.setMoney(1000);
-        Player player2 = new Player("2", "wangqi");
-        player2.setMoney(1000);
 
-        Player player3 = new Player("3", "jiangchao");
+        Player player1 = new Player("0", "0");
+        player1.setMoney(1000);
+        Player player2 = new Player("1", "1");
+        player2.setMoney(1000);
+        Player player3 = new Player("2", "2");
         player3.setMoney(1000);
 
         Game game = new Game();

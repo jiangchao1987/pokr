@@ -16,7 +16,7 @@ public class Test {
 
     private static Logger log = Logger.getLogger(Test.class);
     private static List<Player> players = new ArrayList<>();
-    private static int actorPosition = -1;
+    private static int actorPosition = 1;
     private static Player actor;
 
     public static void main(String[] args) {
