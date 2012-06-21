@@ -21,46 +21,45 @@ import java.util.Scanner;
 import java.util.concurrent.Executors;
 
 /**
- * Copyright Candou.com
- * Author: Yanchuan Li
- * Email: mail@yanchuanli.com
- * Date: 12-5-31
+ * Copyright Candou.com Author: Yanchuan Li Email: mail@yanchuanli.com Date:
+ * 12-5-31
  */
 public class TCPServer {
 
-    private static Logger log = Logger.getLogger(TCPServer.class);
+	private static Logger log = Logger.getLogger(TCPServer.class);
 
-    public static void main(String[] args) throws IOException {
-        NioSocketAcceptor acceptor = new NioSocketAcceptor();
-        acceptor.setHandler(new NetworkServerHandler());
+	public static void main(String[] args) throws IOException {
+		NioSocketAcceptor acceptor = new NioSocketAcceptor();
+		acceptor.setHandler(new NetworkServerHandler());
 
-        DefaultIoFilterChainBuilder chain = acceptor.getFilterChain();
-        chain.addLast("threadPool", new ExecutorFilter(Executors.newCachedThreadPool()));
-        SocketSessionConfig dcfg = acceptor.getSessionConfig();
-        dcfg.setReuseAddress(true);
+		DefaultIoFilterChainBuilder chain = acceptor.getFilterChain();
+		chain.addLast("threadPool",
+				new ExecutorFilter(Executors.newCachedThreadPool()));
+		SocketSessionConfig dcfg = acceptor.getSessionConfig();
+		dcfg.setReuseAddress(true);
 
+		acceptor.bind(new InetSocketAddress(Config.port));
+		log.info("TCPServer listening on port " + Config.port);
+		Scanner scanner = new Scanner(System.in);
+		String input = scanner.nextLine();
+		while (!input.equalsIgnoreCase("quit")) {
+			log.info("INPUT:" + input);
+			System.out.println(Memory.sessionsOnServer.keySet().size());
+			if (!Memory.sessionsOnServer.keySet().isEmpty()) {
+				for (String s : Memory.sessionsOnServer.keySet()) {
+					// Util.sendMessage(Memory.sessionsOnServer.get(s), input);
+					NotificationCenter.sendMiniRoom(
+							Memory.sessionsOnServer.get(s), getDummyRoomData());
+				}
+			}
+			input = scanner.nextLine();
+		}
+		log.info("quitting now ...");
+		acceptor.unbind();
+		acceptor.dispose();
+		ServiceCenter.getInstance().stopService();
+	}
 
-        acceptor.bind(new InetSocketAddress(Config.port));
-        log.info("TCPServer listening on port " + Config.port);
-        Scanner scanner = new Scanner(System.in);
-        String input = scanner.nextLine();
-        while (!input.equalsIgnoreCase("quit")) {
-            log.info("INPUT:" + input);
-            System.out.println(Memory.sessionsOnServer.keySet().size());
-                	if (!Memory.sessionsOnServer.keySet().isEmpty()) {
-                		for (String s : Memory.sessionsOnServer.keySet()) {
-//                        	Util.sendMessage(Memory.sessionsOnServer.get(s), input);
-                			NotificationCenter.sendMiniRoom(Memory.sessionsOnServer.get(s), getDummyRoomData());
-                        }
-                	}
-            input = scanner.nextLine();
-        }
-        log.info("quitting now ...");
-        acceptor.unbind();
-        acceptor.dispose();
-        ServiceCenter.getInstance().stopService();
-    }
-    
 	private static MiniRoom getDummyRoomData() {
 		List<MiniPlayer> miniPlayers = new ArrayList<MiniPlayer>();
 		MiniPlayer miniPlayer1 = MiniPlayer.newBuilder().setId("1000")
@@ -75,10 +74,10 @@ public class TCPServer {
 		miniPlayers.add(miniPlayer1);
 		miniPlayers.add(miniPlayer2);
 		miniPlayers.add(miniPlayer3);
-		
+
 		MiniRoom miniRoom = MiniRoom.newBuilder().setId("1").setName("room-1")
 				.addAllMiniPlayers(miniPlayers).build();
 		return miniRoom;
-    }
+	}
 
 }
