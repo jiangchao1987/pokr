@@ -26,9 +26,13 @@ public class StartGame {
         Player player2 = new Player("2", "wangqi");
         player2.setMoney(1000);
 
+        Player player3 = new Player("3", "jiangchao");
+        player3.setMoney(1000);
+
         Game game = new Game();
         game.addPlayer(player1);
         game.addPlayer(player2);
+        game.addPlayer(player3);
         game.start();
     }
 
