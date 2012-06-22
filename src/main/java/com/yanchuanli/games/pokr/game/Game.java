@@ -39,7 +39,6 @@ public class Game implements Runnable {
 
     public Game(GameConfig gc) {
         this.gc = gc;
-        this.name = name;
         players = new ArrayList<>();
         cardsOnTable = new ArrayList<>();
         deck = new Deck();
@@ -283,9 +282,8 @@ public class Game implements Runnable {
     }
 
 
-
     public String getName() {
-        return name;
+        return gc.getName();
     }
 
     @Override
