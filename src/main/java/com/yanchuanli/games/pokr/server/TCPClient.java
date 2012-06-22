@@ -57,9 +57,10 @@ public class TCPClient {
                 } else if (input.startsWith("r")) {
                     sendToServer(input, 5);
                 } else if (input.startsWith("j")) {
-                    sendToServer(input, 3);
+                    String[] cmds = input.split(":");
+                    sendToServer(cmds[1], 3);
                 } else if (input.startsWith("li")) {
-                    sendToServer(input, 2);
+                    sendToServer(String.valueOf(Config.ROOM_LEVEL_BEGINNER), 2);
                 } else if (input.startsWith("l")) {
                     sendToServer(String.valueOf((int) (Math.random() * 10000)) + "," + Config.SRC_IPHONE_GUEST, 0);
                 }
