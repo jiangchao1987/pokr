@@ -90,15 +90,13 @@ public class ServiceCenter {
     }
 
     private void login(IoSession session, String info) {
-        Player player = new Player(info, String.valueOf("Player"
-                + session.getId()));
+        Player player = new Player(info, String.valueOf("Player" + session.getId()));
         player.setMoney(10000);
         player.setSession(session);
         Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);
 
         StringBuffer sb = new StringBuffer();
-        sb.append(player.getId() + "," + player.getName() + ","
-                + player.getMoney());
+        sb.append(player.getId() + "," + player.getName() + "," + player.getMoney());
         NotificationCenter.login(session, sb.toString());
     }
 

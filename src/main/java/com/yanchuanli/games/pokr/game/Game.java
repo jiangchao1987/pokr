@@ -18,7 +18,7 @@ import java.util.*;
  * Date: 12-6-13
  */
 
-public class Game {
+public class Game implements Runnable{
 
     private int id;
     private String name;
@@ -106,7 +106,6 @@ public class Game {
                 player.getHand().addCard(card);
             }
             log.debug(player.getName() + " got " + player.getHand().toChineseString());
-//            NotificationCenter.notifiAllPlayersOnTable(players, player.getName() + " got " + player.getHand().toChineseString());
             NotificationCenter.deal2Cards(player.getSession(), player.getId() + "," + player.getName() + "," + player.getHand().getGIndexes());
         }
     }
@@ -117,7 +116,6 @@ public class Game {
             cardsOnTable.add(card);
         }
         log.debug("OnTable:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
-//        NotificationCenter.notifiAllPlayersOnTable(players, "OnTable:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
         NotificationCenter.deal3FlipCards(players, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
     }
 
@@ -125,7 +123,6 @@ public class Game {
         Card card = deck.dealCard();
         cardsOnTable.add(card);
         log.debug("OnTable-Turn:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
-//        NotificationCenter.notifiAllPlayersOnTable(players, "OnTable-Turn:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
         NotificationCenter.dealTurnCard(players, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
     }
 
@@ -133,7 +130,6 @@ public class Game {
         Card card = deck.dealCard();
         cardsOnTable.add(card);
         log.debug("OnTable-River:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
-//        NotificationCenter.notifiAllPlayersOnTable(players, "OnTable-River:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
         NotificationCenter.dealRiverCard(players, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
     }
 
@@ -154,7 +150,6 @@ public class Game {
             Player player = players.get(i);
             String wininfo = "#" + String.valueOf(i + 1) + " " + player.getName() + " " + player.getHandRank() + " " + player.getBestHand().toChineseString() + " " + player.getNameOfHand();
             log.debug(wininfo);
-//          NotificationCenter.notifyPlayer(player, wininfo);
             sb.append(player.getId() + "," + player.getName() + "," + player.getNameOfHand() + ";");
         }
         NotificationCenter.gameover(players, sb.toString());
@@ -162,11 +157,9 @@ public class Game {
         for (int i = 0; i < players.size(); i++) {
             if (i == 0) {
                 log.debug(players.get(i).getName() + " wins!");
-//              NotificationCenter.notifyPlayer(players.get(i), "you win");
                 NotificationCenter.winorlose(players.get(i).getSession(), players.get(i).getId() + "," + players.get(i).getName() + ",1", 10);
             } else {
                 log.debug(players.get(i).getName() + " loses!");
-//              NotificationCenter.notifyPlayer(players.get(i), "you lose");
                 NotificationCenter.winorlose(players.get(i).getSession(), players.get(i).getId() + "," + players.get(i).getName() + ",0", 10);
             }
         }
@@ -230,35 +223,17 @@ public class Game {
                     }
                     break;
             }
-//            NotificationCenter.doBettingRound(players, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
         }
     }
 
 
     public Set<Action> getAllowedActions(Player player) {
-//        int actorBet = actor.getBet();
         Set<Action> actions = new HashSet<Action>();
         if (bet == 0) {
             actions.add(Action.CHECK);
             actions.add(Action.RAISE);
         } else {
-            /*
-            if (actorBet < bet) {
-                actions.add(Action.CALL);
-                if (player.getMoney() < MAX_RAISES) {
-                    actions.add(Action.RAISE);
-                }
-            } else {
-                actions.add(Action.CHECK);
-                if (player.getMoney() < MAX_RAISES) {
-                    actions.add(Action.RAISE);
-                }
-            }
-            */
-
-
             actions.add(Action.CALL);
-
             if (player.getMoney() > bet) {
                 actions.add(Action.RAISE);
             }
@@ -304,7 +279,6 @@ public class Game {
         for (Player player : players) {
             info = info + player.getId() + "," + player.getName() + "," + player.getMoney() + ";";
         }
-//        NotificationCenter.sayHello(players, "started ...");
         NotificationCenter.sayHello(players, info);
     }
 
@@ -314,5 +288,10 @@ public class Game {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public void run() {
+
     }
 }
