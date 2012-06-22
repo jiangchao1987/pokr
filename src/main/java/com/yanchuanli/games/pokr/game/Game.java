@@ -182,6 +182,10 @@ public class Game implements Runnable {
         dealerPosition = 0;
         actorPosition = 0;
         cardsOnTable.clear();
+        for (Player player : players) {
+            player.getHand().makeEmpty();
+            player.getBestHand().makeEmpty();
+        }
         log.debug("Game has been resetted ...");
     }
 
@@ -305,16 +309,20 @@ public class Game implements Runnable {
     public void run() {
         while (!stop) {
             if (players.size() >= 2) {
-                log.debug("game will start in 3 seconds ...");
+
                 try {
-                    Thread.sleep(Duration.seconds(3).inMillis());
+                    log.debug("game will start in 3 seconds ...");
+                    Thread.sleep(Duration.seconds(1).inMillis());
+                    log.debug("game will start in 2 seconds ...");
+                    Thread.sleep(Duration.seconds(1).inMillis());
+                    log.debug("game will start in 1 seconds ...");
+                    Thread.sleep(Duration.seconds(1).inMillis());
                 } catch (InterruptedException e) {
                     log.error(e);
                 }
                 start();
             } else {
                 try {
-//                    log.debug("checking ...");
                     Thread.sleep(gc.getInactivityCheckInterval().inMillis());
                 } catch (InterruptedException e) {
                     log.error(e);
