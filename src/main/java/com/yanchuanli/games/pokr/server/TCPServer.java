@@ -36,10 +36,11 @@ public class TCPServer {
         chain.addLast("threadPool", new ExecutorFilter(Executors.newCachedThreadPool()));
         SocketSessionConfig dcfg = acceptor.getSessionConfig();
         dcfg.setReuseAddress(true);
-
-
         acceptor.bind(new InetSocketAddress(Config.port));
         log.info("TCPServer listening on port " + Config.port);
+
+
+
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
         while (!input.equalsIgnoreCase("quit")) {

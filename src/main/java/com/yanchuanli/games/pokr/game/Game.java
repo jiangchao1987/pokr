@@ -1,5 +1,6 @@
 package com.yanchuanli.games.pokr.game;
 
+import com.google.code.tempusfugit.temporal.Duration;
 import com.yanchuanli.games.pokr.basic.Card;
 import com.yanchuanli.games.pokr.basic.Deck;
 import com.yanchuanli.games.pokr.basic.PlayerRankComparator;
@@ -7,7 +8,6 @@ import com.yanchuanli.games.pokr.model.Action;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.util.NotificationCenter;
 import com.yanchuanli.games.pokr.util.Util;
-import javafx.util.Duration;
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -303,7 +303,7 @@ public class Game implements Runnable {
             if (players.size() > 2) {
                 log.debug("game will start in 3 seconds ...");
                 try {
-                    Thread.sleep((long) Duration.seconds(3).toMillis());
+                    Thread.sleep(Duration.seconds(3).inMillis());
                 } catch (InterruptedException e) {
                     log.error(e);
                 }
