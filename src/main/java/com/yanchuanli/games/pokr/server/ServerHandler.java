@@ -4,7 +4,6 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
-import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.util.Memory;
 import com.yanchuanli.games.pokr.util.ServiceCenter;
 import com.yanchuanli.games.pokr.util.Util;
@@ -18,9 +17,9 @@ import java.net.SocketAddress;
 import java.util.List;
 import java.util.Map;
 
-public class NetworkServerHandler extends IoHandlerAdapter {
+public class ServerHandler extends IoHandlerAdapter {
     // 当一个客端端连结进入时
-    private static Logger log = Logger.getLogger(NetworkServerHandler.class);
+    private static Logger log = Logger.getLogger(ServerHandler.class);
     private static final String EXCHANGE_NAME = "logs";
     private ConnectionFactory factory;
     private Connection connection;
@@ -28,7 +27,7 @@ public class NetworkServerHandler extends IoHandlerAdapter {
     private QueueingConsumer consumer;
 
 
-    public NetworkServerHandler() {
+    public ServerHandler() {
         super();
     }
 

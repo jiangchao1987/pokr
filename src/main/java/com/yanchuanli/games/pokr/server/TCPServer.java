@@ -28,7 +28,7 @@ public class TCPServer {
 
     public static void main(String[] args) throws IOException {
         NioSocketAcceptor acceptor = new NioSocketAcceptor(5);
-        acceptor.setHandler(new NetworkServerHandler());
+        acceptor.setHandler(new ServerHandler());
 
         DefaultIoFilterChainBuilder chain = acceptor.getFilterChain();
         chain.addLast("threadPool", new ExecutorFilter(Executors.newCachedThreadPool()));

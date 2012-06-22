@@ -44,7 +44,7 @@ public class Server {
                         LineDelimiter.NUL, LineDelimiter.NUL)));
 
         // 设定服务器端的消息处理器:一个SamplMinaServerHandler对象,
-        acceptor.setHandler(new NetworkServerHandler());
+        acceptor.setHandler(new ServerHandler());
 
         DatagramSessionConfig dcfg = acceptor.getSessionConfig();
         dcfg.setReuseAddress(true);

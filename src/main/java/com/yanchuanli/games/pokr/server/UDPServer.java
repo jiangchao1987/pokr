@@ -25,7 +25,7 @@ public class UDPServer {
 
     public static void main(String[] args) throws IOException {
         NioDatagramAcceptor acceptor = new NioDatagramAcceptor();
-        acceptor.setHandler(new NetworkServerHandler());
+        acceptor.setHandler(new ServerHandler());
 
         DefaultIoFilterChainBuilder chain = acceptor.getFilterChain();
 //        chain.addLast("keep-alive", new HachiKeepAliveFilterInMina());

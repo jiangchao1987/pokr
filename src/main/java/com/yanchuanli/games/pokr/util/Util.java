@@ -211,8 +211,7 @@ public class Util {
 
     public static void sendMsg(IoSession session, String input, int type) {
         if (!Config.offlineDebug) {
-            IoBuffer answer = IoBuffer.allocate(
-                    stringToByteArray(type, input).length, false);
+            IoBuffer answer = IoBuffer.allocate(stringToByteArray(type, input).length, false);
             answer.put(stringToByteArray(type, input));
             answer.flip();
             session.write(answer);
