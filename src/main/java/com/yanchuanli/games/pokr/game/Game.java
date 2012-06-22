@@ -304,7 +304,7 @@ public class Game implements Runnable {
     @Override
     public void run() {
         while (!stop) {
-            if (players.size() > 2) {
+            if (players.size() >= 2) {
                 log.debug("game will start in 3 seconds ...");
                 try {
                     Thread.sleep(Duration.seconds(3).inMillis());
@@ -314,6 +314,7 @@ public class Game implements Runnable {
                 start();
             } else {
                 try {
+//                    log.debug("checking ...");
                     Thread.sleep(gc.getInactivityCheckInterval().inMillis());
                 } catch (InterruptedException e) {
                     log.error(e);
