@@ -44,7 +44,7 @@ public class TCPServer {
         String input = scanner.nextLine();
         while (!input.equalsIgnoreCase("quit")) {
             if (input.startsWith("start")) {
-                GameConfig gc = new GameConfig(Duration.seconds(3), "Test", 20, 40, 0, 10000, 9);
+                GameConfig gc = new GameConfig(1, "123", 20, 40, 0, 10000, 9, Duration.seconds(3), Duration.millis(500));
                 Game game = new Game(gc);
 
                 for (String s : Memory.sessionsOnServer.keySet()) {

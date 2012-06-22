@@ -29,7 +29,7 @@ public class StartGame {
         Player player3 = new Player("2", "2");
         player3.setMoney(1000);
 
-        GameConfig gc = new GameConfig(Duration.seconds(3), "test", 20, 40, 0, 10000, 9);
+        GameConfig gc = new GameConfig(1, "123", 20, 40, 0, 10000, 9, Duration.seconds(3), Duration.millis(500));
         Game game = new Game(gc);
         game.addPlayer(player1);
         game.addPlayer(player2);
