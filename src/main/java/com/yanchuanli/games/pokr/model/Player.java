@@ -19,6 +19,7 @@ import java.util.Set;
 public class Player {
 
     private static Logger log = Logger.getLogger(Player.class);
+    private int globalId;
     private String id;
     private String name;
     private IoSession session;
@@ -179,6 +180,14 @@ public class Player {
 
     public void setNameOfHand(String nameOfHand) {
         this.nameOfHand = nameOfHand;
+    }
+
+    public int getGlobalId() {
+        return globalId;
+    }
+
+    public void setGlobalId(int globalId) {
+        this.globalId = globalId;
     }
 
     @Override
