@@ -1,7 +1,6 @@
 package com.yanchuanli.games.pokr.util;
 
-import com.yanchuanli.games.pokr.util.Config;
-import com.yanchuanli.games.pokr.core.Card;
+import com.yanchuanli.games.pokr.basic.Card;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;

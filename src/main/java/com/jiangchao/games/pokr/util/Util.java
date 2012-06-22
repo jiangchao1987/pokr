@@ -8,7 +8,7 @@ import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.yanchuanli.games.pokr.core.Card;
+import com.yanchuanli.games.pokr.basic.Card;
 import com.yanchuanli.games.pokr.model.MiniRoomProtos.MiniRoom;
 import com.yanchuanli.games.pokr.model.Player;
 

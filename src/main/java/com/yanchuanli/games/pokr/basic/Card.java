@@ -1,4 +1,4 @@
-package com.yanchuanli.games.pokr.core;
+package com.yanchuanli.games.pokr.basic;
 /***************************************************************************
  Copyright (c) 2000:
  University of Alberta,

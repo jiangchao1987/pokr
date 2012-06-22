@@ -9,9 +9,9 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import com.jiangchao.games.pokr.util.Util;
-import com.yanchuanli.games.pokr.core.Card;
-import com.yanchuanli.games.pokr.core.Deck;
-import com.yanchuanli.games.pokr.core.PlayerRankComparator;
+import com.yanchuanli.games.pokr.basic.Card;
+import com.yanchuanli.games.pokr.basic.Deck;
+import com.yanchuanli.games.pokr.basic.PlayerRankComparator;
 import com.yanchuanli.games.pokr.model.Action;
 import com.yanchuanli.games.pokr.model.Player;
 

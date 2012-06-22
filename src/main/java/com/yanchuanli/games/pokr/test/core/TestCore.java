@@ -1,7 +1,7 @@
 package com.yanchuanli.games.pokr.test.core;
 
-import com.yanchuanli.games.pokr.core.Hand;
-import com.yanchuanli.games.pokr.core.HandEvaluator;
+import com.yanchuanli.games.pokr.basic.Hand;
+import com.yanchuanli.games.pokr.basic.HandEvaluator;
 import org.apache.log4j.Logger;
 
 /**

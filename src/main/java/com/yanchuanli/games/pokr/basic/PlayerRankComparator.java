@@ -1,4 +1,4 @@
-package com.yanchuanli.games.pokr.core;
+package com.yanchuanli.games.pokr.basic;
 
 import com.yanchuanli.games.pokr.model.Player;
 

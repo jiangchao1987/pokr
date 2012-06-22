@@ -1,6 +1,6 @@
 package com.yanchuanli.games.pokr.util;
 
-import com.yanchuanli.games.pokr.core.Dealer;
+import com.yanchuanli.games.pokr.basic.Dealer;
 import com.yanchuanli.games.pokr.model.Player;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.session.IoSession;

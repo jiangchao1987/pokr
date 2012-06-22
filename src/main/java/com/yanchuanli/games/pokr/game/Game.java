@@ -1,8 +1,8 @@
 package com.yanchuanli.games.pokr.game;
 
-import com.yanchuanli.games.pokr.core.Card;
-import com.yanchuanli.games.pokr.core.Deck;
-import com.yanchuanli.games.pokr.core.PlayerRankComparator;
+import com.yanchuanli.games.pokr.basic.Card;
+import com.yanchuanli.games.pokr.basic.Deck;
+import com.yanchuanli.games.pokr.basic.PlayerRankComparator;
 import com.yanchuanli.games.pokr.model.Action;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.util.NotificationCenter;
@@ -32,6 +32,7 @@ public class Game {
     private int MAX_RAISES = 1000;
     private int MIN_BET = 10;
     private int actorPosition;
+    private boolean gaming = false;
 
 
     public Game() {

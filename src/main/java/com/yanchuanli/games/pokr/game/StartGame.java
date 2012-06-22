@@ -1,9 +1,9 @@
 package com.yanchuanli.games.pokr.game;
 
-import com.yanchuanli.games.pokr.core.Card;
-import com.yanchuanli.games.pokr.core.Deck;
-import com.yanchuanli.games.pokr.core.Hand;
-import com.yanchuanli.games.pokr.core.HandEvaluator;
+import com.yanchuanli.games.pokr.basic.Card;
+import com.yanchuanli.games.pokr.basic.Deck;
+import com.yanchuanli.games.pokr.basic.Hand;
+import com.yanchuanli.games.pokr.basic.HandEvaluator;
 import com.yanchuanli.games.pokr.model.Player;
 import org.apache.log4j.Logger;
 
