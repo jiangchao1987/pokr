@@ -25,8 +25,8 @@ public class RoomDao {
         }
 
         List rooms = new ArrayList();
-        rooms.add("1");
-        rooms.add("2");
+        rooms.add("room1");
+        rooms.add("room2");
         return rooms;
     }
 }

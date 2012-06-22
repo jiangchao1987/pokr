@@ -38,41 +38,41 @@ public class TCPClient {
             String input = scanner.nextLine();
             while (!input.equalsIgnoreCase("quit")) {
                 log.info("INPUT:" + input);
-                
+
                 /*String[] strings = input.split("\\|");
-                
-                for (String s : Memory.sessionsOnClient.keySet()) {
-                    log.info("session:" + s);
+
+              for (String s : Memory.sessionsOnClient.keySet()) {
+                  log.info("session:" + s);
 //                    Util.sendMessage(Memory.sessionsOnClient.get(s), input);
-                    Util.sendMsg(Memory.sessionsOnClient.get(s), strings[0], Integer.parseInt(strings[1]));
-                }
-                input = scanner.nextLine();*/
-                
-                if (input.startsWith("l")) {
-                	sendToServer(String.valueOf((int) (Math.random() * 10000)) + "," + Config.SRC_IPHONE_GUEST, 0);
-                } else if (input.startsWith("c")) {
-                	sendToServer(input, 5);
+                  Util.sendMsg(Memory.sessionsOnClient.get(s), strings[0], Integer.parseInt(strings[1]));
+              }
+              input = scanner.nextLine();*/
+
+                if (input.startsWith("c")) {
+                    sendToServer(input, 5);
                 } else if (input.startsWith("f")) {
-                	sendToServer(input, 5);
+                    sendToServer(input, 5);
                 } else if (input.startsWith("ca")) {
-                	sendToServer(input, 5);
+                    sendToServer(input, 5);
                 } else if (input.startsWith("r")) {
-                	sendToServer(input, 5);
+                    sendToServer(input, 5);
                 } else if (input.startsWith("j")) {
-                	sendToServer(input, 3);
+                    sendToServer(input, 3);
                 } else if (input.startsWith("li")) {
-                	sendToServer(input, 2);
+                    sendToServer(input, 2);
+                } else if (input.startsWith("l")) {
+                    sendToServer(String.valueOf((int) (Math.random() * 10000)) + "," + Config.SRC_IPHONE_GUEST, 0);
                 }
-                
+
                 input = scanner.nextLine();
             }
         } else {
             log.debug("not connected");
         }
     }
-    
+
     private static void sendToServer(String msg, int status) {
-    	for (String s : Memory.sessionsOnClient.keySet()) {
+        for (String s : Memory.sessionsOnClient.keySet()) {
             log.info("session:" + s);
             Util.sendMsg(Memory.sessionsOnClient.get(s), msg, status);
         }
