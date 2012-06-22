@@ -58,6 +58,8 @@ public class TCPClient {
                 	sendToServer(input, 5);
                 } else if (input.startsWith("r")) {
                 	sendToServer(input, 5);
+                } else if (input.startsWith("j")) {
+                	sendToServer(input, 3);
                 }
                 
                 input = scanner.nextLine();

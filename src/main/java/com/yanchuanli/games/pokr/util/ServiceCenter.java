@@ -73,6 +73,12 @@ public class ServiceCenter {
     private void leave(IoSession session, String info) {
     }
 
+    /**
+     * 加入指定id的房间
+     * 
+     * @param session 当前用户session
+     * @param info 当前房间id
+     */
     private void join(IoSession session, String info) {
         List<Player> players = new ArrayList<>();
         for (String s : Memory.sessionsOnServer.keySet()) {
@@ -87,6 +93,12 @@ public class ServiceCenter {
         NotificationCenter.sayHello(players, sb.toString());
     }
 
+    /**
+     * 列出指定等级的房间列表
+     * 
+     * @param session 当前用户session
+     * @param info 初级房1/中级房2/高级房3/VIP房4
+     */
     private void listRooms(IoSession session, String info) {
         StringBuffer sb = new StringBuffer();
         switch (info) {
@@ -99,15 +111,30 @@ public class ServiceCenter {
             case "3":
                 sb.append("10,11,12");
                 break;
+            case "4":
+            	sb.append("13,14,15,16");
+            	break;
         }
         NotificationCenter.list(session, sb.toString());
     }
 
+    /**
+     * 游戏主要操作命令,c,ca,f,r:200
+     * 
+     * @param session 当前用户session
+     * @param info 游戏操作命令
+     */
     private void action(IoSession session, String info) {
         Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
         player.setInput(info);
     }
 
+    /**
+     * 登录游戏
+     * 
+     * @param session 当前用户session
+     * @param info udid,source[0|1|...]
+     */
     private void login(IoSession session, String info) {
         Player player = PlayerDao.getPlayer(info.split(",")[0], Integer.parseInt(info.split(",")[1]));
 

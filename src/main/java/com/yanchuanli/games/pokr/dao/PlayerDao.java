@@ -23,9 +23,9 @@ public class PlayerDao {
 
     public static Player getPlayer(String username, int src) {
         switch (src) {
-            case Config.SRC_IPHONE_TOURIST:
+            case Config.SRC_IPHONE_GUEST:
                 break;
-            case Config.SRC_IPAD_TOURIST:
+            case Config.SRC_IPAD_GUEST:
                 break;
         }
         if (!players.containsKey(username)) {
