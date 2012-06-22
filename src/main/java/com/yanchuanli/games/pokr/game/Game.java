@@ -18,9 +18,9 @@ import java.util.*;
  * Date: 12-6-13
  */
 
-public class Game implements Runnable{
+public class Game implements Runnable {
 
-    private int id;
+    private GameConfig gc;
     private String name;
     private static Logger log = Logger.getLogger(Game.class);
     private List<Player> players;
@@ -37,8 +37,8 @@ public class Game implements Runnable{
     private boolean gaming = false;
 
 
-    public Game(int id, String name) {
-        this.id = id;
+    public Game(GameConfig gc) {
+        this.gc = gc;
         this.name = name;
         players = new ArrayList<>();
         cardsOnTable = new ArrayList<>();
@@ -282,9 +282,7 @@ public class Game implements Runnable{
         NotificationCenter.sayHello(players, info);
     }
 
-    public int getId() {
-        return id;
-    }
+
 
     public String getName() {
         return name;

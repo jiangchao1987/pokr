@@ -1,7 +1,9 @@
 package com.yanchuanli.games.pokr.core;
 
+import com.google.code.tempusfugit.temporal.Duration;
 import com.yanchuanli.games.pokr.dao.RoomDao;
 import com.yanchuanli.games.pokr.game.Game;
+import com.yanchuanli.games.pokr.game.GameConfig;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,9 +21,10 @@ public class GameEngine {
     public static void start() {
         games = new HashMap<String, Game>();
         List<String> roomsToPrepare = RoomDao.getRooms();
-        int id = 0;
+
         for (String name : roomsToPrepare) {
-            Game game = new Game(id++, name);
+            GameConfig gc = new GameConfig(Duration.seconds(3), name, 20, 40, 0, 10000, 9);
+            Game game = new Game(gc);
             games.put(name, game);
         }
     }
