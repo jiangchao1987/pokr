@@ -85,8 +85,55 @@ public class ServiceCenter {
                 case Config.TYPE_ACTION_INGAME:
                     action(session, map.get(key));
                     break;
+                case Config.TYPE_LIST_INGAME:
+                	list(session, map.get(key));
+                	break;
+                case Config.TYPE_JOIN_INGAME:
+                	join(session, map.get(key));
+                	break;
+                case Config.TYPE_LEAVE_INGAME:
+                	leave(session, map.get(key));
+                	break;
             }
         }
+    }
+    
+    private void leave(IoSession session, String info) {
+    }
+    
+    private void join(IoSession session, String info) {
+    	List<Player> players = new ArrayList<>();
+    	for (String s : Memory.sessionsOnServer.keySet()) {
+    		players.add(Memory.sessionsOnServer.get(s));
+        }
+    	
+    	StringBuffer sb = new StringBuffer();
+        for (Player player : players) {
+            sb.append(player.getId() + "," + player.getName() + "," + player.getMoney() + ";");
+        }
+    	
+    	NotificationCenter.sayHello(players, sb.toString());	
+    }
+    
+    private void list(IoSession session, String info) {
+    	StringBuffer sb = new StringBuffer();
+    	switch (info) {
+    	case "1" :
+    		sb.append("1,2,3");
+    		break;
+    	case "2" :
+    		sb.append("4,5,6,7,8,9");
+    		break;
+    	case "3" :
+    		sb.append("10,11,12");
+    		break;
+    	}
+    	NotificationCenter.list(session, sb.toString());	
+    }
+    
+    private void action(IoSession session, String info) {
+        Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
+        player.setInput(info);
     }
 
     private void login(IoSession session, String info) {
@@ -98,11 +145,6 @@ public class ServiceCenter {
         StringBuffer sb = new StringBuffer();
         sb.append(player.getId() + "," + player.getName() + "," + player.getMoney());
         NotificationCenter.login(session, sb.toString());
-    }
-
-    private void action(IoSession session, String info) {
-        Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
-        player.setInput(info);
     }
 
     private void createRoom() {

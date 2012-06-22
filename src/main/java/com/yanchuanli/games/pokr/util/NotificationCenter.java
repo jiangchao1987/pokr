@@ -25,6 +25,10 @@ public class NotificationCenter {
         }
     }*/
 	
+	public static void list(IoSession session, String info) {
+    	notifyOneOnTable(session, info, Config.TYPE_LIST_INGAME);
+    }
+	
 	public static void winorlose(IoSession session, String info, int money) {
     	notifyOneOnTable(session, info, Config.TYPE_WINORLOSE_INGAME);
     }
