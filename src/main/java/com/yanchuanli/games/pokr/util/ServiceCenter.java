@@ -58,7 +58,7 @@ public class ServiceCenter {
                     action(session, map.get(key));
                     break;
                 case Config.TYPE_LIST_INGAME:
-                    list(session, map.get(key));
+                    listRooms(session, map.get(key));
                     break;
                 case Config.TYPE_JOIN_INGAME:
                     join(session, map.get(key));
@@ -87,7 +87,7 @@ public class ServiceCenter {
         NotificationCenter.sayHello(players, sb.toString());
     }
 
-    private void list(IoSession session, String info) {
+    private void listRooms(IoSession session, String info) {
         StringBuffer sb = new StringBuffer();
         switch (info) {
             case "1":
