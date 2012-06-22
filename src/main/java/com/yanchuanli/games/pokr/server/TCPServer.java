@@ -42,7 +42,7 @@ public class TCPServer {
         String input = scanner.nextLine();
         while (!input.equalsIgnoreCase("quit")) {
             if (input.startsWith("start")) {
-                Game game = new Game();
+                Game game = new Game(1, "1");
 
                 for (String s : Memory.sessionsOnServer.keySet()) {
                     game.addPlayer(Memory.sessionsOnServer.get(s));

@@ -20,6 +20,8 @@ import java.util.*;
 
 public class Game {
 
+    private int id;
+    private String name;
     private static Logger log = Logger.getLogger(Game.class);
     private List<Player> players;
     private List<Card> cardsOnTable;
@@ -35,7 +37,9 @@ public class Game {
     private boolean gaming = false;
 
 
-    public Game() {
+    public Game(int id, String name) {
+        this.id = id;
+        this.name = name;
         players = new ArrayList<>();
         cardsOnTable = new ArrayList<>();
         deck = new Deck();
@@ -302,5 +306,13 @@ public class Game {
         }
 //        NotificationCenter.sayHello(players, "started ...");
         NotificationCenter.sayHello(players, info);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 }

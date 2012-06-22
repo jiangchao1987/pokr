@@ -28,13 +28,12 @@ public class StartGame {
         Player player3 = new Player("2", "2");
         player3.setMoney(1000);
 
-        Game game = new Game();
+        Game game = new Game(1, "1");
         game.addPlayer(player1);
         game.addPlayer(player2);
         game.addPlayer(player3);
         game.start();
     }
-
 
 
     private static String printCards(List<Card> cardList) {
