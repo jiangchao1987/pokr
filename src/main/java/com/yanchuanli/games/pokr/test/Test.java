@@ -3,6 +3,8 @@ package com.yanchuanli.games.pokr.test;
 import com.yanchuanli.games.pokr.model.Player;
 import org.apache.log4j.Logger;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +21,7 @@ public class Test {
     private static int actorPosition = 1;
     private static Player actor;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnknownHostException {
         Player player1 = new Player("0", "0");
         Player player2 = new Player("1", "1");
         Player player3 = new Player("2", "2");
@@ -35,6 +37,7 @@ public class Test {
             }
             log.debug(actor.getName());
         }
+
 
     }
 

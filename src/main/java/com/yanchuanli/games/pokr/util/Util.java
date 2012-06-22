@@ -217,7 +217,6 @@ public class Util {
             session.write(answer);
             answer.free();
         }
-
     }
 
 }

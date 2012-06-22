@@ -1,6 +1,7 @@
 package com.yanchuanli.games.pokr.server;
 
 import com.google.code.tempusfugit.temporal.Duration;
+import com.yanchuanli.games.pokr.core.GameEngine;
 import com.yanchuanli.games.pokr.game.Game;
 import com.yanchuanli.games.pokr.game.GameConfig;
 import com.yanchuanli.games.pokr.model.Player;
@@ -14,7 +15,9 @@ import org.apache.mina.transport.socket.SocketSessionConfig;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
 
@@ -37,9 +40,12 @@ public class TCPServer {
         SocketSessionConfig dcfg = acceptor.getSessionConfig();
         dcfg.setReuseAddress(true);
         acceptor.bind(new InetSocketAddress(Config.port));
-        log.info("TCPServer listening on port " + Config.port);
 
 
+        log.info("TCPServer is listening on " + getIPAddress() + ":" + Config.port);
+
+
+        GameEngine.start();
 
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
@@ -69,6 +75,27 @@ public class TCPServer {
         acceptor.unbind();
         acceptor.dispose();
 //        ServiceCenter.getInstance().stopService();
+    }
+
+    private static String getIPAddress() {
+        String myIp = "UNKNOWN";
+        try {
+            String hostName = null;
+            hostName = InetAddress.getLocalHost().getHostName();
+            InetAddress addrs[] = InetAddress.getAllByName(hostName);
+
+            for (InetAddress addr : addrs) {
+
+                if (!addr.isLoopbackAddress() && addr.isSiteLocalAddress()) {
+                    myIp = addr.getHostAddress();
+                }
+            }
+
+        } catch (UnknownHostException e) {
+            log.error(e);
+        }
+
+        return myIp;
     }
 
 }

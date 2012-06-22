@@ -1,6 +1,7 @@
 package com.yanchuanli.games.pokr.util;
 
 import com.yanchuanli.games.pokr.basic.Dealer;
+import com.yanchuanli.games.pokr.dao.PlayerDao;
 import com.yanchuanli.games.pokr.model.Player;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.session.IoSession;
@@ -43,35 +44,6 @@ public class ServiceCenter {
         return instance;
     }
 
-    /*public void processCommand(IoSession session, String cmd) {
-        log.debug("cmd:" + cmd);
-        switch (cmd) {
-            case "listrooms":
-                log.debug("listing rooms ...");
-                break;
-            case "createroom":
-                log.debug("create a room ...");
-                createRoom();
-                break;
-            case "stopdealer":
-                log.debug("stop a room ...");
-                stopDealer();
-            case "start":
-                Dealer dealer = dealers.get(0);
-                dealer.start();
-                break;
-            case "join":
-                Player p = new Player(String.valueOf(session.getId()), "player" + session.getId());
-                p.setSession(session);
-                dealers.get(0).addPlayer(p);
-                break;
-            default:
-                Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
-                player.setInput(cmd);
-                break;
-//                NotificationCenter.notify(Memory.playersOnServer, cmd, session);
-        }
-    }*/
 
     public void processCommand(IoSession session, Map<Integer, String> map) {
         Set<Integer> sets = map.keySet();
@@ -86,58 +58,58 @@ public class ServiceCenter {
                     action(session, map.get(key));
                     break;
                 case Config.TYPE_LIST_INGAME:
-                	list(session, map.get(key));
-                	break;
+                    list(session, map.get(key));
+                    break;
                 case Config.TYPE_JOIN_INGAME:
-                	join(session, map.get(key));
-                	break;
+                    join(session, map.get(key));
+                    break;
                 case Config.TYPE_LEAVE_INGAME:
-                	leave(session, map.get(key));
-                	break;
+                    leave(session, map.get(key));
+                    break;
             }
         }
     }
-    
+
     private void leave(IoSession session, String info) {
     }
-    
+
     private void join(IoSession session, String info) {
-    	List<Player> players = new ArrayList<>();
-    	for (String s : Memory.sessionsOnServer.keySet()) {
-    		players.add(Memory.sessionsOnServer.get(s));
+        List<Player> players = new ArrayList<>();
+        for (String s : Memory.sessionsOnServer.keySet()) {
+            players.add(Memory.sessionsOnServer.get(s));
         }
-    	
-    	StringBuffer sb = new StringBuffer();
+
+        StringBuffer sb = new StringBuffer();
         for (Player player : players) {
             sb.append(player.getId() + "," + player.getName() + "," + player.getMoney() + ";");
         }
-    	
-    	NotificationCenter.sayHello(players, sb.toString());	
+
+        NotificationCenter.sayHello(players, sb.toString());
     }
-    
+
     private void list(IoSession session, String info) {
-    	StringBuffer sb = new StringBuffer();
-    	switch (info) {
-    	case "1" :
-    		sb.append("1,2,3");
-    		break;
-    	case "2" :
-    		sb.append("4,5,6,7,8,9");
-    		break;
-    	case "3" :
-    		sb.append("10,11,12");
-    		break;
-    	}
-    	NotificationCenter.list(session, sb.toString());	
+        StringBuffer sb = new StringBuffer();
+        switch (info) {
+            case "1":
+                sb.append("1,2,3");
+                break;
+            case "2":
+                sb.append("4,5,6,7,8,9");
+                break;
+            case "3":
+                sb.append("10,11,12");
+                break;
+        }
+        NotificationCenter.list(session, sb.toString());
     }
-    
+
     private void action(IoSession session, String info) {
         Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
         player.setInput(info);
     }
 
     private void login(IoSession session, String info) {
-        Player player = new Player(info, String.valueOf("Player" + session.getId()));
+        Player player = PlayerDao.getPlayer(info, 1);
         player.setMoney(10000);
         player.setSession(session);
         Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);
