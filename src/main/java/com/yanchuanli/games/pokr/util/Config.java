@@ -24,4 +24,8 @@ public class Config {
     public static final int TYPE_LEAVE_INGAME = 10;
     public static final int SRC_IPHONE_GUEST = 0;
     public static final int SRC_IPAD_GUEST = 1;
+	public static final int ROOM_LEVEL_BEGINNER = 1;
+	public static final int ROOM_LEVEL_PROFESSIONAL = 2;
+	public static final int ROOM_LEVEL_MASTER = 3;
+	public static final int ROOM_LEVEL_VIP = 4;
 }

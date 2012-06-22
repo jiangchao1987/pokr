@@ -100,18 +100,19 @@ public class ServiceCenter {
      * @param info 初级房1/中级房2/高级房3/VIP房4
      */
     private void listRooms(IoSession session, String info) {
+    	int type = Integer.parseInt(info);
         StringBuffer sb = new StringBuffer();
-        switch (info) {
-            case "1":
+        switch (type) {
+            case Config.ROOM_LEVEL_BEGINNER:
                 sb.append("1,2,3");
                 break;
-            case "2":
+            case Config.ROOM_LEVEL_PROFESSIONAL:
                 sb.append("4,5,6,7,8,9");
                 break;
-            case "3":
+            case Config.ROOM_LEVEL_MASTER:
                 sb.append("10,11,12");
                 break;
-            case "4":
+            case Config.ROOM_LEVEL_VIP:
             	sb.append("13,14,15,16");
             	break;
         }
