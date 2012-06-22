@@ -182,14 +182,6 @@ public class Player {
         this.nameOfHand = nameOfHand;
     }
 
-    public int getGlobalId() {
-        return globalId;
-    }
-
-    public void setGlobalId(int globalId) {
-        this.globalId = globalId;
-    }
-
     @Override
     public String toString() {
         return "Player{" +
