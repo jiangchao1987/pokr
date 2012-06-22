@@ -3,7 +3,6 @@ package com.yanchuanli.games.pokr.test;
 import com.yanchuanli.games.pokr.model.Player;
 import org.apache.log4j.Logger;
 
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +37,14 @@ public class Test {
             log.debug(actor.getName());
         }
 
-
+        StringBuilder sb = new StringBuilder();
+        sb.append("1" + ",");
+        sb.append("2" + ",");
+        String s = sb.toString();
+        if (s.endsWith(",")) {
+            s = s.substring(0, s.length() - 1);
+        }
+        log.debug(s);
     }
 
     private static void rotateActor() {

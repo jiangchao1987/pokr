@@ -297,6 +297,10 @@ public class Game implements Runnable {
         return gc.getName();
     }
 
+    public List<Player> getPlayers() {
+        return players;
+    }
+
     @Override
     public void run() {
         while (!stop) {

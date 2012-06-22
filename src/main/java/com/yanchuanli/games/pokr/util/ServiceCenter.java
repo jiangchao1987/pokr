@@ -1,7 +1,10 @@
 package com.yanchuanli.games.pokr.util;
 
 import com.yanchuanli.games.pokr.basic.Dealer;
+import com.yanchuanli.games.pokr.core.GameEngine;
 import com.yanchuanli.games.pokr.dao.PlayerDao;
+import com.yanchuanli.games.pokr.dao.RoomDao;
+import com.yanchuanli.games.pokr.game.Game;
 import com.yanchuanli.games.pokr.model.Player;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.session.IoSession;
@@ -75,55 +78,48 @@ public class ServiceCenter {
 
     /**
      * 加入指定id的房间
-     * 
+     *
      * @param session 当前用户session
-     * @param info 当前房间id
+     * @param info    当前房间id
      */
     private void join(IoSession session, String info) {
-        List<Player> players = new ArrayList<>();
-        for (String s : Memory.sessionsOnServer.keySet()) {
-            players.add(Memory.sessionsOnServer.get(s));
-        }
+        Game game = GameEngine.getGame(info);
+        Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
+        game.addPlayer(newplayer);
 
         StringBuffer sb = new StringBuffer();
-        for (Player player : players) {
+        for (Player player : game.getPlayers()) {
             sb.append(player.getId() + "," + player.getName() + "," + player.getMoney() + ";");
         }
 
-        NotificationCenter.sayHello(players, sb.toString());
+        NotificationCenter.sayHello(game.getPlayers(), sb.toString());
     }
 
     /**
      * 列出指定等级的房间列表
-     * 
+     *
      * @param session 当前用户session
-     * @param info 初级房1/中级房2/高级房3/VIP房4
+     * @param info    初级房1/中级房2/高级房3/VIP房4
      */
     private void listRooms(IoSession session, String info) {
-    	int type = Integer.parseInt(info);
+        int type = Integer.parseInt(info);
+        List<String> rooms = RoomDao.getRooms(type);
         StringBuffer sb = new StringBuffer();
-        switch (type) {
-            case Config.ROOM_LEVEL_BEGINNER:
-                sb.append("1,2,3");
-                break;
-            case Config.ROOM_LEVEL_PROFESSIONAL:
-                sb.append("4,5,6,7,8,9");
-                break;
-            case Config.ROOM_LEVEL_MASTER:
-                sb.append("10,11,12");
-                break;
-            case Config.ROOM_LEVEL_VIP:
-            	sb.append("13,14,15,16");
-            	break;
+        for (String s : rooms) {
+            sb.append(s + ",");
         }
-        NotificationCenter.list(session, sb.toString());
+        String result = sb.toString();
+        if (result.endsWith(",")) {
+            result = result.substring(0, result.length() - 1);
+        }
+        NotificationCenter.list(session, result);
     }
 
     /**
      * 游戏主要操作命令,c,ca,f,r:200
-     * 
+     *
      * @param session 当前用户session
-     * @param info 游戏操作命令
+     * @param info    游戏操作命令
      */
     private void action(IoSession session, String info) {
         Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
@@ -132,9 +128,9 @@ public class ServiceCenter {
 
     /**
      * 登录游戏
-     * 
+     *
      * @param session 当前用户session
-     * @param info udid,source[0|1|...]
+     * @param info    udid,source[0|1|...]
      */
     private void login(IoSession session, String info) {
         Player player = PlayerDao.getPlayer(info.split(",")[0], Integer.parseInt(info.split(",")[1]));
