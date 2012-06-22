@@ -1,5 +1,6 @@
 package com.yanchuanli.games.pokr.game;
 
+import com.google.code.tempusfugit.temporal.Duration;
 import com.yanchuanli.games.pokr.basic.Card;
 import com.yanchuanli.games.pokr.basic.Deck;
 import com.yanchuanli.games.pokr.basic.Hand;
@@ -28,7 +29,8 @@ public class StartGame {
         Player player3 = new Player("2", "2");
         player3.setMoney(1000);
 
-        Game game = new Game(1, "1");
+        GameConfig gc = new GameConfig(Duration.seconds(3), "test", 20, 40, 0, 10000, 9);
+        Game game = new Game(gc);
         game.addPlayer(player1);
         game.addPlayer(player2);
         game.addPlayer(player3);

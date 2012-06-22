@@ -21,7 +21,7 @@ import java.util.*;
 public class Game implements Runnable {
 
     private GameConfig gc;
-    private String name;
+
     private static Logger log = Logger.getLogger(Game.class);
     private List<Player> players;
     private List<Card> cardsOnTable;
@@ -31,7 +31,7 @@ public class Game implements Runnable {
     private int bet;
     private int moneyOnTable;
     private Player actor;
-    private int MAX_RAISES = 1000;
+
     private int MIN_BET = 10;
     private int actorPosition;
     private boolean gaming = false;

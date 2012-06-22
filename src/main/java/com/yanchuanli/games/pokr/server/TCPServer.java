@@ -1,6 +1,8 @@
 package com.yanchuanli.games.pokr.server;
 
+import com.google.code.tempusfugit.temporal.Duration;
 import com.yanchuanli.games.pokr.game.Game;
+import com.yanchuanli.games.pokr.game.GameConfig;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.util.Config;
 import com.yanchuanli.games.pokr.util.Memory;
@@ -42,7 +44,8 @@ public class TCPServer {
         String input = scanner.nextLine();
         while (!input.equalsIgnoreCase("quit")) {
             if (input.startsWith("start")) {
-                Game game = new Game(1, "1");
+                GameConfig gc = new GameConfig(Duration.seconds(3), "Test", 20, 40, 0, 10000, 9);
+                Game game = new Game(gc);
 
                 for (String s : Memory.sessionsOnServer.keySet()) {
                     game.addPlayer(Memory.sessionsOnServer.get(s));
