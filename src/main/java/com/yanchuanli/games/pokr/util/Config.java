@@ -22,6 +22,6 @@ public class Config {
     public static final int TYPE_GAMEOVER_INGAME = 8;
     public static final int TYPE_WINORLOSE_INGAME = 9;
     public static final int TYPE_LEAVE_INGAME = 10;
-    public static final int SRC_IPHONE_TOURIST = 0;
-    public static final int SRC_IPAD_TOURIST = 1;
+    public static final int SRC_IPHONE_GUEST = 0;
+    public static final int SRC_IPAD_GUEST = 1;
 }

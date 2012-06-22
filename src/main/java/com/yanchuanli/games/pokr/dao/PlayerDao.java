@@ -1,6 +1,10 @@
 package com.yanchuanli.games.pokr.dao;
 
 import com.yanchuanli.games.pokr.model.Player;
+import com.yanchuanli.games.pokr.util.Config;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Copyright Candou.com
@@ -10,8 +14,28 @@ import com.yanchuanli.games.pokr.model.Player;
  */
 public class PlayerDao {
 
-    public static Player getPlayer(String username, int src) {
-        Player player = new Player("1", "1");
-        return player;
+    private static Map<String, Player> players;
+    private static int globalid = 0;
+
+    static {
+        players = new HashMap<>();
     }
+
+    public static Player getPlayer(String username, int src) {
+        switch (src) {
+            case Config.SRC_IPHONE_TOURIST:
+                break;
+            case Config.SRC_IPAD_TOURIST:
+                break;
+        }
+        if (!players.containsKey(username)) {
+            Player player = new Player(username, username);
+            player.setMoney(10000);
+            players.put(username, player);
+        }
+        return players.get(username);
+
+    }
+
+
 }

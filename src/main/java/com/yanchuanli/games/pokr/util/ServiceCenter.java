@@ -110,7 +110,7 @@ public class ServiceCenter {
 
     private void login(IoSession session, String info) {
         Player player = PlayerDao.getPlayer(info.split(",")[0], Integer.parseInt(info.split(",")[1]));
-        player.setMoney(10000);
+
         player.setSession(session);
         Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);
 
