@@ -49,7 +49,7 @@ public class TCPClient {
                 input = scanner.nextLine();*/
                 
                 if (input.startsWith("l")) {
-                	sendToServer(String.valueOf((int) (Math.random() * 10000)), 0);
+                	sendToServer(String.valueOf((int) (Math.random() * 10000)) + "," + Config.SRC_IPHONE_GUEST, 0);
                 } else if (input.startsWith("c")) {
                 	sendToServer(input, 5);
                 } else if (input.startsWith("f")) {
