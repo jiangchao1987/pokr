@@ -16,16 +16,23 @@ import java.util.Map;
  * Date: 12-6-22
  */
 public class GameEngine {
-    private static Map<String, Game> games;
+    private static Map<Integer, Game> games;
 
     public static void start() {
-        games = new HashMap<String, Game>();
+        games = new HashMap<Integer, Game>();
         List<String> roomsToPrepare = RoomDao.getRooms();
 
+        int id = 0;
         for (String name : roomsToPrepare) {
-            GameConfig gc = new GameConfig(Duration.seconds(3), name, 20, 40, 0, 10000, 9);
+            GameConfig gc = new GameConfig(id, name, 20, 40, 0, 10000, 9, Duration.seconds(3), Duration.millis(500));
             Game game = new Game(gc);
-            games.put(name, game);
+            games.put(id, game);
+            id++;
+            new Thread(game).start();
         }
+    }
+
+    public static Game getGame(int id) {
+        return games.get(id);
     }
 }

@@ -7,6 +7,7 @@ import com.yanchuanli.games.pokr.model.Action;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.util.NotificationCenter;
 import com.yanchuanli.games.pokr.util.Util;
+import javafx.util.Duration;
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -35,6 +36,7 @@ public class Game implements Runnable {
     private int MIN_BET = 10;
     private int actorPosition;
     private boolean gaming = false;
+    private boolean stop = false;
 
 
     public Game(GameConfig gc) {
@@ -47,6 +49,15 @@ public class Game implements Runnable {
 
     public void addPlayer(Player player) {
         players.add(player);
+    }
+
+    public void removePlayer(Player player) {
+        for (Player aplayer : players) {
+            if (aplayer.getGlobalId() == player.getGlobalId()) {
+                players.remove(aplayer);
+                break;
+            }
+        }
     }
 
     public void start() {
@@ -162,8 +173,7 @@ public class Game implements Runnable {
                 NotificationCenter.winorlose(players.get(i).getSession(), players.get(i).getId() + "," + players.get(i).getName() + ",0", 10);
             }
         }
-
-
+        gaming = false;
     }
 
     private void reset() {
@@ -274,6 +284,7 @@ public class Game implements Runnable {
     }
 
     private void sayHello() {
+        gaming = true;
         String info = "";
         for (Player player : players) {
             info = info + player.getId() + "," + player.getName() + "," + player.getMoney() + ";";
@@ -288,6 +299,22 @@ public class Game implements Runnable {
 
     @Override
     public void run() {
-
+        while (!stop) {
+            if (players.size() > 2) {
+                log.debug("game will start in 3 seconds ...");
+                try {
+                    Thread.sleep((long) Duration.seconds(3).toMillis());
+                } catch (InterruptedException e) {
+                    log.error(e);
+                }
+                start();
+            } else {
+                try {
+                    Thread.sleep(gc.getInactivityCheckInterval().inMillis());
+                } catch (InterruptedException e) {
+                    log.error(e);
+                }
+            }
+        }
     }
 }
