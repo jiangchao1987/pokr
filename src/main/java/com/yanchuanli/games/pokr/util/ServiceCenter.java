@@ -130,10 +130,11 @@ public class ServiceCenter {
      * 登录游戏
      *
      * @param session 当前用户session
-     * @param info    udid,source[0|1|...]
+     * @param info    udid,password,source[0|1|...]
      */
     private void login(IoSession session, String info) {
-        Player player = PlayerDao.getPlayer(info.split(",")[0], Integer.parseInt(info.split(",")[1]));
+    	String[] msgs = info.split(",");
+        Player player = PlayerDao.getPlayer(msgs[0], msgs[1], Integer.parseInt(msgs[2]));
 
         player.setSession(session);
         Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);

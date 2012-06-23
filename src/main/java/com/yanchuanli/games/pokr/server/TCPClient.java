@@ -62,7 +62,9 @@ public class TCPClient {
                 } else if (input.startsWith("li")) {
                     sendToServer(String.valueOf(Config.ROOM_LEVEL_BEGINNER), 2);
                 } else if (input.startsWith("l")) {
-                    sendToServer(String.valueOf((int) (Math.random() * 10000)) + "," + Config.SRC_IPHONE_GUEST, 0);
+//                    sendToServer(String.valueOf((int) (Math.random() * 10000)) + "," + Config.SRC_IPHONE_GUEST, 0);
+                	// eg:   l:jiangchao  [udid, password, souce]
+                	sendToServer(input.split(":")[1] + "," + input.split(":")[1] + "123," + Config.SRC_IPHONE_GUEST, 0);
                 }
 
                 input = scanner.nextLine();

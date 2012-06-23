@@ -32,7 +32,13 @@ public class Player {
     private int bet;
     private String input;
     private String nameOfHand;
-
+    private int exp;
+	private int winCount;
+	private int loseCount;
+	private int historicalBestHandRank;
+	private String historicalBestHand;
+	private int maxWin;
+	private String face;
 
     public Player(String id, String name) {
         this.id = id;
@@ -41,7 +47,6 @@ public class Player {
         this.handRank = Integer.MIN_VALUE;
         this.alive = true;
     }
-
 
     public String getId() {
         return id;
@@ -106,8 +111,64 @@ public class Player {
     public void setMoney(int money) {
         this.money = money;
     }
+    
+    public int getExp() {
+		return exp;
+	}
 
-    public Action act(Set<Action> actions, int minBet, int currentBet, int moneyOnTable, Duration bettingDuration, Duration inactivityCheckInterval) {
+	public void setExp(int exp) {
+		this.exp = exp;
+	}
+	
+	public int getWinCount() {
+		return winCount;
+	}
+
+	public void setWinCount(int winCount) {
+		this.winCount = winCount;
+	}
+
+	public int getLoseCount() {
+		return loseCount;
+	}
+
+	public void setLoseCount(int loseCount) {
+		this.loseCount = loseCount;
+	}
+
+	public int getHistoricalBestHandRank() {
+		return historicalBestHandRank;
+	}
+
+	public void setHistoricalBestHandRank(int historicalBestHandRank) {
+		this.historicalBestHandRank = historicalBestHandRank;
+	}
+
+	public String getHistoricalBestHand() {
+		return historicalBestHand;
+	}
+
+	public void setHistoricalBestHand(String historicalBestHand) {
+		this.historicalBestHand = historicalBestHand;
+	}
+
+	public int getMaxWin() {
+		return maxWin;
+	}
+
+	public void setMaxWin(int maxWin) {
+		this.maxWin = maxWin;
+	}
+
+	public String getFace() {
+		return face;
+	}
+
+	public void setFace(String face) {
+		this.face = face;
+	}
+
+	public Action act(Set<Action> actions, int minBet, int currentBet, int moneyOnTable, Duration bettingDuration, Duration inactivityCheckInterval) {
         int counter = 0;
         int sleepCount = (int) (bettingDuration.inMillis() / inactivityCheckInterval.inMillis());
         log.debug(bettingDuration.inMillis() + "/" + inactivityCheckInterval.inMillis() + "=" + sleepCount);
@@ -207,16 +268,30 @@ public class Player {
         this.globalId = globalId;
     }
 
-    @Override
-    public String toString() {
-        return "Player{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", bestHand=" + bestHand.toChineseString() +
-                ", handRank=" + handRank +
-                ", alive=" + alive +
-                ", money=" + money +
-                ", bet=" + bet +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "Player [globalId=" + globalId + ", id=" + id + ", name=" + name
+				+ ", session=" + session + ", hand=" + hand + ", bestHand="
+				+ bestHand + ", handRank=" + handRank + ", alive=" + alive
+				+ ", money=" + money + ", bet=" + bet + ", input=" + input
+				+ ", nameOfHand=" + nameOfHand + ", exp=" + exp + ", winCount="
+				+ winCount + ", loseCount=" + loseCount
+				+ ", historicalBestHandRank=" + historicalBestHandRank
+				+ ", historicalBestHand=" + historicalBestHand + ", maxWin="
+				+ maxWin + ", face=" + face + "]";
+	}
+
+//    @Override
+//    public String toString() {
+//        return "Player{" +
+//                "id='" + id + '\'' +
+//                ", name='" + name + '\'' +
+//                ", bestHand=" + bestHand.toChineseString() +
+//                ", handRank=" + handRank +
+//                ", alive=" + alive +
+//                ", money=" + money +
+//                ", bet=" + bet +
+//                '}';
+//    }
+    
 }
