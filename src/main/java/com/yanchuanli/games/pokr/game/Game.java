@@ -118,6 +118,7 @@ public class Game implements Runnable {
             log.debug(player.getName() + " got " + player.getHand().toChineseString());
             NotificationCenter.deal2Cards(player.getSession(), player.getId() + "," + player.getName() + "," + player.getHand().getGIndexes());
         }
+        NotificationCenter.deal2CardsOnAllDevices(players, actor.getId());
     }
 
     private void deal3FlipCards() {
