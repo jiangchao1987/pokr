@@ -38,7 +38,7 @@ public class Player {
 	private int historicalBestHandRank;
 	private String historicalBestHand;
 	private int maxWin;
-	private String face;
+	private String avatar;
 
     public Player(String id, String name) {
         this.udid = id;
@@ -160,12 +160,12 @@ public class Player {
 		this.maxWin = maxWin;
 	}
 
-	public String getFace() {
-		return face;
+	public String getAvatar() {
+		return avatar;
 	}
 
-	public void setFace(String face) {
-		this.face = face;
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
 	}
 
 	public Action act(Set<Action> actions, int minBet, int currentBet, int moneyOnTable, Duration bettingDuration, Duration inactivityCheckInterval) {
@@ -278,7 +278,7 @@ public class Player {
 				+ winCount + ", loseCount=" + loseCount
 				+ ", historicalBestHandRank=" + historicalBestHandRank
 				+ ", historicalBestHand=" + historicalBestHand + ", maxWin="
-				+ maxWin + ", face=" + face + "]";
+				+ maxWin + ", avatar=" + avatar + "]";
 	}
 
 //    @Override

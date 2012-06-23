@@ -3,8 +3,6 @@ package com.yanchuanli.games.pokr.dao;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bson.types.ObjectId;
-
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -69,7 +67,7 @@ public class PlayerDao {
 			player.setHistoricalBestHandRank(Integer.parseInt(msgs[6]));
 			player.setHistoricalBestHand(msgs[7]);
 			player.setMaxWin(Integer.parseInt(msgs[8]));
-			player.setFace(msgs[9]);
+			player.setAvatar(msgs[9]);
 			players.put(udid, player);
 		}
 		return players.get(udid);
@@ -122,7 +120,7 @@ public class PlayerDao {
 	
 	public static Player queryByUdid(String udid) {
 		DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME,
-				MongoDB.COLL_USER);
+                MongoDB.COLL_USER);
 
 		BasicDBObject query = new BasicDBObject();
 		query.put("udid", udid);
@@ -139,7 +137,7 @@ public class PlayerDao {
 			player.setHistoricalBestHandRank((Integer) obj.get("br"));
 			player.setHistoricalBestHand((String) obj.get("best"));
 			player.setMaxWin((Integer) obj.get("max"));
-			player.setFace((String) obj.get("face"));
+			player.setAvatar((String) obj.get("face"));
 		}
 
 		return player;
