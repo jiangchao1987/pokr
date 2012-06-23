@@ -116,9 +116,9 @@ public class Game implements Runnable {
                 player.getHand().addCard(card);
             }
             log.debug(player.getName() + " got " + player.getHand().toChineseString());
-            NotificationCenter.deal2Cards(player.getSession(), player.getId() + "," + player.getName() + "," + player.getHand().getGIndexes());
+            NotificationCenter.deal2Cards(player.getSession(), player.getUdid() + "," + player.getName() + "," + player.getHand().getGIndexes());
         }
-        NotificationCenter.deal2CardsOnAllDevices(players, actor.getId());
+        NotificationCenter.deal2CardsOnAllDevices(players, actor.getUdid());
     }
 
     private void deal3FlipCards() {
@@ -161,17 +161,17 @@ public class Game implements Runnable {
             Player player = players.get(i);
             String wininfo = "#" + String.valueOf(i + 1) + " " + player.getName() + " " + player.getHandRank() + " " + player.getBestHand().toChineseString() + " " + player.getNameOfHand();
             log.debug(wininfo);
-            sb.append(player.getId() + "," + player.getName() + "," + player.getNameOfHand() + ";");
+            sb.append(player.getUdid() + "," + player.getName() + "," + player.getNameOfHand() + ";");
         }
         NotificationCenter.gameover(players, sb.toString());
 
         for (int i = 0; i < players.size(); i++) {
             if (i == 0) {
                 log.debug(players.get(i).getName() + " wins!");
-                NotificationCenter.winorlose(players.get(i).getSession(), players.get(i).getId() + "," + players.get(i).getName() + ",1", 10);
+                NotificationCenter.winorlose(players.get(i).getSession(), players.get(i).getUdid() + "," + players.get(i).getName() + ",1", 10);
             } else {
                 log.debug(players.get(i).getName() + " loses!");
-                NotificationCenter.winorlose(players.get(i).getSession(), players.get(i).getId() + "," + players.get(i).getName() + ",0", 10);
+                NotificationCenter.winorlose(players.get(i).getSession(), players.get(i).getUdid() + "," + players.get(i).getName() + ",0", 10);
             }
         }
         gaming = false;
@@ -202,14 +202,14 @@ public class Game implements Runnable {
             //rotate the actor
 
             rotateActor();
-            log.debug("playersToAct: " + playersToAct + " id: " + actor.getId()
+            log.debug("playersToAct: " + playersToAct + " id: " + actor.getUdid()
                     + " name: "
                     + actor.getName());
             Set<Action> allowedActions = getAllowedActions(actor);
 
             Action action = actor.act(allowedActions, MIN_BET, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval());
 
-            log.debug(" id: " + actor.getId() + " name: " + actor.getName()
+            log.debug(" id: " + actor.getUdid() + " name: " + actor.getName()
                     + " action: " + action.getVerb());
             playersToAct--;
 
@@ -237,11 +237,11 @@ public class Game implements Runnable {
                     if (players.size() == 1) {
                         log.debug(players.get(0).getName() + " win ...");
                         playersToAct = 0;
-                        NotificationCenter.winorlose(players.get(0).getSession(), players.get(0).getId() + "," + players.get(0).getName() + ",1", 10);
+                        NotificationCenter.winorlose(players.get(0).getSession(), players.get(0).getUdid() + "," + players.get(0).getName() + ",1", 10);
                     }
                     break;
             }
-            String info = actor.getId() + "," + action.getVerb() + ":" + actor.getBet() + "," + moneyOnTable;
+            String info = actor.getUdid() + "," + action.getVerb() + ":" + actor.getBet() + "," + moneyOnTable;
             List<Player> playersToForward = new ArrayList<>();
             for (Player player : players) {
                 if (player != actor) {
@@ -306,7 +306,7 @@ public class Game implements Runnable {
         gaming = true;
         String info = "";
         for (Player player : players) {
-            info = info + player.getId() + "," + player.getName() + "," + player.getMoney() + ";";
+            info = info + player.getUdid() + "," + player.getName() + "," + player.getMoney() + ";";
         }
         NotificationCenter.sayHello(players, info);
     }

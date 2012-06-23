@@ -21,7 +21,7 @@ public class Player {
 
     private static Logger log = Logger.getLogger(Player.class);
     private int globalId;
-    private String id;
+    private String udid;
     private String name;
     private IoSession session;
     private Hand hand;
@@ -41,19 +41,19 @@ public class Player {
 	private String face;
 
     public Player(String id, String name) {
-        this.id = id;
+        this.udid = id;
         this.name = name;
         hand = new Hand();
         this.handRank = Integer.MIN_VALUE;
         this.alive = true;
     }
 
-    public String getId() {
-        return id;
+    public String getUdid() {
+        return udid;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUdid(String udid) {
+        this.udid = udid;
     }
 
     public String getName() {
@@ -181,7 +181,7 @@ public class Player {
         log.debug(actionStr);
 
         // notify this user for allowed actions
-        NotificationCenter.act(this.getSession(), this.getId() + "," + this.getName() + "," + actionStr + "," + moneyOnTable);
+        NotificationCenter.act(this.getSession(), this.getUdid() + "," + this.getName() + "," + actionStr + "," + moneyOnTable);
 
         if (Config.offlineDebug) {
             Scanner scanner = new Scanner(System.in);
@@ -270,7 +270,7 @@ public class Player {
 
 	@Override
 	public String toString() {
-		return "Player [globalId=" + globalId + ", id=" + id + ", name=" + name
+		return "Player [globalId=" + globalId + ", udid=" + udid + ", name=" + name
 				+ ", session=" + session + ", hand=" + hand + ", bestHand="
 				+ bestHand + ", handRank=" + handRank + ", alive=" + alive
 				+ ", money=" + money + ", bet=" + bet + ", input=" + input
@@ -284,7 +284,7 @@ public class Player {
 //    @Override
 //    public String toString() {
 //        return "Player{" +
-//                "id='" + id + '\'' +
+//                "udid='" + udid + '\'' +
 //                ", name='" + name + '\'' +
 //                ", bestHand=" + bestHand.toChineseString() +
 //                ", handRank=" + handRank +

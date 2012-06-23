@@ -89,7 +89,7 @@ public class ServiceCenter {
 
         StringBuffer sb = new StringBuffer();
         for (Player player : game.getPlayers()) {
-            sb.append(player.getId() + "," + player.getName() + "," + player.getMoney() + ";");
+            sb.append(player.getUdid() + "," + player.getName() + "," + player.getMoney() + ";");
         }
 
         NotificationCenter.sayHello(game.getPlayers(), sb.toString());
@@ -140,7 +140,7 @@ public class ServiceCenter {
         Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);
 
         StringBuffer sb = new StringBuffer();
-        sb.append(player.getId() + "," + player.getName() + "," + player.getMoney());
+        sb.append(player.getUdid() + "," + player.getName() + "," + player.getMoney());
         NotificationCenter.login(session, sb.toString());
     }
 
