@@ -3,6 +3,7 @@ package com.yanchuanli.games.pokr.model;
 import com.google.code.tempusfugit.temporal.Duration;
 import com.yanchuanli.games.pokr.basic.Hand;
 import com.yanchuanli.games.pokr.util.Config;
+import com.yanchuanli.games.pokr.util.NotificationCenter;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.session.IoSession;
 
@@ -106,10 +107,10 @@ public class Player {
         this.money = money;
     }
 
-    public Action act(Set<Action> actions, int minBet, int currentBet, int moneyOnTable, Duration inactivityCheckInterval) {
+    public Action act(Set<Action> actions, int minBet, int currentBet, int moneyOnTable, Duration bettingDuration, Duration inactivityCheckInterval) {
         int counter = 0;
-        int sleepCount = (int) (inactivityCheckInterval.inMillis() / Config.SLEEP_INTERVAL);
-        log.debug(inactivityCheckInterval.inMillis() + "/" + Config.SLEEP_INTERVAL + "=" + sleepCount);
+        int sleepCount = (int) (bettingDuration.inMillis() / inactivityCheckInterval.inMillis());
+        log.debug(bettingDuration.inMillis() + "/" + inactivityCheckInterval.inMillis() + "=" + sleepCount);
         String actionStr = "";
         Action result;
 
@@ -118,7 +119,8 @@ public class Player {
         }
         log.debug(actionStr);
 
-//        NotificationCenter.act(this.getSession(), this.getId() + "," + this.getName() + "," + actionStr + "," + moneyOnTable);
+        // notify this user for allowed actions
+        NotificationCenter.act(this.getSession(), this.getId() + "," + this.getName() + "," + actionStr + "," + moneyOnTable);
 
         if (Config.offlineDebug) {
             Scanner scanner = new Scanner(System.in);
@@ -127,7 +129,7 @@ public class Player {
 
             while (getInput() == null && counter < sleepCount) {
                 try {
-                    Thread.sleep(Config.SLEEP_INTERVAL);
+                    Thread.sleep(inactivityCheckInterval.inMillis());
                     counter++;
                     log.debug("waiting for " + name + " ...");
                 } catch (InterruptedException e) {

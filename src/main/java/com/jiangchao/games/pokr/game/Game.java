@@ -13,8 +13,8 @@ import java.util.*;
 
 /**
  * Note: Game Main
- * Author: JiangChao 
- * Date: 2012/6/15/13 
+ * Author: JiangChao
+ * Date: 2012/6/15/13
  * Email: chaojiang@candou.com
  */
 public class Game {
@@ -178,7 +178,7 @@ public class Game {
             rotateActor();
             Set<Action> allowedActions = getAllowedActions(actor);
 
-            Action action = actor.act(allowedActions, MIN_BET, bet, moneyOnTable, Duration.millis(3000));
+            Action action = actor.act(allowedActions, MIN_BET, bet, moneyOnTable, Duration.millis(20000), Duration.millis(500));
             log.debug(actor.getName() + " " + action.getVerb());
             playersToAct--;
             switch (action) {
@@ -276,6 +276,6 @@ public class Game {
     }
 
     private void sayHello() {
-    	
+
     }
 }

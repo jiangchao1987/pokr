@@ -206,7 +206,7 @@ public class Game implements Runnable {
                     + actor.getName());
             Set<Action> allowedActions = getAllowedActions(actor);
 
-            Action action = actor.act(allowedActions, MIN_BET, bet, moneyOnTable, gc.getBettingDuration());
+            Action action = actor.act(allowedActions, MIN_BET, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval());
 
             log.debug(" id: " + actor.getId() + " name: " + actor.getName()
                     + " action: " + action.getVerb());
