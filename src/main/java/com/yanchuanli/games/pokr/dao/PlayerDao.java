@@ -1,11 +1,19 @@
 package com.yanchuanli.games.pokr.dao;
 
-import com.yanchuanli.games.pokr.model.Player;
-import com.yanchuanli.games.pokr.util.Config;
-import com.yanchuanli.games.pokr.util.URLFetchUtil;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.bson.types.ObjectId;
+
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+import com.yanchuanli.games.pokr.model.Player;
+import com.yanchuanli.games.pokr.util.Config;
+import com.yanchuanli.games.pokr.util.MongoDB;
+import com.yanchuanli.games.pokr.util.MongoDBFactory;
+import com.yanchuanli.games.pokr.util.URLFetchUtil;
 
 /**
  * Copyright Candou.com
@@ -65,6 +73,63 @@ public class PlayerDao {
 			players.put(udid, player);
 		}
 		return players.get(udid);
+	}
+	
+	public static void updateBest(String udid, String bestHand, int bestHandRank) {
+		Player player = queryByUdid(udid);
+		if (player != null) {
+			if (player.getHistoricalBestHandRank() < bestHandRank) {
+				DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME,
+						MongoDB.COLL_USER);
+
+				DBObject query = new BasicDBObject();
+				query.put("udid", udid);
+
+				DBObject doc = new BasicDBObject().append("$set", new BasicDBObject()
+						.append("best", bestHand).append("br", bestHandRank));
+				coll.update(query, doc);
+			}
+		}
+	}
+	
+	public static void updateMaxWin(String udid, int maxWin) {
+		Player player = queryByUdid(udid);
+		if (player != null && (player.getMaxWin() < maxWin)) {
+			DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME,
+					MongoDB.COLL_USER);
+
+			DBObject query = new BasicDBObject();
+			query.put("udid", udid);
+
+			DBObject doc = new BasicDBObject().append("$set",
+					new BasicDBObject().append("max", maxWin));
+			coll.update(query, doc);
+		}
+	}
+	
+	public static Player queryByUdid(String udid) {
+		DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME,
+				MongoDB.COLL_USER);
+
+		BasicDBObject query = new BasicDBObject();
+		query.put("udid", udid);
+		DBCursor cur = coll.find(query);
+
+		Player player = null;
+		while (cur.hasNext()) {
+			DBObject obj = cur.next();
+			player = new Player((String) obj.get("udid"), (String) obj.get("name"));
+			player.setMoney((Integer) obj.get("money"));
+			player.setExp((Integer) obj.get("exp"));
+			player.setWinCount((Integer) obj.get("win"));
+			player.setLoseCount((Integer) obj.get("lose"));
+			player.setHistoricalBestHandRank((Integer) obj.get("br"));
+			player.setHistoricalBestHand((String) obj.get("best"));
+			player.setMaxWin((Integer) obj.get("max"));
+			player.setFace((String) obj.get("face"));
+		}
+
+		return player;
 	}
 
 }
