@@ -75,6 +75,13 @@ public class PlayerDao {
 		return players.get(udid);
 	}
 	
+	/**
+	 * 更新bestHand以及bestHandRank
+	 * 
+	 * @param udid 
+	 * @param bestHand
+	 * @param bestHandRank
+	 */
 	public static void updateBest(String udid, String bestHand, int bestHandRank) {
 		Player player = queryByUdid(udid);
 		if (player != null) {
@@ -92,6 +99,12 @@ public class PlayerDao {
 		}
 	}
 	
+	/**
+	 * 更新最大赢取MaxWin
+	 * 
+	 * @param udid
+	 * @param maxWin
+	 */
 	public static void updateMaxWin(String udid, int maxWin) {
 		Player player = queryByUdid(udid);
 		if (player != null && (player.getMaxWin() < maxWin)) {
