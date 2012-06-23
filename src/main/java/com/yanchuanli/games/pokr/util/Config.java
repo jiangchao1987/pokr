@@ -25,6 +25,7 @@ public class Config {
     public static final int TYPE_WINORLOSE_INGAME = 9;
     public static final int TYPE_LEAVE_INGAME = 10;
     public static final int TYPE_OTHERSACTION_INGAME = 11;
+    public static final int TYPE_ROTATE_INGAME = 12;
 
     public static final int SRC_IPHONE_GUEST = 0;
     public static final int SRC_IPAD_GUEST = 1;

@@ -12,6 +12,16 @@ import java.util.List;
  * Date: 12-6-16
  */
 public class NotificationCenter {
+	
+	/** 
+	 * 通知所有玩家当前轮到的发牌玩家id
+	 * 
+	 * @param players 所有玩家
+	 * @param info 用户id
+	 */
+	public static void rotate(List<Player> players, String info) {
+		notifyAllOnTable(players, info, Config.TYPE_ROTATE_INGAME);
+	}
 
     /*
      * sample msg: id,action:[bet],moneyontable
