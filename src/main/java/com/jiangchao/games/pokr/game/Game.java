@@ -1,19 +1,15 @@
 package com.jiangchao.games.pokr.game;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.log4j.Logger;
-
+import com.google.code.tempusfugit.temporal.Duration;
 import com.jiangchao.games.pokr.util.Util;
 import com.yanchuanli.games.pokr.basic.Card;
 import com.yanchuanli.games.pokr.basic.Deck;
 import com.yanchuanli.games.pokr.basic.PlayerRankComparator;
 import com.yanchuanli.games.pokr.model.Action;
 import com.yanchuanli.games.pokr.model.Player;
+import org.apache.log4j.Logger;
+
+import java.util.*;
 
 /**
  * Note: Game Main
@@ -182,7 +178,7 @@ public class Game {
             rotateActor();
             Set<Action> allowedActions = getAllowedActions(actor);
 
-            Action action = actor.act(allowedActions, MIN_BET, bet, moneyOnTable);
+            Action action = actor.act(allowedActions, MIN_BET, bet, moneyOnTable, Duration.millis(3000));
             log.debug(actor.getName() + " " + action.getVerb());
             playersToAct--;
             switch (action) {

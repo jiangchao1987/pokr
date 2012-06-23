@@ -6,11 +6,13 @@ package com.yanchuanli.games.pokr.util;
  * Email: mail@yanchuanli.com
  */
 public class Config {
-    public static int port = 9999;
-    public static String serverAddress = "localhost";
+    public static final int SLEEP_INTERVAL = 500;
+    public static final int port = 9999;
+    public static final String serverAddress = "localhost";
     public static final byte START = '$' & 0xFF;
     public static final byte SPLIT = '|' & 0xFF;
-    public static boolean offlineDebug = false;
+    public static final boolean offlineDebug = false;
+
     public static final int TYPE_LOGIN_INGAME = 0;
     public static final int TYPE_REGIST_INGAME = 1;
     public static final int TYPE_LIST_INGAME = 2;
@@ -22,10 +24,13 @@ public class Config {
     public static final int TYPE_GAMEOVER_INGAME = 8;
     public static final int TYPE_WINORLOSE_INGAME = 9;
     public static final int TYPE_LEAVE_INGAME = 10;
+    public static final int TYPE_OTHERSACTION_INGAME = 11;
+
     public static final int SRC_IPHONE_GUEST = 0;
     public static final int SRC_IPAD_GUEST = 1;
-	public static final int ROOM_LEVEL_BEGINNER = 1;
-	public static final int ROOM_LEVEL_PROFESSIONAL = 2;
-	public static final int ROOM_LEVEL_MASTER = 3;
-	public static final int ROOM_LEVEL_VIP = 4;
+
+    public static final int ROOM_LEVEL_BEGINNER = 1;
+    public static final int ROOM_LEVEL_PROFESSIONAL = 2;
+    public static final int ROOM_LEVEL_MASTER = 3;
+    public static final int ROOM_LEVEL_VIP = 4;
 }

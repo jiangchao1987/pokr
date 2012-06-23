@@ -1,8 +1,8 @@
 package com.yanchuanli.games.pokr.model;
 
+import com.google.code.tempusfugit.temporal.Duration;
 import com.yanchuanli.games.pokr.basic.Hand;
 import com.yanchuanli.games.pokr.util.Config;
-import com.yanchuanli.games.pokr.util.NotificationCenter;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.session.IoSession;
 
@@ -106,8 +106,10 @@ public class Player {
         this.money = money;
     }
 
-    public Action act(Set<Action> actions, int minBet, int currentBet, int moneyOnTable) {
-
+    public Action act(Set<Action> actions, int minBet, int currentBet, int moneyOnTable, Duration inactivityCheckInterval) {
+        int counter = 0;
+        int sleepCount = (int) (inactivityCheckInterval.inMillis() / Config.SLEEP_INTERVAL);
+        log.debug(inactivityCheckInterval.inMillis() + "/" + Config.SLEEP_INTERVAL + "=" + sleepCount);
         String actionStr = "";
         Action result;
 
@@ -115,37 +117,50 @@ public class Player {
             actionStr = actionStr + action.getVerb() + "_";
         }
         log.debug(actionStr);
-//        NotificationCenter.notifyPlayer(this, actionStr);
-        NotificationCenter.act(this.getSession(), this.getId() + "," + this.getName() + "," + actionStr + "," + moneyOnTable);
+
+//        NotificationCenter.act(this.getSession(), this.getId() + "," + this.getName() + "," + actionStr + "," + moneyOnTable);
 
         if (Config.offlineDebug) {
             Scanner scanner = new Scanner(System.in);
             input = scanner.nextLine();
         } else {
-            int counter = 0;
-            while (getInput() == null && counter < 20) {
+
+            while (getInput() == null && counter < sleepCount) {
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(Config.SLEEP_INTERVAL);
+                    counter++;
+                    log.debug("waiting for " + name + " ...");
                 } catch (InterruptedException e) {
                     log.error(e);
                 }
             }
         }
 
-        if (input.startsWith("ca")) {
-            money -= currentBet;
-            setBet(currentBet);
-            result = Action.CALL;
-        } else if (input.startsWith("c")) {
-            result = Action.CHECK;
-        } else if (input.startsWith("f")) {
+        if (counter >= sleepCount && input == null) {
             result = Action.FOLD;
         } else {
-            String[] inputs = input.split(":");
-            setBet(Integer.parseInt(inputs[1]));
-            result = Action.BET;
-            money -= bet;
+            log.debug(name + " input:[" + input + "]");
+            if (input.startsWith("ca")) {
+                money -= currentBet;
+                setBet(currentBet);
+                result = Action.CALL;
+            } else if (input.startsWith("c")) {
+                result = Action.CHECK;
+            } else if (input.startsWith("f")) {
+                result = Action.FOLD;
+            } else if (input.startsWith("r")) {
+                String[] inputs = input.split(":");
+                setBet(Integer.parseInt(inputs[1]));
+                result = Action.RAISE;
+                money -= bet;
+            } else {
+                String[] inputs = input.split(":");
+                setBet(Integer.parseInt(inputs[1]));
+                result = Action.BET;
+                money -= bet;
+            }
         }
+
 
         input = null;
 
@@ -180,6 +195,14 @@ public class Player {
 
     public void setNameOfHand(String nameOfHand) {
         this.nameOfHand = nameOfHand;
+    }
+
+    public int getGlobalId() {
+        return globalId;
+    }
+
+    public void setGlobalId(int globalId) {
+        this.globalId = globalId;
     }
 
     @Override

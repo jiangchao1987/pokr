@@ -184,7 +184,10 @@ public class Game implements Runnable {
         cardsOnTable.clear();
         for (Player player : players) {
             player.getHand().makeEmpty();
-            player.getBestHand().makeEmpty();
+            if (player.getBestHand() != null) {
+                player.getBestHand().makeEmpty();
+            }
+
         }
         log.debug("Game has been resetted ...");
     }
@@ -203,7 +206,8 @@ public class Game implements Runnable {
                     + actor.getName());
             Set<Action> allowedActions = getAllowedActions(actor);
 
-            Action action = actor.act(allowedActions, MIN_BET, bet, moneyOnTable);
+            Action action = actor.act(allowedActions, MIN_BET, bet, moneyOnTable, gc.getBettingDuration());
+
             log.debug(" id: " + actor.getId() + " name: " + actor.getName()
                     + " action: " + action.getVerb());
             playersToAct--;
@@ -236,6 +240,16 @@ public class Game implements Runnable {
                     }
                     break;
             }
+            String info = actor.getId() + "," + action.getVerb() + ":" + actor.getBet() + "," + moneyOnTable;
+            List<Player> playersToForward = new ArrayList<>();
+            for (Player player : players) {
+                if (player != actor) {
+                    playersToForward.add(player);
+                }
+            }
+            NotificationCenter.forwardAction(playersToForward, info);
+            playersToForward.clear();
+            playersToForward = null;
         }
     }
 
