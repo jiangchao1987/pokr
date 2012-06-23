@@ -131,7 +131,7 @@ public class Player {
                 try {
                     Thread.sleep(inactivityCheckInterval.inMillis());
                     counter++;
-                    log.debug("waiting for " + name + " ...");
+//                    log.debug("waiting for " + name + " ...");
                 } catch (InterruptedException e) {
                     log.error(e);
                 }
