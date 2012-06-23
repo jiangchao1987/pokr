@@ -14,12 +14,12 @@ import java.util.List;
 public class NotificationCenter {
 	
 	/** 
-	 * 通知所有玩家当前轮到的发牌玩家id
+	 * 在所有玩家得到自己的2张牌后，通知所有设备开始发那2张牌！
 	 * 
 	 * @param players 所有玩家
 	 * @param info 用户id
 	 */
-	public static void rotate(List<Player> players, String info) {
+	public static void deal2CardsOnAllDevices(List<Player> players, String info) {
 		notifyAllOnTable(players, info, Config.TYPE_ROTATE_INGAME);
 	}
 
