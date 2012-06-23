@@ -63,6 +63,15 @@ public class ClientHandler extends IoHandlerAdapter {
                         case Config.TYPE_USER_INGAME:
 
                             break;
+                        case Config.TYPE_CARD_INGAME:
+                            infos = info.split(",");
+                            pokers = infos[0].split("_");
+                            debuginfo = "";
+                            for (String s : pokers) {
+                                Card c = new Card(Integer.parseInt(s));
+                                debuginfo = debuginfo + " " + c.toChineseString();
+                            }
+                            log.debug("ontable" + ":" + debuginfo);
                     }
                 }
             }

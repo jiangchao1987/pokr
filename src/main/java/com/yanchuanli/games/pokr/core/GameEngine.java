@@ -25,7 +25,7 @@ public class GameEngine {
 
         int id = 0;
         for (String name : roomsToPrepare) {
-            GameConfig gc = new GameConfig(id, name, 20, 40, 0, 10000, 9, Duration.seconds(20), Duration.millis(500));
+            GameConfig gc = new GameConfig(id, name, 20, 40, 0, 10000, 9, Duration.seconds(30), Duration.millis(500));
             Game game = new Game(gc);
             games.put(name, game);
             id++;
