@@ -20,7 +20,7 @@ public class NotificationCenter {
 	 * @param info 用户id
 	 */
 	public static void deal2CardsOnAllDevices(List<Player> players, String info) {
-		notifyAllOnTable(players, info, Config.TYPE_ROTATE_INGAME);
+		notifyAllOnTable(players, info, Config.TYPE_DEAL2CARDSONALLDEVICES_INGAME);
 	}
 
     /*
