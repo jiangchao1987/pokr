@@ -32,14 +32,7 @@ public class ServerHandler extends IoHandlerAdapter {
     }
 
     public void sessionOpened(IoSession session) throws Exception {
-//        Memory.sessionsOnServer.put(String.valueOf(session.getUdid()), session);
-//        Player player = new Player(String.valueOf(session.getUdid()), String.valueOf("Player" + session.getUdid()));
-//        player.setMoney(10000);
-//        player.setSession(session);
-//        Memory.sessionsOnServer.put(String.valueOf(session.getUdid()), player);
         log.info("incomming client : " + session.getRemoteAddress());
-//        Util.sendMessage(session, "Hello Player" + String.valueOf("Player" + session.getUdid()));
-//        initMQ();
     }
 
     // 当一个客户端关闭时

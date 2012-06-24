@@ -11,6 +11,7 @@ import com.yanchuanli.games.pokr.util.Util;
 import org.apache.log4j.Logger;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Copyright Candou.com
@@ -41,7 +42,7 @@ public class Game implements Runnable {
 
     public Game(GameConfig gc) {
         this.gc = gc;
-        players = new ArrayList<>();
+        players = new CopyOnWriteArrayList<>();
         cardsOnTable = new ArrayList<>();
         deck = new Deck();
         comparator = new PlayerRankComparator();
@@ -344,5 +345,9 @@ public class Game implements Runnable {
                 }
             }
         }
+    }
+
+    public void stopGame() {
+        stop = true;
     }
 }

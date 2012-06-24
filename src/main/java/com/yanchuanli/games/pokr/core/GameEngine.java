@@ -36,4 +36,11 @@ public class GameEngine {
     public static Game getGame(String name) {
         return games.get(name);
     }
+
+    public static void stop() {
+        for (String s : games.keySet()) {
+            Game game = games.get(s);
+            game.stopGame();
+        }
+    }
 }

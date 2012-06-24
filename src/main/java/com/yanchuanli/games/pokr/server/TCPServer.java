@@ -72,6 +72,7 @@ public class TCPServer {
             input = scanner.nextLine();
         }
         log.info("quitting now ...");
+        GameEngine.stop();
         acceptor.unbind();
         acceptor.dispose();
 //        ServiceCenter.getInstance().stopService();
