@@ -342,30 +342,32 @@ public class Game implements Runnable {
 
     @Override
     public void run() {
-        while (!stop) {
-            if (availablePlayers.size() >= 2) {
-                try {
-                    log.debug("game will start in 3 seconds ...");
-                    Thread.sleep(Duration.seconds(1).inMillis());
-                    log.debug("game will start in 2 seconds ...");
-                    Thread.sleep(Duration.seconds(1).inMillis());
-                    log.debug("game will start in 1 seconds ...");
-                    Thread.sleep(Duration.seconds(1).inMillis());
-                } catch (InterruptedException e) {
-                    log.error(e);
-                }
-                start();
-            } else {
-                for (Player p : availablePlayers) {
-                    p.isAlive();
-                }
-                try {
-                    Thread.sleep(gc.getGameCheckInterval().inMillis());
-                } catch (InterruptedException e) {
-                    log.error(e);
+        try {
+            while (!stop) {
+                if (availablePlayers.size() >= 2) {
+                    try {
+                        log.debug("game will start in 3 seconds ...");
+                        Thread.sleep(Duration.seconds(1).inMillis());
+                        log.debug("game will start in 2 seconds ...");
+                        Thread.sleep(Duration.seconds(1).inMillis());
+                        log.debug("game will start in 1 seconds ...");
+                        Thread.sleep(Duration.seconds(1).inMillis());
+                    } catch (InterruptedException e) {
+                        log.error(e);
+                    }
+                    start();
+                } else {
+                    try {
+                        Thread.sleep(gc.getGameCheckInterval().inMillis());
+                    } catch (InterruptedException e) {
+                        log.error(e);
+                    }
                 }
             }
+        } catch (Exception e) {
+            log.error(e);
         }
+
     }
 
     public void stopGame() {
