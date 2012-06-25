@@ -1,7 +1,6 @@
 package com.yanchuanli.games.pokr.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Random;
 
 /**
  * Copyright Candou.com
@@ -10,31 +9,66 @@ import java.util.List;
  * Date: 12-5-31
  */
 public class Table {
-    private String id;
-    private String name;
-    private List<Player> players;
 
-    public Table(String id, String name) {
-        this.id = id;
-        this.name = name;
-        players = new ArrayList<Player>();
+    private Player[] players;
+    private Random random;
+    private int playerCount;
+
+    public Table() {
+        playerCount = 9;
+        players = new Player[playerCount];
     }
 
-    public String getId() {
-        return id;
+    public boolean addPlayer(Player player) {
+        boolean result = !isFull();
+        if (result) {
+            for (int i = 0; i < playerCount; i++) {
+                if (players[i] == null) {
+                    players[i] = player;
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public boolean removePlayer(Player player) {
+        boolean result = false;
+        for (int i = 0; i < playerCount; i++) {
+            if (players[i].getUdid().equals(player.getUdid())) {
+                players[i] = null;
+                result = true;
+                break;
+            }
+        }
+        return result;
     }
 
-    public String getName() {
-        return name;
+    private boolean isFull() {
+        boolean result = true;
+        for (int i = 0; i < playerCount; i++) {
+            if (players[i] == null) {
+                result = false;
+                break;
+            }
+        }
+        return result;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    private void clear() {
+        for (int i = 0; i < playerCount; i++) {
+            players[i] = null;
+        }
     }
 
+    public int size() {
+        int result = 0;
+        for (int i = 0; i < playerCount; i++) {
+            if (players[i] != null) {
+                result++;
+            }
+        }
+        return result;
+    }
 
 }
