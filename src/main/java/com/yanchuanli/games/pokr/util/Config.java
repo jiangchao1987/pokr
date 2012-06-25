@@ -10,7 +10,7 @@ public class Config {
     public static final int port = 9999;
     public static final String serverAddress = "localhost";
     public static final String webServerBase = "http://192.168.1.177:8080/restpokr/";
-    
+
     public static final byte START = '$' & 0xFF;
     public static final byte SPLIT = '|' & 0xFF;
     public static final boolean offlineDebug = false;
@@ -28,6 +28,7 @@ public class Config {
     public static final int TYPE_LEAVEROOM_INGAME = 10;
     public static final int TYPE_OTHERSACTION_INGAME = 11;
     public static final int TYPE_DEAL2CARDSONALLDEVICES_INGAME = 12;
+    public static final int TYPE_OTHERSTARTACTION_INGAME = 13;
 
     public static final int SRC_IPHONE_GUEST = 0;
     public static final int SRC_IPAD_GUEST = 1;

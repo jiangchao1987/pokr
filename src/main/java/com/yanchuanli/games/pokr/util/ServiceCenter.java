@@ -102,11 +102,11 @@ public class ServiceCenter {
         game.addPlayer(newplayer);
 
         StringBuffer sb = new StringBuffer();
-        for (Player player : game.getActivePlayers()) {
+        for (Player player : game.getAvailablePlayers()) {
             sb.append(player.getUdid() + "," + player.getName() + "," + player.getMoney() + ";");
         }
 
-        NotificationCenter.sayHello(game.getActivePlayers(), sb.toString());
+        NotificationCenter.sayHello(game.getAvailablePlayers(), sb.toString());
     }
 
     /**

@@ -181,6 +181,8 @@ public class Game implements Runnable {
                 NotificationCenter.winorlose(results.get(i).getSession(), results.get(i).getUdid() + "," + results.get(i).getName() + ",0", 10);
             }
         }
+
+        results.clear();
         gaming = false;
     }
 
@@ -365,5 +367,9 @@ public class Game implements Runnable {
 
     public void stopGame() {
         stop = true;
+    }
+
+    public List<Player> getAvailablePlayers() {
+        return availablePlayers;
     }
 }
