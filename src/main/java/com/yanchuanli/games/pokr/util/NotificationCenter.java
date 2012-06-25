@@ -12,6 +12,16 @@ import java.util.List;
  * Date: 12-6-16
  */
 public class NotificationCenter {
+	
+	/**
+	 * 通知所有玩家当前轮到谁了
+	 * 
+	 * @param players 所有玩家
+	 * @param info 轮到的玩家id
+	 */
+	public static void A(List<Player> players, String info) {
+		notifyAllOnTable(players, info, Config.TYPE_OTHERSTARTACTION_INGAME);
+	}
 
     /**
      * 在所有玩家得到自己的2张牌后，通知所有设备开始发那2张牌, 相当于以前的StartServer！

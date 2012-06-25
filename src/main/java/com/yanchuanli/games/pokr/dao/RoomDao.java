@@ -52,7 +52,9 @@ public class RoomDao {
     		doc.put("maxPlayersCount", 9);
     		doc.put("currentPlayerCount", 0);
     		doc.put("level", level);
-    		doc.put("bettingDuration", 30);
+    		doc.put("bettingDuration", 30000);
+    		doc.put("inactivityCheckInterval", 500);
+    		doc.put("gameCheckInterval", 3000);
     		coll.insert(doc);
     	}
     }
@@ -79,7 +81,9 @@ public class RoomDao {
             room.setCurrentPlayerCount((Integer) obj.get("currentPlayerCount"));
             room.setLevel((Integer) obj.get("level"));
             room.setBettingDuration((Integer) obj.get("bettingDuration"));
-           
+            room.setInactivityCheckInterval((Integer) obj.get("inactivityCheckInterval"));
+            room.setGameCheckInterval((Integer) obj.get("gameCheckInterval"));
+            
             rooms.add(room);
         }
         

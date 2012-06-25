@@ -19,7 +19,9 @@ public class Room {
 	private int maxPlayersCount;
 	private int currentPlayerCount;
 	private int level;
-	private int bettingDuration;
+	private int bettingDuration;	//下注等待时间
+	private int inactivityCheckInterval;	//线程sleep时间间隔
+	private int gameCheckInterval;	//游戏开始倒计时
 
 	private List<Player> players;
 
@@ -113,6 +115,22 @@ public class Room {
 
 	public void addPlayer(Player player) {
 		players.add(player);
+	}
+
+	public int getInactivityCheckInterval() {
+		return inactivityCheckInterval;
+	}
+
+	public void setInactivityCheckInterval(int inactivityCheckInterval) {
+		this.inactivityCheckInterval = inactivityCheckInterval;
+	}
+
+	public int getGameCheckInterval() {
+		return gameCheckInterval;
+	}
+
+	public void setGameCheckInterval(int gameCheckInterval) {
+		this.gameCheckInterval = gameCheckInterval;
 	}
 
 }
