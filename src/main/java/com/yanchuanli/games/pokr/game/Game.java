@@ -25,7 +25,7 @@ public class Game implements Runnable {
     private GameConfig gc;
 
     private static Logger log = Logger.getLogger(Game.class);
-    private List<Player> players;
+    private List<Player> activePlayers;
     private List<Card> cardsOnTable;
     private Deck deck;
     private int dealerPosition;
@@ -42,20 +42,20 @@ public class Game implements Runnable {
 
     public Game(GameConfig gc) {
         this.gc = gc;
-        players = new CopyOnWriteArrayList<>();
+        activePlayers = new CopyOnWriteArrayList<>();
         cardsOnTable = new ArrayList<>();
         deck = new Deck();
         comparator = new PlayerRankComparator();
     }
 
     public void addPlayer(Player player) {
-        players.add(player);
+        activePlayers.add(player);
     }
 
     public void removePlayer(Player player) {
-        for (Player aplayer : players) {
+        for (Player aplayer : activePlayers) {
             if (aplayer.getGlobalId() == player.getGlobalId()) {
-                players.remove(aplayer);
+                activePlayers.remove(aplayer);
                 break;
             }
         }
@@ -81,20 +81,20 @@ public class Game implements Runnable {
 
         // pre flop betting round
         // deal 3 flp cards on the table
-        if (players.size() > 1) {
+        if (activePlayers.size() > 1) {
             deal3FlipCards();
             doBettingRound();
             // flop the betting round
             // deal the turn card (4th) on the table
-            if (players.size() > 1) {
+            if (activePlayers.size() > 1) {
 
                 dealTurnCard();
                 doBettingRound();
-                if (players.size() > 1) {
+                if (activePlayers.size() > 1) {
 
                     dealRiverCard();
                     doBettingRound();
-                    if (players.size() > 1) {
+                    if (activePlayers.size() > 1) {
                         bet = 0;
                         shutdown();
                     }
@@ -106,12 +106,12 @@ public class Game implements Runnable {
     }
 
     private void rotateDealer() {
-        dealerPosition = dealerPosition++ % players.size();
+        dealerPosition = dealerPosition++ % activePlayers.size();
         log.debug("[RotateDealer] current dealer:" + dealerPosition);
     }
 
     private void deal2Cards() {
-        for (Player player : players) {
+        for (Player player : activePlayers) {
             for (int i = 0; i < 2; i++) {
                 Card card = deck.dealCard();
                 player.getHand().addCard(card);
@@ -119,7 +119,7 @@ public class Game implements Runnable {
             log.debug(player.getName() + " got " + player.getHand().toChineseString());
             NotificationCenter.deal2Cards(player.getSession(), player.getUdid() + "," + player.getName() + "," + player.getHand().getGIndexes());
         }
-        NotificationCenter.deal2CardsOnAllDevices(players, actor.getUdid());
+        NotificationCenter.deal2CardsOnAllDevices(activePlayers, actor.getUdid());
     }
 
     private void deal3FlipCards() {
@@ -128,51 +128,51 @@ public class Game implements Runnable {
             cardsOnTable.add(card);
         }
         log.debug("OnTable:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
-        NotificationCenter.deal3FlipCards(players, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
+        NotificationCenter.deal3FlipCards(activePlayers, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
     }
 
     private void dealTurnCard() {
         Card card = deck.dealCard();
         cardsOnTable.add(card);
         log.debug("OnTable-Turn:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
-        NotificationCenter.dealTurnCard(players, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
+        NotificationCenter.dealTurnCard(activePlayers, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
     }
 
     private void dealRiverCard() {
         Card card = deck.dealCard();
         cardsOnTable.add(card);
         log.debug("OnTable-River:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
-        NotificationCenter.dealRiverCard(players, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
+        NotificationCenter.dealRiverCard(activePlayers, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
     }
 
     private void shutdown() {
 
         log.debug("OnTable: " + Util.cardsToString(cardsOnTable));
 
-        for (Player player : players) {
+        for (Player player : activePlayers) {
             for (Card card : cardsOnTable) {
                 player.getHand().addCard(card);
             }
         }
 
-        Collections.sort(players, comparator);
+        Collections.sort(activePlayers, comparator);
 
         StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < players.size(); i++) {
-            Player player = players.get(i);
+        for (int i = 0; i < activePlayers.size(); i++) {
+            Player player = activePlayers.get(i);
             String wininfo = "#" + String.valueOf(i + 1) + " " + player.getName() + " " + player.getHandRank() + " " + player.getBestHand().toChineseString() + " " + player.getNameOfHand();
             log.debug(wininfo);
             sb.append(player.getUdid() + "," + player.getName() + "," + player.getNameOfHand() + ";");
         }
-        NotificationCenter.gameover(players, sb.toString());
+        NotificationCenter.gameover(activePlayers, sb.toString());
 
-        for (int i = 0; i < players.size(); i++) {
+        for (int i = 0; i < activePlayers.size(); i++) {
             if (i == 0) {
-                log.debug(players.get(i).getName() + " wins!");
-                NotificationCenter.winorlose(players.get(i).getSession(), players.get(i).getUdid() + "," + players.get(i).getName() + ",1", 10);
+                log.debug(activePlayers.get(i).getName() + " wins!");
+                NotificationCenter.winorlose(activePlayers.get(i).getSession(), activePlayers.get(i).getUdid() + "," + activePlayers.get(i).getName() + ",1", 10);
             } else {
-                log.debug(players.get(i).getName() + " loses!");
-                NotificationCenter.winorlose(players.get(i).getSession(), players.get(i).getUdid() + "," + players.get(i).getName() + ",0", 10);
+                log.debug(activePlayers.get(i).getName() + " loses!");
+                NotificationCenter.winorlose(activePlayers.get(i).getSession(), activePlayers.get(i).getUdid() + "," + activePlayers.get(i).getName() + ",0", 10);
             }
         }
         gaming = false;
@@ -184,7 +184,7 @@ public class Game implements Runnable {
         dealerPosition = 0;
         actorPosition = 0;
         cardsOnTable.clear();
-        for (Player player : players) {
+        for (Player player : activePlayers) {
             player.getHand().makeEmpty();
             if (player.getBestHand() != null) {
                 player.getBestHand().makeEmpty();
@@ -233,18 +233,18 @@ public class Game implements Runnable {
                     break;
                 case FOLD:
                     actor.getHand().makeEmpty();
-                    players.remove(actor);
+                    this.activePlayers.remove(actor);
                     actorPosition--;
-                    if (players.size() == 1) {
-                        log.debug(players.get(0).getName() + " win ...");
+                    if (this.activePlayers.size() == 1) {
+                        log.debug(this.activePlayers.get(0).getName() + " win ...");
                         playersToAct = 0;
-                        NotificationCenter.winorlose(players.get(0).getSession(), players.get(0).getUdid() + "," + players.get(0).getName() + ",1", 10);
+                        NotificationCenter.winorlose(this.activePlayers.get(0).getSession(), this.activePlayers.get(0).getUdid() + "," + this.activePlayers.get(0).getName() + ",1", 10);
                     }
                     break;
             }
             String info = actor.getUdid() + "," + action.getVerb() + ":" + actor.getBet() + "," + moneyOnTable;
             List<Player> playersToForward = new ArrayList<>();
-            for (Player player : players) {
+            for (Player player : this.activePlayers) {
                 if (player != actor) {
                     playersToForward.add(player);
                 }
@@ -273,21 +273,21 @@ public class Game implements Runnable {
     }
 
     private void rotateActor() {
-        if (players.size() > 0) {
+        if (activePlayers.size() > 0) {
             do {
-                actorPosition = (actorPosition + 1) % players.size();
-                actor = players.get(actorPosition);
-            } while (!players.contains(actor));
+                actorPosition = (actorPosition + 1) % activePlayers.size();
+                actor = activePlayers.get(actorPosition);
+            } while (!activePlayers.contains(actor));
 
         } else {
             // Should never happen.
-            throw new IllegalStateException("No active players left");
+            throw new IllegalStateException("No active activePlayers left");
         }
     }
 
     private List<Player> getLivePlayers() {
         List<Player> activePlayers = new ArrayList<>();
-        for (Player player : players) {
+        for (Player player : this.activePlayers) {
             if (player.isAlive()) {
                 activePlayers.add(player);
             }
@@ -306,10 +306,10 @@ public class Game implements Runnable {
     private void sayHello() {
         gaming = true;
         String info = "";
-        for (Player player : players) {
+        for (Player player : activePlayers) {
             info = info + player.getUdid() + "," + player.getName() + "," + player.getMoney() + ";";
         }
-        NotificationCenter.sayHello(players, info);
+        NotificationCenter.sayHello(activePlayers, info);
     }
 
 
@@ -317,14 +317,14 @@ public class Game implements Runnable {
         return gc.getName();
     }
 
-    public List<Player> getPlayers() {
-        return players;
+    public List<Player> getActivePlayers() {
+        return activePlayers;
     }
 
     @Override
     public void run() {
         while (!stop) {
-            if (players.size() >= 2) {
+            if (activePlayers.size() >= 2) {
 
                 try {
                     log.debug("game will start in 3 seconds ...");

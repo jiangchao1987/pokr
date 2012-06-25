@@ -47,30 +47,14 @@ public class ServerHandler extends IoHandlerAdapter {
 
             IoBuffer buffer = (IoBuffer) message;
             SocketAddress remoteAddress = session.getRemoteAddress();
-            log.info(remoteAddress);
-            log.info(new String(buffer.array()));
+            log.info(remoteAddress + ":" + new String(buffer.array()));
 
-//            List<String> cmds = Util.extractStringFromIoBuffer(buffer);
-//
-//            for (String cmd : cmds) {
-//                log.info("received:" + cmd);
-//                ServiceCenter.getInstance().processCommand(session, cmd);
-//            }
-            
             List<Map<Integer, String>> list = Util.ioBufferToString(buffer);
             for (Map<Integer, String> map : list) {
-            	ServiceCenter.getInstance().processCommand(session, map);
+                ServiceCenter.getInstance().processCommand(session, map);
             }
 
         }
-
-
-//        while (true) {
-//            QueueingConsumer.Delivery delivery = consumer.nextDelivery();
-//            String mqmessage = new String(delivery.getBody());
-//            session.write(mqmessage);
-//            log.info("[x] Received '" + message + "'");
-//        }
 
     }
 
@@ -91,7 +75,7 @@ public class ServerHandler extends IoHandlerAdapter {
     // }
     // 创建 session
     public void sessionCreated(IoSession session) {
-        log.info("sessioncreated ...");
+//        log.info("sessioncreated ...");
 //        session.getConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);
     }
 
