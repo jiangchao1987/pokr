@@ -23,8 +23,14 @@ public class NotificationCenter {
         notifyAllOnTable(players, info, Config.TYPE_DEAL2CARDSONALLDEVICES_INGAME);
     }
 
-    public static void leaveRoom(List<Player> players, Player theOneWhoLeft) {
-
+    /**
+     * 通知所有玩家谁离开了房间。
+     * 
+     * @param players 所有玩家
+     * @param info    提示消息
+     */
+    public static void leaveRoom(List<Player> players, String info) {
+    	notifyAllOnTable(players, info, Config.TYPE_LEAVEROOM_INGAME);
     }
 
     /*

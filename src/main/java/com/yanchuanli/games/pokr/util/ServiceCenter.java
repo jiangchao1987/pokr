@@ -66,14 +66,26 @@ public class ServiceCenter {
                 case Config.TYPE_JOIN_INGAME:
                     join(session, map.get(key));
                     break;
-                case Config.TYPE_LEAVE_INGAME:
-                    leave(session, map.get(key));
+                case Config.TYPE_LEAVEROOM_INGAME:
+                    leaveRoom(session, map.get(key));
                     break;
             }
         }
     }
 
-    private void leave(IoSession session, String info) {
+    /**
+     * 离开房间
+     * 
+     * @param session
+     * @param info    房间id,用户udid,用户名
+     */
+    private void leaveRoom(IoSession session, String info) {
+    	String[] cmds = info.split(",");
+    	
+    	Game game = GameEngine.getGame(cmds[0]);
+    	Player player = new Player(cmds[1], cmds[2]);
+    	game.removePlayer(player);
+    	NotificationCenter.leaveRoom(game.getPlayers(), cmds[2] + " leave the room!");
     }
 
     /**

@@ -25,7 +25,7 @@ public class Config {
     public static final int TYPE_CARD_INGAME = 7;
     public static final int TYPE_GAMEOVER_INGAME = 8;
     public static final int TYPE_WINORLOSE_INGAME = 9;
-    public static final int TYPE_LEAVE_INGAME = 10;
+    public static final int TYPE_LEAVEROOM_INGAME = 10;
     public static final int TYPE_OTHERSACTION_INGAME = 11;
     public static final int TYPE_DEAL2CARDSONALLDEVICES_INGAME = 12;
 
