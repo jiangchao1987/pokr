@@ -85,7 +85,7 @@ public class ServiceCenter {
     	Game game = GameEngine.getGame(cmds[0]);
     	Player player = new Player(cmds[1], cmds[2]);
     	game.removePlayer(player);
-    	NotificationCenter.leaveRoom(game.getPlayers(), cmds[2] + " leave the room!");
+    	NotificationCenter.leaveRoom(game.getActivePlayers(), cmds[2] + " leave the room!");
     }
 
     /**
@@ -100,11 +100,11 @@ public class ServiceCenter {
         game.addPlayer(newplayer);
 
         StringBuffer sb = new StringBuffer();
-        for (Player player : game.getPlayers()) {
+        for (Player player : game.getActivePlayers()) {
             sb.append(player.getUdid() + "," + player.getName() + "," + player.getMoney() + ";");
         }
 
-        NotificationCenter.sayHello(game.getPlayers(), sb.toString());
+        NotificationCenter.sayHello(game.getActivePlayers(), sb.toString());
     }
 
     /**
