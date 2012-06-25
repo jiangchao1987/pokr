@@ -97,7 +97,9 @@ public class NotificationCenter {
      * 通知指定玩家。
      */
     private static void notifyOneOnTable(IoSession session, String info, int type) {
-        Util.sendMsg(session, info, type);
+        if(session!=null){
+            Util.sendMsg(session, info, type);
+        }
     }
 
 }

@@ -40,6 +40,7 @@ public class ServerHandler extends IoHandlerAdapter {
     public void sessionClosed(IoSession session) {
         Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
         player.setAlive(false);
+        player.setSession(null);
         Memory.sessionsOnServer.remove(String.valueOf(session.getId()));
         log.info(player.getName() + " is now disconnected !");
     }
