@@ -215,8 +215,16 @@ public class Game implements Runnable {
             log.debug("playersToAct: " + playersToAct + " id: " + actor.getUdid()
                     + " name: "
                     + actor.getName());
-            Set<Action> allowedActions = getAllowedActions(actor);
 
+            Set<Action> allowedActions = getAllowedActions(actor);
+            List<Player> playersToForward = new ArrayList<>();
+            for (Player player : this.activePlayers) {
+                if (player != actor) {
+                    playersToForward.add(player);
+                }
+            }
+
+            NotificationCenter.otherPlayerStartAction(playersToForward, actor.getUdid());
             Action action = actor.act(allowedActions, MIN_BET, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval());
 
             log.debug(" id: " + actor.getUdid() + " name: " + actor.getName()
@@ -252,12 +260,7 @@ public class Game implements Runnable {
                     break;
             }
             String info = actor.getUdid() + "," + action.getVerb() + ":" + actor.getBet() + "," + moneyOnTable;
-            List<Player> playersToForward = new ArrayList<>();
-            for (Player player : this.activePlayers) {
-                if (player != actor) {
-                    playersToForward.add(player);
-                }
-            }
+
             NotificationCenter.forwardAction(playersToForward, info);
             playersToForward.clear();
             playersToForward = null;

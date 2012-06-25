@@ -19,7 +19,7 @@ public class NotificationCenter {
 	 * @param players 所有玩家
 	 * @param info 轮到的玩家id
 	 */
-	public static void A(List<Player> players, String info) {
+	public static void otherPlayerStartAction(List<Player> players, String info) {
 		notifyAllOnTable(players, info, Config.TYPE_OTHERSTARTACTION_INGAME);
 	}
 
