@@ -53,22 +53,27 @@ public class PlayerDao {
      */
 	public static Player getPlayer(String udid, String password,
 			int source) {
-		String htmlContent = URLFetchUtil.fetch(Config.webServerBase
-				+ "login?udid=" + udid + "&password=" + password + "&source="
-				+ source);
-		if (htmlContent != null && !htmlContent.trim().isEmpty()) {
-			String[] msgs = htmlContent.split(",");
-			
-			Player player = new Player(msgs[0], msgs[1]);
-			player.setMoney(Integer.parseInt(msgs[2]));
-			player.setExp(Integer.parseInt(msgs[3]));
-			player.setWinCount(Integer.parseInt(msgs[4]));
-			player.setLoseCount(Integer.parseInt(msgs[5]));
-			player.setHistoricalBestHandRank(Integer.parseInt(msgs[6]));
-			player.setHistoricalBestHand(msgs[7]);
-			player.setMaxWin(Integer.parseInt(msgs[8]));
-			player.setAvatar(msgs[9]);
-			players.put(udid, player);
+		try {
+			String htmlContent = URLFetchUtil.fetch(Config.webServerBase
+					+ "login?udid=" + udid + "&password=" + password + "&source="
+					+ source);
+			if (htmlContent != null && !htmlContent.trim().isEmpty()) {
+				String[] msgs = htmlContent.split(",");
+				
+				Player player = new Player(msgs[0], msgs[1]);
+				player.setMoney(Integer.parseInt(msgs[2]));
+				player.setExp(Integer.parseInt(msgs[3]));
+				player.setWinCount(Integer.parseInt(msgs[4]));
+				player.setLoseCount(Integer.parseInt(msgs[5]));
+				player.setHistoricalBestHandRank(Integer.parseInt(msgs[6]));
+				player.setHistoricalBestHand(msgs[7]);
+				player.setMaxWin(Integer.parseInt(msgs[8]));
+				player.setCustomAvatar(Integer.parseInt(msgs[9]));
+				player.setAvatar(msgs[10]);
+				players.put(udid, player);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return players.get(udid);
 	}
@@ -138,6 +143,7 @@ public class PlayerDao {
 			player.setHistoricalBestHand((String) obj.get("best"));
 			player.setMaxWin((Integer) obj.get("max"));
 			player.setAvatar((String) obj.get("face"));
+			player.setCustomAvatar((Integer) obj.get("customAvatar"));
 		}
 
 		return player;

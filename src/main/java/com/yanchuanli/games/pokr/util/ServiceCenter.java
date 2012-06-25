@@ -153,7 +153,12 @@ public class ServiceCenter {
         Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);
 
         StringBuffer sb = new StringBuffer();
-        sb.append(player.getUdid() + "," + player.getName() + "," + player.getMoney());
+		sb.append(player.getUdid() + "," + player.getName() + ","
+				+ player.getMoney() + "," + player.getExp() + ","
+				+ player.getWinCount() + "," + player.getLoseCount() + ","
+				+ player.getHistoricalBestHandRank() + ","
+				+ player.getHistoricalBestHand() + "," + player.getMaxWin()
+				+ "," + player.getCustomAvatar() + "," + player.getAvatar());
         NotificationCenter.login(session, sb.toString());
     }
 
