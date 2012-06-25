@@ -17,7 +17,7 @@ public class RoomDao {
 
     }
 
-    public static List<String> getRooms(int roomlevel) {
+    public static List<Integer> getRooms(int roomlevel) {
         switch (roomlevel) {
             case Config.ROOM_LEVEL_BEGINNER:
                 break;
@@ -29,9 +29,9 @@ public class RoomDao {
                 break;
         }
 
-        List rooms = new ArrayList();
-        rooms.add("room1");
-        rooms.add("room2");
-        return rooms;
+        List<Integer> rooms = new ArrayList<Integer>();
+		rooms.add(1001);
+		rooms.add(1002);
+		return rooms;
     }
 }

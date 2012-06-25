@@ -19,30 +19,28 @@ import java.util.Map;
 
 
 public class GameEngine {
-    private static Map<String, Game> games;
+    private static Map<Integer, Game> games;
 
     public static void start() {
         RoomDao.init();
-        games = new HashMap<String, Game>();
-        List<String> roomsToPrepare = RoomDao.getRooms(Config.ROOM_LEVEL_BEGINNER);
+        games = new HashMap<Integer, Game>();
+        List<Integer> roomsToPrepare = RoomDao.getRooms(Config.ROOM_LEVEL_BEGINNER);
 
-        int id = 0;
-        for (String name : roomsToPrepare) {
-            GameConfig gc = new GameConfig(id, name, 20, 40, 0, 10000, 9, Duration.seconds(3000), Duration.millis(500), Duration.seconds(3));
+        for (Integer roomId : roomsToPrepare) {
+            GameConfig gc = new GameConfig(roomId, "room" + roomId, 20, 40, 0, 10000, 9, Duration.seconds(3000), Duration.millis(500), Duration.seconds(3));
             Game game = new Game(gc);
-            games.put(name, game);
-            id++;
+            games.put(roomId, game);
             new Thread(game).start();
         }
     }
 
-    public static Game getGame(String name) {
-        return games.get(name);
+    public static Game getGame(Integer roomId) {
+        return games.get(roomId);
     }
 
     public static void stop() {
-        for (String s : games.keySet()) {
-            Game game = games.get(s);
+        for (Integer roomId : games.keySet()) {
+            Game game = games.get(roomId);
             game.stopGame();
         }
     }

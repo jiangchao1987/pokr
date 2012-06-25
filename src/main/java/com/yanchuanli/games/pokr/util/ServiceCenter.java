@@ -82,7 +82,7 @@ public class ServiceCenter {
     private void leaveRoom(IoSession session, String info) {
     	String[] cmds = info.split(",");
     	
-    	Game game = GameEngine.getGame(cmds[0]);
+    	Game game = GameEngine.getGame(Integer.parseInt(cmds[0]));
     	Player player = new Player(cmds[1], cmds[2]);
     	game.removePlayer(player);
     	NotificationCenter.leaveRoom(game.getActivePlayers(), cmds[1] + ",0");
@@ -95,7 +95,7 @@ public class ServiceCenter {
      * @param info    当前房间id
      */
     private void join(IoSession session, String info) {
-        Game game = GameEngine.getGame(info);
+        Game game = GameEngine.getGame(Integer.parseInt(info));
         Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
         game.addPlayer(newplayer);
 
@@ -115,10 +115,10 @@ public class ServiceCenter {
      */
     private void listRooms(IoSession session, String info) {
         int type = Integer.parseInt(info);
-        List<String> rooms = RoomDao.getRooms(type);
+        List<Integer> rooms = RoomDao.getRooms(type);
         StringBuffer sb = new StringBuffer();
-        for (String s : rooms) {
-            sb.append(s + ",");
+        for (Integer roomId : rooms) {
+            sb.append(roomId + ",");
         }
         String result = sb.toString();
         if (result.endsWith(",")) {
