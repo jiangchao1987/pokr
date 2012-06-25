@@ -44,6 +44,7 @@ public class Game implements Runnable {
     public Game(GameConfig gc) {
         this.gc = gc;
         activePlayers = new CopyOnWriteArrayList<>();
+        availablePlayers = new CopyOnWriteArrayList<>();
         cardsOnTable = new ArrayList<>();
         deck = new Deck();
         comparator = new PlayerRankComparator();

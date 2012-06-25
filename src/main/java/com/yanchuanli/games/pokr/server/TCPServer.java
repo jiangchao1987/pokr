@@ -1,9 +1,6 @@
 package com.yanchuanli.games.pokr.server;
 
-import com.google.code.tempusfugit.temporal.Duration;
 import com.yanchuanli.games.pokr.core.GameEngine;
-import com.yanchuanli.games.pokr.game.Game;
-import com.yanchuanli.games.pokr.game.GameConfig;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.util.Config;
 import com.yanchuanli.games.pokr.util.Memory;
@@ -50,24 +47,14 @@ public class TCPServer {
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
         while (!input.equalsIgnoreCase("quit")) {
-            if (input.startsWith("start")) {
-                GameConfig gc = new GameConfig(1, "123", 20, 40, 0, 10000, 9, Duration.seconds(3), Duration.millis(500));
-                Game game = new Game(gc);
 
-                for (String s : Memory.sessionsOnServer.keySet()) {
-                    game.addPlayer(Memory.sessionsOnServer.get(s));
-                }
-                log.debug(Memory.sessionsOnServer.keySet().size() + " players joined ...");
-                game.start();
-                break;
-            } else {
-                log.info("INPUT:" + input);
+            log.info("INPUT:" + input);
 //                Util.sendToAll(input);
-                for (String s : Memory.sessionsOnServer.keySet()) {
-                    Player player = Memory.sessionsOnServer.get(s);
-                    Util.sendMsg(player.getSession(), input, Config.TYPE_USER_INGAME);
-                }
+            for (String s : Memory.sessionsOnServer.keySet()) {
+                Player player = Memory.sessionsOnServer.get(s);
+                Util.sendMsg(player.getSession(), input, Config.TYPE_USER_INGAME);
             }
+
 
             input = scanner.nextLine();
         }
