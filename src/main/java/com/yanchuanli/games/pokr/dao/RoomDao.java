@@ -12,6 +12,11 @@ import java.util.List;
  * Date: 12-6-22
  */
 public class RoomDao {
+
+    public static void init() {
+
+    }
+
     public static List<String> getRooms(int roomlevel) {
         switch (roomlevel) {
             case Config.ROOM_LEVEL_BEGINNER:
