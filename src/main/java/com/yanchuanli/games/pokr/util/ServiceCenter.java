@@ -147,7 +147,6 @@ public class ServiceCenter {
     private void login(IoSession session, String info) {
     	String[] msgs = info.split(",");
         Player player = PlayerDao.getPlayer(msgs[0], msgs[1], Integer.parseInt(msgs[2]));
-
         player.setSession(session);
         Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);
 

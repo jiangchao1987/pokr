@@ -27,7 +27,7 @@ public class GameEngine {
         List<Integer> roomsToPrepare = RoomDao.getRooms(Config.ROOM_LEVEL_BEGINNER);
 
         for (Integer roomId : roomsToPrepare) {
-            GameConfig gc = new GameConfig(roomId, "room" + roomId, 20, 40, 0, 10000, 9, Duration.seconds(3000), Duration.millis(500), Duration.seconds(3));
+            GameConfig gc = new GameConfig(roomId, "room" + roomId, 20, 40, 0, 10000, 9, Duration.seconds(3000), Duration.millis(500), Duration.seconds(1));
             Game game = new Game(gc);
             games.put(roomId, game);
             new Thread(game).start();

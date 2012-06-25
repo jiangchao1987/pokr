@@ -51,7 +51,7 @@ public class Game implements Runnable {
     }
 
     public void addPlayer(Player player) {
-        activePlayers.add(player);
+        availablePlayers.add(player);
     }
 
     public void removePlayer(Player player) {
@@ -65,8 +65,9 @@ public class Game implements Runnable {
 
     public void start() {
 
-        sayHello();
         reset();
+        sayHello();
+
         // rotate dealer position
         rotateDealer();
 
@@ -186,7 +187,8 @@ public class Game implements Runnable {
         dealerPosition = 0;
         actorPosition = 0;
         cardsOnTable.clear();
-        for (Player player : activePlayers) {
+        activePlayers.clear();
+        for (Player player : availablePlayers) {
             player.getHand().makeEmpty();
             if (player.getBestHand() != null) {
                 player.getBestHand().makeEmpty();
@@ -307,6 +309,13 @@ public class Game implements Runnable {
 
     private void sayHello() {
         gaming = true;
+        for (Player player : availablePlayers) {
+            if (player.isAlive()) {
+                activePlayers.add(player);
+            } else {
+                availablePlayers.remove(player);
+            }
+        }
         String info = "";
         for (Player player : activePlayers) {
             info = info + player.getUdid() + "," + player.getName() + "," + player.getMoney() + ";";
@@ -326,7 +335,7 @@ public class Game implements Runnable {
     @Override
     public void run() {
         while (!stop) {
-            if (activePlayers.size() >= 2) {
+            if (availablePlayers.size() >= 2) {
                 try {
                     log.debug("game will start in 3 seconds ...");
                     Thread.sleep(Duration.seconds(1).inMillis());
@@ -339,6 +348,9 @@ public class Game implements Runnable {
                 }
                 start();
             } else {
+                for(Player p:availablePlayers){
+                    p.isAlive();
+                }
                 try {
                     Thread.sleep(gc.getGameCheckInterval().inMillis());
                 } catch (InterruptedException e) {

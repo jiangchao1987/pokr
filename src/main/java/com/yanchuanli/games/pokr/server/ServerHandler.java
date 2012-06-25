@@ -4,6 +4,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
+import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.util.Memory;
 import com.yanchuanli.games.pokr.util.ServiceCenter;
 import com.yanchuanli.games.pokr.util.Util;
@@ -37,6 +38,8 @@ public class ServerHandler extends IoHandlerAdapter {
 
     // 当一个客户端关闭时
     public void sessionClosed(IoSession session) {
+        Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
+        player.setAlive(false);
         Memory.sessionsOnServer.remove(String.valueOf(session.getId()));
         log.info("one Client Disconnect !");
     }

@@ -33,12 +33,12 @@ public class Player {
     private String input;
     private String nameOfHand;
     private int exp;
-	private int winCount;
-	private int loseCount;
-	private int historicalBestHandRank;
-	private String historicalBestHand;
-	private int maxWin;
-	private String avatar;
+    private int winCount;
+    private int loseCount;
+    private int historicalBestHandRank;
+    private String historicalBestHand;
+    private int maxWin;
+    private String avatar;
 
     public Player(String id, String name) {
         this.udid = id;
@@ -111,64 +111,64 @@ public class Player {
     public void setMoney(int money) {
         this.money = money;
     }
-    
+
     public int getExp() {
-		return exp;
-	}
+        return exp;
+    }
 
-	public void setExp(int exp) {
-		this.exp = exp;
-	}
-	
-	public int getWinCount() {
-		return winCount;
-	}
+    public void setExp(int exp) {
+        this.exp = exp;
+    }
 
-	public void setWinCount(int winCount) {
-		this.winCount = winCount;
-	}
+    public int getWinCount() {
+        return winCount;
+    }
 
-	public int getLoseCount() {
-		return loseCount;
-	}
+    public void setWinCount(int winCount) {
+        this.winCount = winCount;
+    }
 
-	public void setLoseCount(int loseCount) {
-		this.loseCount = loseCount;
-	}
+    public int getLoseCount() {
+        return loseCount;
+    }
 
-	public int getHistoricalBestHandRank() {
-		return historicalBestHandRank;
-	}
+    public void setLoseCount(int loseCount) {
+        this.loseCount = loseCount;
+    }
 
-	public void setHistoricalBestHandRank(int historicalBestHandRank) {
-		this.historicalBestHandRank = historicalBestHandRank;
-	}
+    public int getHistoricalBestHandRank() {
+        return historicalBestHandRank;
+    }
 
-	public String getHistoricalBestHand() {
-		return historicalBestHand;
-	}
+    public void setHistoricalBestHandRank(int historicalBestHandRank) {
+        this.historicalBestHandRank = historicalBestHandRank;
+    }
 
-	public void setHistoricalBestHand(String historicalBestHand) {
-		this.historicalBestHand = historicalBestHand;
-	}
+    public String getHistoricalBestHand() {
+        return historicalBestHand;
+    }
 
-	public int getMaxWin() {
-		return maxWin;
-	}
+    public void setHistoricalBestHand(String historicalBestHand) {
+        this.historicalBestHand = historicalBestHand;
+    }
 
-	public void setMaxWin(int maxWin) {
-		this.maxWin = maxWin;
-	}
+    public int getMaxWin() {
+        return maxWin;
+    }
 
-	public String getAvatar() {
-		return avatar;
-	}
+    public void setMaxWin(int maxWin) {
+        this.maxWin = maxWin;
+    }
 
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
-	}
+    public String getAvatar() {
+        return avatar;
+    }
 
-	public Action act(Set<Action> actions, int minBet, int currentBet, int moneyOnTable, Duration bettingDuration, Duration inactivityCheckInterval) {
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public Action act(Set<Action> actions, int minBet, int currentBet, int moneyOnTable, Duration bettingDuration, Duration inactivityCheckInterval) {
         int counter = 0;
         int sleepCount = (int) (bettingDuration.inMillis() / inactivityCheckInterval.inMillis());
         log.debug(bettingDuration.inMillis() + "/" + inactivityCheckInterval.inMillis() + "=" + sleepCount);
@@ -268,18 +268,18 @@ public class Player {
         this.globalId = globalId;
     }
 
-	@Override
-	public String toString() {
-		return "Player [globalId=" + globalId + ", udid=" + udid + ", name=" + name
-				+ ", session=" + session + ", hand=" + hand + ", bestHand="
-				+ bestHand + ", handRank=" + handRank + ", alive=" + alive
-				+ ", money=" + money + ", bet=" + bet + ", input=" + input
-				+ ", nameOfHand=" + nameOfHand + ", exp=" + exp + ", winCount="
-				+ winCount + ", loseCount=" + loseCount
-				+ ", historicalBestHandRank=" + historicalBestHandRank
-				+ ", historicalBestHand=" + historicalBestHand + ", maxWin="
-				+ maxWin + ", avatar=" + avatar + "]";
-	}
+    @Override
+    public String toString() {
+        return "Player [globalId=" + globalId + ", udid=" + udid + ", name=" + name
+                + ", session=" + session + ", hand=" + hand + ", bestHand="
+                + bestHand + ", handRank=" + handRank + ", alive=" + alive
+                + ", money=" + money + ", bet=" + bet + ", input=" + input
+                + ", nameOfHand=" + nameOfHand + ", exp=" + exp + ", winCount="
+                + winCount + ", loseCount=" + loseCount
+                + ", historicalBestHandRank=" + historicalBestHandRank
+                + ", historicalBestHand=" + historicalBestHand + ", maxWin="
+                + maxWin + ", avatar=" + avatar + "]";
+    }
 
 //    @Override
 //    public String toString() {
@@ -293,5 +293,5 @@ public class Player {
 //                ", bet=" + bet +
 //                '}';
 //    }
-    
+
 }
