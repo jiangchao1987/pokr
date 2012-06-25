@@ -12,6 +12,7 @@ public class GameConfig {
 
     private Duration bettingDuration;
     private Duration inactivityCheckInterval;
+    private Duration gameCheckInterval;
     private String name;
     private int smallBlindAmount;
     private int bigBlindAmount;
@@ -20,7 +21,7 @@ public class GameConfig {
     private int maxPlayersCount;
     private int id;
 
-    public GameConfig(int id, String name, int smallBlindAmount, int bigBlindAmount, int minHolding, int maxHolding, int maxPlayersCount, Duration bettingDuration, Duration inactivityCheckInterval) {
+    public GameConfig(int id, String name, int smallBlindAmount, int bigBlindAmount, int minHolding, int maxHolding, int maxPlayersCount, Duration bettingDuration, Duration inactivityCheckInterval, Duration gameCheckInterval) {
         this.bettingDuration = bettingDuration;
         this.inactivityCheckInterval = inactivityCheckInterval;
         this.name = name;
@@ -30,6 +31,7 @@ public class GameConfig {
         this.maxHolding = maxHolding;
         this.maxPlayersCount = maxPlayersCount;
         this.id = id;
+        this.gameCheckInterval = gameCheckInterval;
     }
 
     public Duration getBettingDuration() {
@@ -74,5 +76,13 @@ public class GameConfig {
 
     public void setInactivityCheckInterval(Duration inactivityCheckInterval) {
         this.inactivityCheckInterval = inactivityCheckInterval;
+    }
+
+    public Duration getGameCheckInterval() {
+        return gameCheckInterval;
+    }
+
+    public void setGameCheckInterval(Duration gameCheckInterval) {
+        this.gameCheckInterval = gameCheckInterval;
     }
 }

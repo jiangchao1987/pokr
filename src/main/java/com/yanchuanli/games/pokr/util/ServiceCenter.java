@@ -85,7 +85,7 @@ public class ServiceCenter {
     	Game game = GameEngine.getGame(cmds[0]);
     	Player player = new Player(cmds[1], cmds[2]);
     	game.removePlayer(player);
-    	NotificationCenter.leaveRoom(game.getActivePlayers(), cmds[2] + " leave the room!");
+    	NotificationCenter.leaveRoom(game.getActivePlayers(), cmds[1] + ",0");
     }
 
     /**

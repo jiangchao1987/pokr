@@ -26,6 +26,7 @@ public class Game implements Runnable {
 
     private static Logger log = Logger.getLogger(Game.class);
     private List<Player> activePlayers;
+    private List<Player> availablePlayers;
     private List<Card> cardsOnTable;
     private Deck deck;
     private int dealerPosition;
@@ -54,7 +55,7 @@ public class Game implements Runnable {
 
     public void removePlayer(Player player) {
         for (Player aplayer : activePlayers) {
-            if (aplayer.getGlobalId() == player.getGlobalId()) {
+            if (aplayer.getUdid().equals(player.getUdid())) {
                 activePlayers.remove(aplayer);
                 break;
             }
@@ -325,7 +326,6 @@ public class Game implements Runnable {
     public void run() {
         while (!stop) {
             if (activePlayers.size() >= 2) {
-
                 try {
                     log.debug("game will start in 3 seconds ...");
                     Thread.sleep(Duration.seconds(1).inMillis());
@@ -339,7 +339,7 @@ public class Game implements Runnable {
                 start();
             } else {
                 try {
-                    Thread.sleep(gc.getInactivityCheckInterval().inMillis());
+                    Thread.sleep(gc.getGameCheckInterval().inMillis());
                 } catch (InterruptedException e) {
                     log.error(e);
                 }
