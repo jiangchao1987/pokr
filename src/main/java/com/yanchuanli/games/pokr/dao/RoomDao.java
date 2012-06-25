@@ -1,8 +1,5 @@
 package com.yanchuanli.games.pokr.dao;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -11,6 +8,9 @@ import com.yanchuanli.games.pokr.model.Room;
 import com.yanchuanli.games.pokr.util.Config;
 import com.yanchuanli.games.pokr.util.MongoDB;
 import com.yanchuanli.games.pokr.util.MongoDBFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Copyright Candou.com
@@ -52,7 +52,7 @@ public class RoomDao {
     		doc.put("maxPlayersCount", 9);
     		doc.put("currentPlayerCount", 0);
     		doc.put("level", level);
-    		doc.put("bettingDuration", 30000);
+    		doc.put("bettingDuration", 5000);
     		doc.put("inactivityCheckInterval", 500);
     		doc.put("gameCheckInterval", 3000);
     		coll.insert(doc);

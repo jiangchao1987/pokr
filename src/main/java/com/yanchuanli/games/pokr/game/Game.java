@@ -151,6 +151,7 @@ public class Game implements Runnable {
     private void shutdown() {
 
         log.debug("OnTable: " + Util.cardsToString(cardsOnTable));
+
         List<Player> results = new ArrayList<>();
 
         for (Player player : activePlayers) {
