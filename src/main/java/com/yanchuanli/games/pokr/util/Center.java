@@ -23,7 +23,7 @@ public class Center {
 
     public Center() {
         rooms = new ArrayList<Room>();
-        rooms.add(new Room("1","new room"));
+        rooms.add(new Room());
     }
 
     public static Center getInstance() {

@@ -4,6 +4,7 @@ import com.google.code.tempusfugit.temporal.Duration;
 import com.yanchuanli.games.pokr.dao.RoomDao;
 import com.yanchuanli.games.pokr.game.Game;
 import com.yanchuanli.games.pokr.game.GameConfig;
+import com.yanchuanli.games.pokr.model.Room;
 import com.yanchuanli.games.pokr.util.Config;
 
 import java.util.HashMap;
@@ -24,12 +25,12 @@ public class GameEngine {
     public static void start() {
         RoomDao.init();
         games = new HashMap<Integer, Game>();
-        List<Integer> roomsToPrepare = RoomDao.getRooms(Config.ROOM_LEVEL_BEGINNER);
+        List<Room> roomsToPrepare = RoomDao.getRooms(Config.ROOM_LEVEL_BEGINNER);
 
-        for (Integer roomId : roomsToPrepare) {
-            GameConfig gc = new GameConfig(roomId, "room" + roomId, 20, 40, 0, 10000, 9, Duration.seconds(3000), Duration.millis(500), Duration.seconds(1));
+        for (Room room : roomsToPrepare) {
+            GameConfig gc = new GameConfig(room.getId(), room.getName(), room.getSmallBlindAmount(), room.getBigBlindAmount(), room.getMinHolding(), room.getMaxHolding(), room.getMaxPlayersCount(), Duration.seconds(3000), Duration.millis(500), Duration.seconds(1));
             Game game = new Game(gc);
-            games.put(roomId, game);
+            games.put(room.getId(), game);
             new Thread(game).start();
         }
     }

@@ -14,10 +14,10 @@ import java.util.List;
 public class NotificationCenter {
 
     /**
-     * 在所有玩家得到自己的2张牌后，通知所有设备开始发那2张牌！
+     * 在所有玩家得到自己的2张牌后，通知所有设备开始发那2张牌, 相当于以前的StartServer！
      *
      * @param players 所有玩家
-     * @param info    用户id
+     * @param info    用户id, 从这个id开始发牌
      */
     public static void deal2CardsOnAllDevices(List<Player> players, String info) {
         notifyAllOnTable(players, info, Config.TYPE_DEAL2CARDSONALLDEVICES_INGAME);

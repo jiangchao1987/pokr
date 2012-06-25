@@ -16,7 +16,7 @@ import com.yanchuanli.games.pokr.model.Room;
  */
 public class TranslationCenter {
 
-	public MiniPlayer getMiniPlayer(Player player) {
+	/*public MiniPlayer getMiniPlayer(Player player) {
 		MiniPlayer miniPlayer = MiniPlayer.newBuilder().setId(player.getUdid())
 				.setName(player.getName()).setMoney(player.getMoney())
 				.setBet(player.getBet()).setInput(player.getInput()).build();
@@ -33,6 +33,6 @@ public class TranslationCenter {
 		MiniRoom miniRoom = MiniRoom.newBuilder().setId(room.getId())
 				.setName(room.getName()).addAllMiniPlayers(miniPlayers).build();
 		return miniRoom;
-	}
+	}*/
 
 }

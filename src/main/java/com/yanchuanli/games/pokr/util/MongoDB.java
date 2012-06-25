@@ -7,5 +7,6 @@ public class MongoDB {
 	
 	public static final String DBNAME = "texas";
 	public static final String COLL_USER = "user";
+	public static final String COLL_ROOM = "room";
 	
 }

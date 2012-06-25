@@ -6,6 +6,8 @@ import com.yanchuanli.games.pokr.dao.PlayerDao;
 import com.yanchuanli.games.pokr.dao.RoomDao;
 import com.yanchuanli.games.pokr.game.Game;
 import com.yanchuanli.games.pokr.model.Player;
+import com.yanchuanli.games.pokr.model.Room;
+
 import org.apache.log4j.Logger;
 import org.apache.mina.core.session.IoSession;
 
@@ -115,10 +117,10 @@ public class ServiceCenter {
      */
     private void listRooms(IoSession session, String info) {
         int type = Integer.parseInt(info);
-        List<Integer> rooms = RoomDao.getRooms(type);
+        List<Room> rooms = RoomDao.getRooms(type);
         StringBuffer sb = new StringBuffer();
-        for (Integer roomId : rooms) {
-            sb.append(roomId + ",");
+        for (Room room : rooms) {
+            sb.append(room.getId() + ",");
         }
         String result = sb.toString();
         if (result.endsWith(",")) {
