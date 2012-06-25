@@ -41,7 +41,7 @@ public class ServerHandler extends IoHandlerAdapter {
         Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
         player.setAlive(false);
         Memory.sessionsOnServer.remove(String.valueOf(session.getId()));
-        log.info("one Client Disconnect !");
+        log.info(player.getName() + " is now disconnected !");
     }
 
     // 当客户端发送的消息到达时:
