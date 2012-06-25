@@ -151,31 +151,34 @@ public class Game implements Runnable {
     private void shutdown() {
 
         log.debug("OnTable: " + Util.cardsToString(cardsOnTable));
+        List<Player> results = new ArrayList<>();
 
         for (Player player : activePlayers) {
             for (Card card : cardsOnTable) {
                 player.getHand().addCard(card);
             }
+            results.add(player);
         }
 
-        Collections.sort(activePlayers, comparator);
+
+        Collections.sort(results, comparator);
 
         StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < activePlayers.size(); i++) {
-            Player player = activePlayers.get(i);
+        for (int i = 0; i < results.size(); i++) {
+            Player player = results.get(i);
             String wininfo = "#" + String.valueOf(i + 1) + " " + player.getName() + " " + player.getHandRank() + " " + player.getBestHand().toChineseString() + " " + player.getNameOfHand();
             log.debug(wininfo);
             sb.append(player.getUdid() + "," + player.getName() + "," + player.getNameOfHand() + ";");
         }
-        NotificationCenter.gameover(activePlayers, sb.toString());
+        NotificationCenter.gameover(results, sb.toString());
 
-        for (int i = 0; i < activePlayers.size(); i++) {
+        for (int i = 0; i < results.size(); i++) {
             if (i == 0) {
-                log.debug(activePlayers.get(i).getName() + " wins!");
-                NotificationCenter.winorlose(activePlayers.get(i).getSession(), activePlayers.get(i).getUdid() + "," + activePlayers.get(i).getName() + ",1", 10);
+                log.debug(results.get(i).getName() + " wins!");
+                NotificationCenter.winorlose(results.get(i).getSession(), results.get(i).getUdid() + "," + results.get(i).getName() + ",1", 10);
             } else {
-                log.debug(activePlayers.get(i).getName() + " loses!");
-                NotificationCenter.winorlose(activePlayers.get(i).getSession(), activePlayers.get(i).getUdid() + "," + activePlayers.get(i).getName() + ",0", 10);
+                log.debug(results.get(i).getName() + " loses!");
+                NotificationCenter.winorlose(results.get(i).getSession(), results.get(i).getUdid() + "," + results.get(i).getName() + ",0", 10);
             }
         }
         gaming = false;
@@ -348,7 +351,7 @@ public class Game implements Runnable {
                 }
                 start();
             } else {
-                for(Player p:availablePlayers){
+                for (Player p : availablePlayers) {
                     p.isAlive();
                 }
                 try {
