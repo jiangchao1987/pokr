@@ -22,6 +22,7 @@ public class GameEngine {
     private static Map<String, Game> games;
 
     public static void start() {
+        RoomDao.init();
         games = new HashMap<String, Game>();
         List<String> roomsToPrepare = RoomDao.getRooms(Config.ROOM_LEVEL_BEGINNER);
 

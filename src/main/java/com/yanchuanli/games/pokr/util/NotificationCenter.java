@@ -12,20 +12,24 @@ import java.util.List;
  * Date: 12-6-16
  */
 public class NotificationCenter {
-	
-	/** 
-	 * 在所有玩家得到自己的2张牌后，通知所有设备开始发那2张牌！
-	 * 
-	 * @param players 所有玩家
-	 * @param info 用户id
-	 */
-	public static void deal2CardsOnAllDevices(List<Player> players, String info) {
-		notifyAllOnTable(players, info, Config.TYPE_DEAL2CARDSONALLDEVICES_INGAME);
-	}
+
+    /**
+     * 在所有玩家得到自己的2张牌后，通知所有设备开始发那2张牌！
+     *
+     * @param players 所有玩家
+     * @param info    用户id
+     */
+    public static void deal2CardsOnAllDevices(List<Player> players, String info) {
+        notifyAllOnTable(players, info, Config.TYPE_DEAL2CARDSONALLDEVICES_INGAME);
+    }
+
+    public static void leaveRoom(List<Player> players, Player theOneWhoLeft) {
+
+    }
 
     /*
-     * sample msg: id,action:[bet],moneyontable
-     */
+    * sample msg: id,action:[bet],moneyontable
+    */
     public static void forwardAction(List<Player> players, String info) {
         notifyAllOnTable(players, info, Config.TYPE_OTHERSACTION_INGAME);
     }
