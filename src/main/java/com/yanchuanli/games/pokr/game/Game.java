@@ -178,7 +178,7 @@ public class Game implements Runnable {
             if (i == 0) {
                 Player winner = results.get(i);
                 log.debug(winner.getName() + " wins!");
-                PlayerDao.updateBest(winner.getUdid(), winner.getBestHand(), winner.getBestHandRank());
+                PlayerDao.updateBest(winner, winner.getBestHand(), winner.getBestHandRank());
                 NotificationCenter.winorlose(results.get(i).getSession(), results.get(i).getUdid() + "," + results.get(i).getName() + ",1", 10);
             } else {
                 log.debug(results.get(i).getName() + " loses!");
