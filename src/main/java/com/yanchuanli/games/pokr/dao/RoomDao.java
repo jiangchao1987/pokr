@@ -52,7 +52,7 @@ public class RoomDao {
     		doc.put("maxPlayersCount", 9);
     		doc.put("currentPlayerCount", 0);
     		doc.put("level", level);
-    		doc.put("bettingDuration", 5000);
+    		doc.put("bettingDuration", 30000);
     		doc.put("inactivityCheckInterval", 500);
     		doc.put("gameCheckInterval", 3000);
     		coll.insert(doc);
