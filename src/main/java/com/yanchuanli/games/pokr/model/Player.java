@@ -26,7 +26,7 @@ public class Player {
     private IoSession session;
     private Hand hand;
     private Hand bestHand;
-    private int handRank;
+    private int bestHandRank;
     private boolean alive;
     private int money;
     private int bet;
@@ -44,7 +44,7 @@ public class Player {
         this.udid = id;
         this.name = name;
         hand = new Hand();
-        this.handRank = Integer.MIN_VALUE;
+        this.bestHandRank = Integer.MIN_VALUE;
         this.alive = true;
     }
 
@@ -88,12 +88,12 @@ public class Player {
         this.bestHand = bestHand;
     }
 
-    public int getHandRank() {
-        return handRank;
+    public int getBestHandRank() {
+        return bestHandRank;
     }
 
-    public void setHandRank(int handRank) {
-        this.handRank = handRank;
+    public void setBestHandRank(int bestHandRank) {
+        this.bestHandRank = bestHandRank;
     }
 
     public boolean isAlive() {
@@ -272,7 +272,7 @@ public class Player {
     public String toString() {
         return "Player [globalId=" + globalId + ", udid=" + udid + ", name=" + name
                 + ", session=" + session + ", hand=" + hand + ", bestHand="
-                + bestHand + ", handRank=" + handRank + ", alive=" + alive
+                + bestHand + ", bestHandRank=" + bestHandRank + ", alive=" + alive
                 + ", money=" + money + ", bet=" + bet + ", input=" + input
                 + ", nameOfHand=" + nameOfHand + ", exp=" + exp + ", winCount="
                 + winCount + ", loseCount=" + loseCount
@@ -281,17 +281,9 @@ public class Player {
                 + maxWin + ", avatar=" + avatar + "]";
     }
 
-//    @Override
-//    public String toString() {
-//        return "Player{" +
-//                "udid='" + udid + '\'' +
-//                ", name='" + name + '\'' +
-//                ", bestHand=" + bestHand.toChineseString() +
-//                ", handRank=" + handRank +
-//                ", alive=" + alive +
-//                ", money=" + money +
-//                ", bet=" + bet +
-//                '}';
-//    }
-
+    public void reset() {
+        hand.makeEmpty();
+        bestHand = null;
+        bestHandRank = Integer.MIN_VALUE;
+    }
 }

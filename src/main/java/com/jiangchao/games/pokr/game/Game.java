@@ -140,7 +140,7 @@ public class Game {
         Collections.sort(players, comparator);
         for (int i = 0; i < players.size(); i++) {
             Player player = players.get(i);
-            String wininfo = "#" + String.valueOf(i + 1) + " " + player.getName() + " " + player.getHandRank() + " " + player.getBestHand().toChineseString();
+            String wininfo = "#" + String.valueOf(i + 1) + " " + player.getName() + " " + player.getBestHandRank() + " " + player.getBestHand().toChineseString();
             log.debug(wininfo);
             Util.sendMessage(player.getSession(), wininfo);
         }

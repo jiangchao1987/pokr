@@ -32,13 +32,13 @@ public class PlayerRankComparator implements Comparator<Player> {
             player2.setNameOfHand(HandEvaluator.nameHandInChinese(player2.getBestHand()));
         }
 
-        if (player1.getHandRank() == Integer.MIN_VALUE) {
-            player1.setHandRank(HandEvaluator.rankHand(player1.getHand()));
+        if (player1.getBestHandRank() == Integer.MIN_VALUE) {
+            player1.setBestHandRank(HandEvaluator.rankHand(player1.getBestHand()));
         }
 
-        if (player2.getHandRank() == Integer.MIN_VALUE) {
-            player2.setHandRank(HandEvaluator.rankHand(player2.getHand()));
+        if (player2.getBestHandRank() == Integer.MIN_VALUE) {
+            player2.setBestHandRank(HandEvaluator.rankHand(player2.getBestHand()));
         }
-        return handEval.compareHands(player1.getHand(), player2.getHand());
+        return handEval.compareHands(player1.getBestHand(), player2.getBestHand());
     }
 }

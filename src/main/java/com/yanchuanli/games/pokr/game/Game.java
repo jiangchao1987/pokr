@@ -4,6 +4,7 @@ import com.google.code.tempusfugit.temporal.Duration;
 import com.yanchuanli.games.pokr.basic.Card;
 import com.yanchuanli.games.pokr.basic.Deck;
 import com.yanchuanli.games.pokr.basic.PlayerRankComparator;
+import com.yanchuanli.games.pokr.dao.PlayerDao;
 import com.yanchuanli.games.pokr.model.Action;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.util.NotificationCenter;
@@ -65,7 +66,7 @@ public class Game implements Runnable {
 
     public void start() {
 
-        reset();
+
         sayHello();
 
         // rotate dealer position
@@ -167,7 +168,7 @@ public class Game implements Runnable {
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < results.size(); i++) {
             Player player = results.get(i);
-            String wininfo = "#" + String.valueOf(i + 1) + " " + player.getName() + " " + player.getHandRank() + " " + player.getBestHand().toChineseString() + " " + player.getNameOfHand();
+            String wininfo = "#" + String.valueOf(i + 1) + " " + player.getName() + " " + player.getBestHandRank() + " " + player.getBestHand().toChineseString() + " " + player.getNameOfHand();
             log.debug(wininfo);
             sb.append(player.getUdid() + "," + player.getName() + "," + player.getNameOfHand() + ";");
         }
@@ -175,7 +176,9 @@ public class Game implements Runnable {
 
         for (int i = 0; i < results.size(); i++) {
             if (i == 0) {
-                log.debug(results.get(i).getName() + " wins!");
+                Player winner = results.get(i);
+                log.debug(winner.getName() + " wins!");
+                PlayerDao.updateBest(winner.getUdid(), winner.getBestHand(), winner.getBestHandRank());
                 NotificationCenter.winorlose(results.get(i).getSession(), results.get(i).getUdid() + "," + results.get(i).getName() + ",1", 10);
             } else {
                 log.debug(results.get(i).getName() + " loses!");
@@ -190,16 +193,15 @@ public class Game implements Runnable {
     private void reset() {
         deck.reset();
         deck.shuffle();
-        dealerPosition = 0;
-        actorPosition = 0;
+
+        actorPosition = dealerPosition;
         cardsOnTable.clear();
         activePlayers.clear();
         for (Player player : availablePlayers) {
-            player.getHand().makeEmpty();
-            if (player.getBestHand() != null) {
-                player.getBestHand().makeEmpty();
+            player.reset();
+            if (!player.isAlive()) {
+                availablePlayers.remove(player);
             }
-
         }
         log.debug("Game has been resetted ...");
     }
@@ -345,6 +347,7 @@ public class Game implements Runnable {
     public void run() {
         try {
             while (!stop) {
+                reset();
                 if (availablePlayers.size() >= 2) {
                     try {
                         log.debug("game will start in 3 seconds ...");
@@ -357,13 +360,14 @@ public class Game implements Runnable {
                         log.error(e);
                     }
                     start();
-                } else {
-                    try {
-                        Thread.sleep(gc.getGameCheckInterval().inMillis());
-                    } catch (InterruptedException e) {
-                        log.error(e);
-                    }
+
                 }
+                try {
+                    Thread.sleep(gc.getGameCheckInterval().inMillis());
+                } catch (InterruptedException e) {
+                    log.error(e);
+                }
+
             }
         } catch (Exception e) {
             log.error(e);
