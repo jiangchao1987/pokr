@@ -39,6 +39,7 @@ public class Player {
     private String historicalBestHand;
     private int maxWin;
     private String avatar;
+    private int customAvatar;
 
     public Player(String id, String name) {
         this.udid = id;
@@ -267,8 +268,16 @@ public class Player {
     public void setGlobalId(int globalId) {
         this.globalId = globalId;
     }
+    
+    public int getCustomAvatar() {
+		return customAvatar;
+	}
 
-    @Override
+	public void setCustomAvatar(int customAvatar) {
+		this.customAvatar = customAvatar;
+	}
+
+	@Override
     public String toString() {
         return "Player [globalId=" + globalId + ", udid=" + udid + ", name=" + name
                 + ", session=" + session + ", hand=" + hand + ", bestHand="
