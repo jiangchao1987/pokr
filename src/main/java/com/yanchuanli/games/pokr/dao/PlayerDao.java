@@ -4,7 +4,6 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
-import com.yanchuanli.games.pokr.basic.Hand;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.util.Config;
 import com.yanchuanli.games.pokr.util.MongoDB;
@@ -62,22 +61,29 @@ public class PlayerDao {
      * 更新bestHand以及bestHandRank
      *
      * @param targetPlayer
-     * @param bestHand
-     * @param bestHandRank
      */
-    public static void updateBest(Player targetPlayer, Hand bestHand, int bestHandRank) {
+    public static void updateBestHandOfPlayer(Player targetPlayer) {
         Player player = queryByUdid(targetPlayer.getUdid());
         if (player != null) {
-            if (player.getHistoricalBestHandRank() < bestHandRank) {
+            if (player.getHistoricalBestHandRank() < targetPlayer.getBestHandRank()) {
                 DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME,
                         MongoDB.COLL_USER);
 
                 DBObject query = new BasicDBObject();
                 query.put("udid", targetPlayer.getUdid());
 
+
                 String bestHandStr = "";
+                int[] cards = targetPlayer.getBestHand().getCardArray();
+                for (int i = 0; i < cards.length; i++) {
+                    if (i == cards.length - 1) {
+                        bestHandStr = bestHandStr + String.valueOf(cards[i]);
+                    } else {
+                        bestHandStr = bestHandStr + String.valueOf(cards[i]) + "_";
+                    }
+                }
                 DBObject doc = new BasicDBObject().append("$set", new BasicDBObject()
-                        .append("best", bestHand).append("br", bestHandRank));
+                        .append("best", bestHandStr).append("br", targetPlayer.getBestHandRank()));
                 coll.update(query, doc);
             }
         }
