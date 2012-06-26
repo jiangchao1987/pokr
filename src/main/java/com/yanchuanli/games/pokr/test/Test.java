@@ -21,30 +21,16 @@ public class Test {
     private static Player actor;
 
     public static void main(String[] args) throws UnknownHostException {
-        Player player1 = new Player("0", "0");
-        Player player2 = new Player("1", "1");
-        Player player3 = new Player("2", "2");
-
-        players.add(player1);
-        players.add(player2);
-        players.add(player3);
-
-        for (int i = 0; i < 3; i++) {
-            rotateActor();
-            if (i == 2) {
-                players.remove(actor);
+        String bestHandStr = "";
+        int[] cards = {1, 2, 3};
+        for (int i = 0; i < cards.length; i++) {
+            if (i == cards.length - 1) {
+                bestHandStr = bestHandStr + String.valueOf(cards[i]);
+            } else {
+                bestHandStr = bestHandStr + String.valueOf(cards[i]) + "_";
             }
-            log.debug(actor.getName());
         }
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("1" + ",");
-        sb.append("2" + ",");
-        String s = sb.toString();
-        if (s.endsWith(",")) {
-            s = s.substring(0, s.length() - 1);
-        }
-        log.debug(s);
+        log.debug(bestHandStr);
     }
 
     private static void rotateActor() {

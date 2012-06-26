@@ -66,7 +66,7 @@ public class Game implements Runnable {
 
     public void start() {
 
-
+        reset();
         sayHello();
 
         // rotate dealer position
@@ -179,6 +179,7 @@ public class Game implements Runnable {
                 Player winner = results.get(i);
                 log.debug(winner.getName() + " wins!");
                 PlayerDao.updateBestHandOfPlayer(winner);
+                PlayerDao.updateMaxWin(winner.getUdid(), moneyOnTable);
                 NotificationCenter.winorlose(results.get(i).getSession(), results.get(i).getUdid() + "," + results.get(i).getName() + ",1", 10);
             } else {
                 log.debug(results.get(i).getName() + " loses!");
@@ -194,14 +195,13 @@ public class Game implements Runnable {
         deck.reset();
         deck.shuffle();
 
+        moneyOnTable = 0;
         actorPosition = dealerPosition;
         cardsOnTable.clear();
         activePlayers.clear();
         for (Player player : availablePlayers) {
             player.reset();
-            if (!player.isAlive()) {
-                availablePlayers.remove(player);
-            }
+
         }
         log.debug("Game has been resetted ...");
     }
@@ -347,7 +347,8 @@ public class Game implements Runnable {
     public void run() {
         try {
             while (!stop) {
-                reset();
+
+                checkAvailablePlayers();
                 if (availablePlayers.size() >= 2) {
                     try {
                         log.debug("game will start in 3 seconds ...");
@@ -381,5 +382,14 @@ public class Game implements Runnable {
 
     public List<Player> getAvailablePlayers() {
         return availablePlayers;
+    }
+
+    private void checkAvailablePlayers() {
+        for (Player player : availablePlayers) {
+            if (!player.isAlive()) {
+                availablePlayers.remove(player);
+            }
+        }
+        log.debug(availablePlayers.size() + " players are waiting in " + gc.getName() + " ...");
     }
 }

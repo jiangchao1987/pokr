@@ -22,8 +22,8 @@ public class HandEvaluator {
     private static Logger log = Logger.getLogger(HandEvaluator.class);
 
     public static void main(String args[]) {
-        Hand hand1 = new Hand("Kc 8c 9c Tc Jc Qc Ac");
-        Hand hand2 = new Hand("9c 9d 9h 2c Jc Qc Ad");
+        Hand hand1 = new Hand("2c 2d 2h 5c 6d 9h 5h");
+        Hand hand2 = new Hand("Ac Ad Ah 5d 6c 9h 5s");
 
         HandEvaluator handEval = new HandEvaluator();
 
