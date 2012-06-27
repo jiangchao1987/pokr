@@ -19,57 +19,55 @@ import java.util.List;
  * Date: 12-6-22
  */
 public class RoomDao {
-	
+
     public static void init() {
-    	delete();
-    	
-    	insert(Config.ROOM_LEVEL_BEGINNER);
-    	insert(Config.ROOM_LEVEL_MASTER);
-    	insert(Config.ROOM_LEVEL_PROFESSIONAL);
-    	insert(Config.ROOM_LEVEL_VIP);
+        delete();
+
+        insert(Config.ROOM_LEVEL_BEGINNER);
+        insert(Config.ROOM_LEVEL_MASTER);
+        insert(Config.ROOM_LEVEL_PROFESSIONAL);
+        insert(Config.ROOM_LEVEL_VIP);
     }
-    
+
     private static void delete() {
-    	DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME,
-				MongoDB.COLL_ROOM);
-    	
-    	coll.remove(new BasicDBObject());
+        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_ROOM);
+
+        coll.remove(new BasicDBObject());
     }
-    
+
     private static void insert(int level) {
-    	DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME,
-				MongoDB.COLL_ROOM);
-    	
-    	for (int i = 1; i < 3; i++) {
-    		DBObject doc = new BasicDBObject();
-    		int roomId = Integer.parseInt(level + "000") + i;
-    		doc.put("id", roomId);
-    		doc.put("name", "room" + roomId);
-    		doc.put("smallBlindAmount", 5 * level);
-    		doc.put("bigBlindAmount", 10 * level);
-    		doc.put("minHolding", 100 * level);
-    		doc.put("maxHolding", 20000 * 5 * level);
-    		doc.put("maxPlayersCount", 9);
-    		doc.put("currentPlayerCount", 0);
-    		doc.put("level", level);
-    		doc.put("bettingDuration", 30000);
-    		doc.put("inactivityCheckInterval", 500);
-    		doc.put("gameCheckInterval", 3000);
-    		coll.insert(doc);
-    	}
+        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_ROOM);
+
+        for (int i = 1; i < 3; i++) {
+            DBObject doc = new BasicDBObject();
+            int roomId = Integer.parseInt(level + "000") + i;
+            doc.put("id", roomId);
+            doc.put("name", "room" + roomId);
+            doc.put("smallBlindAmount", 5 * level);
+            doc.put("bigBlindAmount", 10 * level);
+            doc.put("minHolding", 100 * level);
+            doc.put("maxHolding", 20000 * 5 * level);
+            doc.put("maxPlayersCount", 9);
+            doc.put("currentPlayerCount", 0);
+            doc.put("level", level);
+            doc.put("bettingDuration", 30000);
+            doc.put("inactivityCheckInterval", 500);
+            doc.put("gameCheckInterval", 3000);
+            coll.insert(doc);
+        }
     }
-    
+
     private static List<Room> query(int level) {
-    	List<Room> rooms = new ArrayList<>();
-    	
-    	DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME,
-				MongoDB.COLL_ROOM);
-    	BasicDBObject query = new BasicDBObject();
+        List<Room> rooms = new ArrayList<>();
+
+        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME,
+                MongoDB.COLL_ROOM);
+        BasicDBObject query = new BasicDBObject();
         query.put("level", level);
         DBCursor cur = coll.find(query);
-    	
+
         while (cur.hasNext()) {
-        	DBObject obj = cur.next();
+            DBObject obj = cur.next();
             Room room = new Room();
             room.setId((Integer) obj.get("id"));
             room.setName((String) obj.get("name"));
@@ -83,10 +81,10 @@ public class RoomDao {
             room.setBettingDuration((Integer) obj.get("bettingDuration"));
             room.setInactivityCheckInterval((Integer) obj.get("inactivityCheckInterval"));
             room.setGameCheckInterval((Integer) obj.get("gameCheckInterval"));
-            
+
             rooms.add(room);
         }
-        
+
         return rooms;
     }
 
@@ -107,9 +105,9 @@ public class RoomDao {
 		rooms.add(1002);
 		return rooms;
     }*/
-    
+
     public static List<Room> getRooms(int level) {
-		return query(level);
+        return query(level);
     }
-    
+
 }
