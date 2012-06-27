@@ -98,7 +98,7 @@ public class Table {
 			player.getClient().handStarted(dealer);
 		}
 		notifyPlayersUpdated(false);
-        notifyMessage("New hand, %s is the dealer.", dealer);
+        notifyMessage("New hand, %s is the notifyCurrentDealer.", dealer);
 	}
 	
 	/**

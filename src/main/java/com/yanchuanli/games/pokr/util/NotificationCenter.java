@@ -19,7 +19,7 @@ public class NotificationCenter {
 	 * @param players 所有玩家
 	 * @param info    dealer的id
 	 */
-	public static void dealer(List<Player> players, String info) {
+	public static void notifyCurrentDealer(List<Player> players, String info) {
 		notifyAllOnTable(players, info, Config.TYPE_DEALER_INGAME);
 	}
 	

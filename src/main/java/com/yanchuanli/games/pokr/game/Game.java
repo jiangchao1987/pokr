@@ -69,7 +69,7 @@ public class Game implements Runnable {
         reset();
         sayHello();
 
-        // rotate dealer position
+        // rotate notifyCurrentDealer position
         rotateDealer();
 
         // post the big blind and small blind
@@ -111,7 +111,9 @@ public class Game implements Runnable {
 
     private void rotateDealer() {
         dealerPosition = dealerPosition++ % activePlayers.size();
-        log.debug("[RotateDealer] current dealer:" + dealerPosition);
+        Player dealer = activePlayers.get(dealerPosition);
+        NotificationCenter.notifyCurrentDealer(activePlayers, dealer.getUdid());
+        log.debug("[RotateDealer] current notifyCurrentDealer:" + dealerPosition);
     }
 
     private void deal2Cards() {
