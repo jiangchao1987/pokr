@@ -31,6 +31,7 @@ public class Config {
     public static final int TYPE_OTHERSTARTACTION_INGAME = 13;
     public static final int TYPE_BIGBLIND_INGAME = 14;
     public static final int TYPE_SMALLBLIND_INGAME = 15;
+    public static final int TYPE_DEALER_INGAME = 16;
 
     public static final int SRC_IPHONE_GUEST = 0;
     public static final int SRC_IPAD_GUEST = 1;

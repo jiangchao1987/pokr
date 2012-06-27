@@ -14,6 +14,16 @@ import java.util.List;
 public class NotificationCenter {
 	
 	/**
+	 * 通知所有玩家谁是dealer
+	 * 
+	 * @param players 所有玩家
+	 * @param info    dealer的id
+	 */
+	public static void dealer(List<Player> players, String info) {
+		notifyAllOnTable(players, info, Config.TYPE_DEALER_INGAME);
+	}
+	
+	/**
 	 * 通知所有玩家谁是小盲注
 	 * 
 	 * @param players 所有玩家
