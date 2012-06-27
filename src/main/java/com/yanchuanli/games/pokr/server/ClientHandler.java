@@ -72,6 +72,7 @@ public class ClientHandler extends IoHandlerAdapter {
                                 debuginfo = debuginfo + " " + c.toChineseString();
                             }
                             log.debug("ontable" + ":" + debuginfo);
+                            break;
                     }
                 }
             }
