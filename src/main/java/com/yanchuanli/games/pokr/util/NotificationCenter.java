@@ -14,6 +14,26 @@ import java.util.List;
 public class NotificationCenter {
 	
 	/**
+	 * 通知所有玩家谁是小盲注
+	 * 
+	 * @param players 所有玩家
+	 * @param info    小盲注玩家的id
+	 */
+	public static void smallBlind(List<Player> players, String info) {
+		notifyAllOnTable(players, info, Config.TYPE_SMALLBLIND_INGAME);
+	}
+	
+	/**
+	 * 通知所有玩家谁是大盲注
+	 * 
+	 * @param players 所有玩家
+	 * @param info    大盲注玩家的id
+	 */
+	public static void bigBlind(List<Player> players, String info) {
+		notifyAllOnTable(players, info, Config.TYPE_BIGBLIND_INGAME);
+	}
+	
+	/**
 	 * 通知所有玩家当前轮到谁了
 	 * 
 	 * @param players 所有玩家
@@ -51,11 +71,11 @@ public class NotificationCenter {
     }
 
     public static void list(IoSession session, String info) {
-        notifyOneOnTable(session, info, Config.TYPE_LIST_INGAME);
+        notifySpecificOnTable(session, info, Config.TYPE_LIST_INGAME);
     }
 
     public static void winorlose(IoSession session, String info, int money) {
-        notifyOneOnTable(session, info, Config.TYPE_WINORLOSE_INGAME);
+        notifySpecificOnTable(session, info, Config.TYPE_WINORLOSE_INGAME);
     }
 
     public static void gameover(List<Player> players, String info) {
@@ -79,11 +99,11 @@ public class NotificationCenter {
     }
 
     public static void act(IoSession session, String info) {
-        notifyOneOnTable(session, info, Config.TYPE_ACTION_INGAME);
+        notifySpecificOnTable(session, info, Config.TYPE_ACTION_INGAME);
     }
 
     public static void deal2Cards(IoSession session, String info) {
-        notifyOneOnTable(session, info, Config.TYPE_HOLE_INGAME);
+        notifySpecificOnTable(session, info, Config.TYPE_HOLE_INGAME);
     }
 
     public static void sayHello(List<Player> players, String info) {
@@ -91,7 +111,7 @@ public class NotificationCenter {
     }
 
     public static void login(IoSession session, String info) {
-        notifyOneOnTable(session, info, Config.TYPE_LOGIN_INGAME);
+        notifySpecificOnTable(session, info, Config.TYPE_LOGIN_INGAME);
     }
 
     /**
@@ -99,17 +119,18 @@ public class NotificationCenter {
      */
     private static void notifyAllOnTable(List<Player> players, String info, int type) {
         for (Player player : players) {
-            notifyOneOnTable(player.getSession(), info, type);
+            notifySpecificOnTable(player.getSession(), info, type);
         }
     }
 
     /**
      * 通知指定玩家。
      */
-    private static void notifyOneOnTable(IoSession session, String info, int type) {
-        if(session!=null){
-            Util.sendMsg(session, info, type);
-        }
-    }
+	private static void notifySpecificOnTable(IoSession session, String info,
+			int type) {
+		if (session != null) {
+			Util.sendMsg(session, info, type);
+		}
+	}
 
 }
