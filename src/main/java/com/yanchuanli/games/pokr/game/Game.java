@@ -55,14 +55,6 @@ public class Game implements Runnable {
         availablePlayers.add(player);
     }
 
-    public void removePlayer(Player player) {
-        for (Player aplayer : activePlayers) {
-            if (aplayer.getUdid().equals(player.getUdid())) {
-                activePlayers.remove(aplayer);
-                break;
-            }
-        }
-    }
 
     public void start() {
 
@@ -209,7 +201,6 @@ public class Game implements Runnable {
     }
 
     private void doBettingRound() {
-        List<Player> activePlayers = getLivePlayers();
         int playersToAct = activePlayers.size();
         actorPosition = dealerPosition;
         bet = 0;
@@ -302,22 +293,13 @@ public class Game implements Runnable {
         }
     }
 
-    private List<Player> getLivePlayers() {
-        List<Player> activePlayers = new ArrayList<>();
-        for (Player player : this.activePlayers) {
-            if (player.isAlive()) {
-                activePlayers.add(player);
-            }
-        }
-        return activePlayers;
-    }
 
     private void postSmallBlind() {
-
+        NotificationCenter.markSmallBlind(activePlayers, actor.getUdid());
     }
 
     private void postBigBlind() {
-
+        NotificationCenter.markBigBlind(activePlayers, actor.getUdid());
     }
 
     private void sayHello() {
@@ -393,5 +375,14 @@ public class Game implements Runnable {
             }
         }
         log.debug(availablePlayers.size() + " players are waiting in " + gc.getName() + " ...");
+    }
+
+    public void removePlayer(Player player) {
+        for (Player aplayer : activePlayers) {
+            if (aplayer.getUdid().equals(player.getUdid())) {
+                activePlayers.remove(aplayer);
+                break;
+            }
+        }
     }
 }

@@ -12,56 +12,58 @@ import java.util.List;
  * Date: 12-6-16
  */
 public class NotificationCenter {
-	
-	/**
-	 * 转发聊天信息
-	 * 
-	 * @param players 所有玩家
-	 * @param info 转发的消息
-	 */
-	public static void chat(List<Player> players, String info) {
-		notifyAllOnTable(players, info, Config.TYPE_CHAT_INGAME);
-	}
-	
-	/**
-	 * 通知所有玩家谁是dealer
-	 * 
-	 * @param players 所有玩家
-	 * @param info    dealer的id
-	 */
-	public static void notifyCurrentDealer(List<Player> players, String info) {
-		notifyAllOnTable(players, info, Config.TYPE_DEALER_INGAME);
-	}
-	
-	/**
-	 * 通知所有玩家谁是小盲注
-	 * 
-	 * @param players 所有玩家
-	 * @param info    小盲注玩家的id
-	 */
-	public static void smallBlind(List<Player> players, String info) {
-		notifyAllOnTable(players, info, Config.TYPE_SMALLBLIND_INGAME);
-	}
-	
-	/**
-	 * 通知所有玩家谁是大盲注
-	 * 
-	 * @param players 所有玩家
-	 * @param info    大盲注玩家的id
-	 */
-	public static void bigBlind(List<Player> players, String info) {
-		notifyAllOnTable(players, info, Config.TYPE_BIGBLIND_INGAME);
-	}
-	
-	/**
-	 * 通知所有玩家当前轮到谁了
-	 * 
-	 * @param players 所有玩家
-	 * @param info 轮到的玩家id
-	 */
-	public static void otherPlayerStartAction(List<Player> players, String info) {
-		notifyAllOnTable(players, info, Config.TYPE_OTHERSTARTACTION_INGAME);
-	}
+
+    /**
+     * 转发聊天信息
+     *
+     * @param players 所有玩家
+     * @param info    转发的消息
+     */
+    public static void chat(List<Player> players, String info) {
+        notifyAllOnTable(players, info, Config.TYPE_CHAT_INGAME);
+    }
+
+    /**
+     * 通知所有玩家谁是dealer
+     *
+     * @param players 所有玩家
+     * @param info    dealer的id
+     */
+    public static void notifyCurrentDealer(List<Player> players, String info) {
+        notifyAllOnTable(players, info, Config.TYPE_DEALER_INGAME);
+    }
+
+    /**
+     * 通知所有玩家谁是小盲注
+     *
+     * @param players 所有玩家
+     * @param info    小盲注玩家的id
+     */
+    public static void markSmallBlind(List<Player> players, String info) {
+        notifyAllOnTable(players, info, Config.TYPE_SMALLBLIND_INGAME);
+    }
+
+    /**
+     * 通知所有玩家谁是大盲注
+     *
+     * @param players 所有玩家
+     * @param info    大盲注玩家的id
+     */
+    public static void markBigBlind(List<Player> players, String info) {
+        notifyAllOnTable(players, info, Config.TYPE_BIGBLIND_INGAME);
+    }
+
+
+
+    /**
+     * 通知所有玩家当前轮到谁了
+     *
+     * @param players 所有玩家
+     * @param info    轮到的玩家id
+     */
+    public static void otherPlayerStartAction(List<Player> players, String info) {
+        notifyAllOnTable(players, info, Config.TYPE_OTHERSTARTACTION_INGAME);
+    }
 
     /**
      * 在所有玩家得到自己的2张牌后，通知所有设备开始发那2张牌, 相当于以前的StartServer！
@@ -75,12 +77,12 @@ public class NotificationCenter {
 
     /**
      * 通知所有玩家谁离开了房间。
-     * 
+     *
      * @param players 所有玩家
      * @param info    提示消息
      */
     public static void leaveRoom(List<Player> players, String info) {
-    	notifyAllOnTable(players, info, Config.TYPE_LEAVEROOM_INGAME);
+        notifyAllOnTable(players, info, Config.TYPE_LEAVEROOM_INGAME);
     }
 
     /*
@@ -146,11 +148,11 @@ public class NotificationCenter {
     /**
      * 通知指定玩家。
      */
-	private static void notifySpecificOnTable(IoSession session, String info,
-			int type) {
-		if (session != null) {
-			Util.sendMsg(session, info, type);
-		}
-	}
+    private static void notifySpecificOnTable(IoSession session, String info,
+                                              int type) {
+        if (session != null) {
+            Util.sendMsg(session, info, type);
+        }
+    }
 
 }
