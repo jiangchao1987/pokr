@@ -65,6 +65,9 @@ public class TCPClient {
 //                    sendToServer(String.valueOf((int) (Math.random() * 10000)) + "," + Config.SRC_IPHONE_GUEST, 0);
                 	// eg:   l:jiangchao  [udid, password, souce]
                 	sendToServer(input.split(":")[1] + "," + input.split(":")[1] + "123," + Config.SRC_IPHONE_GUEST, 0);
+                } else if (input.startsWith("s")) {
+                	// eg: s:jiangchao
+                	sendToServer("1001," + input.split(":")[1] + ",ban ge tong kuai!", 17);
                 }
 
                 input = scanner.nextLine();
