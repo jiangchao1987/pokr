@@ -104,7 +104,10 @@ public class Game implements Runnable {
     private void rotateDealer() {
         dealerPosition = dealerPosition++ % activePlayers.size();
         Player dealer = activePlayers.get(dealerPosition);
+
         NotificationCenter.notifyCurrentDealer(activePlayers, dealer.getUdid());
+//        NotificationCenter.markSmallBlind(activePlayers, actor.getUdid());
+//        NotificationCenter.markBigBlind(activePlayers, actor.getUdid());
         log.debug("[RotateDealer] current notifyCurrentDealer:" + dealerPosition);
     }
 
@@ -295,11 +298,11 @@ public class Game implements Runnable {
 
 
     private void postSmallBlind() {
-        NotificationCenter.markSmallBlind(activePlayers, actor.getUdid());
+
     }
 
     private void postBigBlind() {
-        NotificationCenter.markBigBlind(activePlayers, actor.getUdid());
+
     }
 
     private void sayHello() {
@@ -316,6 +319,7 @@ public class Game implements Runnable {
             info = info + player.getUdid() + "," + player.getName() + "," + player.getMoney() + ";";
         }
         NotificationCenter.sayHello(activePlayers, info);
+
     }
 
 
