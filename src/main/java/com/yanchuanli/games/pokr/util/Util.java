@@ -20,24 +20,6 @@ public class Util {
 
     private static Logger log = Logger.getLogger(Util.class);
 
-    /*   public static void sendToAll(String message) {
-        for (String s : Memory.sessionsOnServer.keySet()) {
-            Player player = Memory.sessionsOnServer.get(s);
-            Util.sendMessage(player.getSession(), message);
-        }
-    }
-
-    public static void sendMessage(IoSession session, String input) {
-//        synchronized (session) {
-            IoBuffer answer = IoBuffer.allocate(toByte(6, input).length, false);
-            answer.put(toByte(6, input));
-            answer.flip();
-            session.write(answer);
-            answer.free();
-            log.debug("socket sent:" + input);
-//        }
-    }*/
-
     public static String cardsToString(List<Card> cardList) {
         String result = "";
         for (Card card : cardList) {
