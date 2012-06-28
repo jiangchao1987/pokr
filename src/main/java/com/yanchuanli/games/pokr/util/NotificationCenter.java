@@ -29,7 +29,7 @@ public class NotificationCenter {
      * @param players 所有玩家
      * @param info    dealer的id
      */
-    public static void notifyCurrentDealer(List<Player> players, String info) {
+    public static void markCurrentDealer(List<Player> players, String info) {
         notifyAllOnTable(players, info, Config.TYPE_DEALER_INGAME);
     }
     
@@ -39,7 +39,7 @@ public class NotificationCenter {
      * @param players 所有玩家
      * @param info
      */
-    public static void smallBlind(List<Player> players, String info) {
+    public static void paySmallBlind(List<Player> players, String info) {
     	notifyAllOnTable(players, info, Config.TYPE_SMALLBLIND_INGAME);
     }
     
@@ -49,7 +49,7 @@ public class NotificationCenter {
      * @param players 所有玩家
      * @param info
      */
-    public static void bigBlind(List<Player> players, String info) {
+    public static void payBigBlind(List<Player> players, String info) {
     	notifyAllOnTable(players, info, Config.TYPE_BIGBLIND_INGAME);
     }
 

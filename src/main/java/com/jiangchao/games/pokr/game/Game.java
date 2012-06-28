@@ -48,7 +48,7 @@ public class Game {
 
         sayHello();
         reset();
-        // rotate notifyCurrentDealer position
+        // rotate markCurrentDealer position
         rotateDealer();
 
         // post the big blind and small blind
@@ -90,7 +90,7 @@ public class Game {
 
     private void rotateDealer() {
         dealerPosition = dealerPosition++ % players.size();
-        log.debug("[RotateDealer] current notifyCurrentDealer:" + dealerPosition);
+        log.debug("[RotateDealer] current markCurrentDealer:" + dealerPosition);
     }
 
     private void deal2Cards() {
