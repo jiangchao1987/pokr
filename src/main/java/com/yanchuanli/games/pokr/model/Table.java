@@ -1,5 +1,7 @@
 package com.yanchuanli.games.pokr.model;
 
+import org.apache.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -16,11 +18,14 @@ public class Table {
     private Random random;
     private int playerCount;
     private Random ran;
+    private int counter;
+    private static Logger log = Logger.getLogger(Table.class);
 
     public Table() {
         playerCount = 9;
         players = new Player[playerCount];
         ran = new Random();
+        counter = 0;
     }
 
     public boolean addPlayer(Player player) {
@@ -78,7 +83,7 @@ public class Table {
     public void joinTable(Player player) {
         List<Integer> availableChairs = new ArrayList<>();
         for (int i = 0; i < playerCount; i++) {
-            if (players[i] != null) {
+            if (players[i] == null) {
                 availableChairs.add(i);
             }
         }
@@ -88,6 +93,24 @@ public class Table {
 
     public void joinTableAtIndex(Player player, int index) {
         players[index] = player;
+        log.debug(player.getName() + " is sitted at " + index);
     }
 
+    public void resetCounter() {
+        counter = 0;
+    }
+
+    public Player nextPlayer() {
+        Player player = null;
+        int size = size();
+        if (size > 0) {
+            while (player == null) {
+                log.debug("loading player " + String.valueOf(counter));
+                player = players[counter];
+                counter = (counter + 1) % playerCount;
+                log.debug("counter:" + counter + " " + String.valueOf(counter % playerCount));
+            }
+        }
+        return player;
+    }
 }

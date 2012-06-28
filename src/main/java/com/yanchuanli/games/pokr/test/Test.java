@@ -1,12 +1,12 @@
 package com.yanchuanli.games.pokr.test;
 
 import com.yanchuanli.games.pokr.model.Player;
+import com.yanchuanli.games.pokr.model.Table;
 import org.apache.log4j.Logger;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Copyright Candou.com
@@ -22,10 +22,17 @@ public class Test {
     private static Player actor;
 
     public static void main(String[] args) throws UnknownHostException {
-        Random ran = new Random();
-        int a = ran.nextInt(3);
-        for (int i = 0; i < 10; i++) {
-            log.debug(ran.nextInt(3));
+        Table table = new Table();
+        Player a = new Player("a", "a");
+        Player b = new Player("b", "b");
+        Player c = new Player("c", "c");
+        table.joinTable(a);
+        table.joinTable(b);
+        table.joinTable(c);
+
+        for (int i = 0; i < 6; i++) {
+            Player p = table.nextPlayer();
+            log.debug(p);
         }
     }
 
