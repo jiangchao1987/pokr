@@ -4,6 +4,7 @@ import com.google.code.tempusfugit.temporal.Duration;
 import com.yanchuanli.games.pokr.dao.RoomDao;
 import com.yanchuanli.games.pokr.game.Game;
 import com.yanchuanli.games.pokr.game.GameConfig;
+import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.model.Room;
 import com.yanchuanli.games.pokr.util.Config;
 
@@ -42,6 +43,9 @@ public class GameEngine {
     public static void stop() {
         for (Integer roomId : games.keySet()) {
             Game game = games.get(roomId);
+            for (Player p : game.getAvailablePlayers()) {
+                p.getSession().close(true);
+            }
             game.stopGame();
         }
     }
