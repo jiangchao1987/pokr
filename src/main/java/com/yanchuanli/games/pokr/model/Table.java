@@ -1,5 +1,7 @@
 package com.yanchuanli.games.pokr.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -13,10 +15,12 @@ public class Table {
     private Player[] players;
     private Random random;
     private int playerCount;
+    private Random ran;
 
     public Table() {
         playerCount = 9;
         players = new Player[playerCount];
+        ran = new Random();
     }
 
     public boolean addPlayer(Player player) {
@@ -69,6 +73,21 @@ public class Table {
             }
         }
         return result;
+    }
+
+    public void joinTable(Player player) {
+        List<Integer> availableChairs = new ArrayList<>();
+        for (int i = 0; i < playerCount; i++) {
+            if (players[i] != null) {
+                availableChairs.add(i);
+            }
+        }
+        int randomChairIndex = availableChairs.get(ran.nextInt(availableChairs.size()));
+        joinTableAtIndex(player, randomChairIndex);
+    }
+
+    public void joinTableAtIndex(Player player, int index) {
+        players[index] = player;
     }
 
 }
