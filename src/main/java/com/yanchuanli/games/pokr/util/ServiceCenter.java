@@ -7,7 +7,6 @@ import com.yanchuanli.games.pokr.dao.RoomDao;
 import com.yanchuanli.games.pokr.game.Game;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.model.Room;
-
 import org.apache.log4j.Logger;
 import org.apache.mina.core.session.IoSession;
 
@@ -72,38 +71,45 @@ public class ServiceCenter {
                     leaveRoom(session, map.get(key));
                     break;
                 case Config.TYPE_CHAT_INGAME:
-                	chat(session, map.get(key));
-                	break;
+                    chat(session, map.get(key));
+                    break;
             }
         }
     }
-    
+
     /**
      * 房间中聊天
-     * 
+     *
      * @param session
      * @param info    房间id,用户udid,chat内容
      */
     private void chat(IoSession session, String info) {
-    	String[] cmds = info.split(",");
-    	
-    	Game game = GameEngine.getGame(Integer.parseInt(cmds[0]));
-    	NotificationCenter.chat(game.getActivePlayers(), cmds[1] + ": " + cmds[2]);
+        String[] cmds = info.split(",");
+        Game game = GameEngine.getGame(Integer.parseInt(cmds[0]));
+        List<Player> players = new ArrayList<>();
+        for (Player p : game.getActivePlayers()) {
+            if (!p.getUdid().equals(cmds[1])) {
+                players.add(p);
+            }
+        }
+        NotificationCenter.chat(players, cmds[1] + ": " + cmds[2]);
+        players.clear();
+        players = null;
     }
 
     /**
      * 离开房间
-     * 
+     *
      * @param session
      * @param info    房间id,用户udid,用户名
      */
     private void leaveRoom(IoSession session, String info) {
-    	String[] cmds = info.split(",");
-    	
-    	Game game = GameEngine.getGame(Integer.parseInt(cmds[0]));
-    	Player player = new Player(cmds[1], cmds[2]);
-    	game.removePlayer(player);
-    	NotificationCenter.leaveRoom(game.getActivePlayers(), cmds[1] + ",0");
+        String[] cmds = info.split(",");
+
+        Game game = GameEngine.getGame(Integer.parseInt(cmds[0]));
+        Player player = new Player(cmds[1], cmds[2]);
+        game.removePlayer(player);
+        NotificationCenter.leaveRoom(game.getActivePlayers(), cmds[1] + ",0");
     }
 
     /**
@@ -163,18 +169,18 @@ public class ServiceCenter {
      * @param info    udid,password,source[0|1|...]
      */
     private void login(IoSession session, String info) {
-    	String[] msgs = info.split(",");
+        String[] msgs = info.split(",");
         Player player = PlayerDao.getPlayer(msgs[0], msgs[1], Integer.parseInt(msgs[2]));
         player.setSession(session);
         Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);
 
         StringBuffer sb = new StringBuffer();
-		sb.append(player.getUdid() + "," + player.getName() + ","
-				+ player.getMoney() + "," + player.getExp() + ","
-				+ player.getWinCount() + "," + player.getLoseCount() + ","
-				+ player.getHistoricalBestHandRank() + ","
-				+ player.getHistoricalBestHand() + "," + player.getMaxWin()
-				+ "," + player.getCustomAvatar() + "," + player.getAvatar());
+        sb.append(player.getUdid() + "," + player.getName() + ","
+                + player.getMoney() + "," + player.getExp() + ","
+                + player.getWinCount() + "," + player.getLoseCount() + ","
+                + player.getHistoricalBestHandRank() + ","
+                + player.getHistoricalBestHand() + "," + player.getMaxWin()
+                + "," + player.getCustomAvatar() + "," + player.getAvatar());
         NotificationCenter.login(session, sb.toString());
     }
 
