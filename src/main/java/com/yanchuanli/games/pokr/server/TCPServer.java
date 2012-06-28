@@ -29,7 +29,7 @@ public class TCPServer {
     private static Logger log = Logger.getLogger(TCPServer.class);
 
     public static void main(String[] args) throws IOException {
-        NioSocketAcceptor acceptor = new NioSocketAcceptor(5);
+        NioSocketAcceptor acceptor = new NioSocketAcceptor(Runtime.getRuntime().availableProcessors() + 1);
         acceptor.setHandler(new ServerHandler());
 
         DefaultIoFilterChainBuilder chain = acceptor.getFilterChain();
