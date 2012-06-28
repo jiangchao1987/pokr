@@ -32,6 +32,7 @@ public class Config {
     public static final int TYPE_BIGBLIND_INGAME = 14;
     public static final int TYPE_SMALLBLIND_INGAME = 15;
     public static final int TYPE_DEALER_INGAME = 16;
+    public static final int TYPE_CHAT_INGAME = 17;
 
     public static final int SRC_IPHONE_GUEST = 0;
     public static final int SRC_IPAD_GUEST = 1;
