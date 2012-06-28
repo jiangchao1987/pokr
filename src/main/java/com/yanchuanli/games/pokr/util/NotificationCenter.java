@@ -32,6 +32,26 @@ public class NotificationCenter {
     public static void notifyCurrentDealer(List<Player> players, String info) {
         notifyAllOnTable(players, info, Config.TYPE_DEALER_INGAME);
     }
+    
+    /**
+     * 小盲注
+     * 
+     * @param players 所有玩家
+     * @param info
+     */
+    public static void smallBlind(List<Player> players, String info) {
+    	notifyAllOnTable(players, info, Config.TYPE_SMALLBLIND_INGAME);
+    }
+    
+    /**
+     * 大盲注
+     * 
+     * @param players 所有玩家
+     * @param info
+     */
+    public static void bigBlind(List<Player> players, String info) {
+    	notifyAllOnTable(players, info, Config.TYPE_BIGBLIND_INGAME);
+    }
 
     /**
      * 通知所有玩家谁是小盲注
@@ -40,7 +60,7 @@ public class NotificationCenter {
      * @param info    小盲注玩家的id
      */
     public static void markSmallBlind(List<Player> players, String info) {
-        notifyAllOnTable(players, info, Config.TYPE_SMALLBLIND_INGAME);
+        notifyAllOnTable(players, info, Config.TYPE_MARKSMALLBLIND_INGAME);
     }
 
     /**
@@ -50,7 +70,7 @@ public class NotificationCenter {
      * @param info    大盲注玩家的id
      */
     public static void markBigBlind(List<Player> players, String info) {
-        notifyAllOnTable(players, info, Config.TYPE_BIGBLIND_INGAME);
+        notifyAllOnTable(players, info, Config.TYPE_MARKBIGBLIND_INGAME);
     }
 
 
