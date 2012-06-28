@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Copyright Candou.com
@@ -21,16 +22,11 @@ public class Test {
     private static Player actor;
 
     public static void main(String[] args) throws UnknownHostException {
-        String bestHandStr = "";
-        int[] cards = {1, 2, 3};
-        for (int i = 0; i < cards.length; i++) {
-            if (i == cards.length - 1) {
-                bestHandStr = bestHandStr + String.valueOf(cards[i]);
-            } else {
-                bestHandStr = bestHandStr + String.valueOf(cards[i]) + "_";
-            }
+        Random ran = new Random();
+        int a = ran.nextInt(3);
+        for (int i = 0; i < 10; i++) {
+            log.debug(ran.nextInt(3));
         }
-        log.debug(bestHandStr);
     }
 
     private static void rotateActor() {
