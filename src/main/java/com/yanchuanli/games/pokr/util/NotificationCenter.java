@@ -14,6 +14,16 @@ import java.util.List;
 public class NotificationCenter {
 	
 	/**
+	 * 转发聊天信息
+	 * 
+	 * @param players 所有玩家
+	 * @param string 转发的消息
+	 */
+	public static void chat(List<Player> players, String info) {
+		notifyAllOnTable(players, info, Config.TYPE_CHAT_INGAME);
+	}
+	
+	/**
 	 * 通知所有玩家谁是dealer
 	 * 
 	 * @param players 所有玩家

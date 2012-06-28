@@ -71,8 +71,24 @@ public class ServiceCenter {
                 case Config.TYPE_LEAVEROOM_INGAME:
                     leaveRoom(session, map.get(key));
                     break;
+                case Config.TYPE_CHAT_INGAME:
+                	chat(session, map.get(key));
+                	break;
             }
         }
+    }
+    
+    /**
+     * 房间中聊天
+     * 
+     * @param session
+     * @param info    房间id,用户udid,chat内容
+     */
+    private void chat(IoSession session, String info) {
+    	String[] cmds = info.split(",");
+    	
+    	Game game = GameEngine.getGame(Integer.parseInt(cmds[0]));
+    	NotificationCenter.chat(game.getActivePlayers(), cmds[1] + ": " + cmds[2]);
     }
 
     /**

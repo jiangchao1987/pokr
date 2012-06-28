@@ -56,6 +56,24 @@ public class PlayerDao {
         }
         return players.get(udid);
     }
+    
+    /**
+     * 更新资产
+     * 
+     * @param udid
+     * @param money
+     */
+    public static void updateMoney(String udid, int money) {
+    	DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME,
+				MongoDB.COLL_USER);
+
+		DBObject query = new BasicDBObject();
+		query.put("udid", udid);
+
+		DBObject doc = new BasicDBObject().append("$set",
+				new BasicDBObject().append("money", money));
+		coll.update(query, doc);
+    }
 
     /**
      * 更新bestHand以及bestHandRank
