@@ -19,6 +19,18 @@ import java.util.List;
  * Date: 12-6-22
  */
 public class RoomDao {
+	
+	public static void updateCurrentPlayerCount(int roomId, int currentPlayerCount) {
+    	DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME,
+				MongoDB.COLL_ROOM);
+
+		DBObject query = new BasicDBObject();
+		query.put("id", roomId);
+
+		DBObject doc = new BasicDBObject().append("$set",
+				new BasicDBObject().append("currentPlayerCount", currentPlayerCount));
+		coll.update(query, doc);
+    }
 
     public static void init() {
         delete();
@@ -87,25 +99,7 @@ public class RoomDao {
 
         return rooms;
     }
-
-    /*public static List<Integer> getRooms(int roomlevel) {
-        switch (roomlevel) {
-            case Config.ROOM_LEVEL_BEGINNER:
-                break;
-            case Config.ROOM_LEVEL_PROFESSIONAL:
-                break;
-            case Config.ROOM_LEVEL_MASTER:
-                break;
-            case Config.ROOM_LEVEL_VIP:
-                break;
-        }
-
-        List<Integer> rooms = new ArrayList<Integer>();
-		rooms.add(1001);
-		rooms.add(1002);
-		return rooms;
-    }*/
-
+    
     public static List<Room> getRooms(int level) {
         return query(level);
     }
