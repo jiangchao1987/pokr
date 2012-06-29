@@ -116,7 +116,7 @@ public class Game implements Runnable {
     private void rotateDealer() {
         dealerPosition = dealerPosition++ % activePlayers.size();
         actorPosition = dealerPosition;
-        Player dealer = activePlayers.get(dealerPosition);
+        Player dealer = activePlayers.get(actorPosition);
 
         NotificationCenter.markCurrentDealer(activePlayers, dealer.getUdid());
         int smallBlindIndex = (actorPosition + 1) % activePlayers.size();
@@ -125,7 +125,12 @@ public class Game implements Runnable {
         Player bigBlind = activePlayers.get(bigBlindIndex);
         NotificationCenter.markSmallBlind(activePlayers, smallBlind.getUdid());
         NotificationCenter.markBigBlind(activePlayers, bigBlind.getUdid());
+
         log.debug("[RotateDealer] current markCurrentDealer:" + dealerPosition);
+        log.debug("current dealer:"+dealer.getName());
+        log.debug("current smallblind:"+smallBlind.getName());
+        log.debug("current bigblind:"+bigBlind.getName());
+
     }
 
     private void deal2Cards() {

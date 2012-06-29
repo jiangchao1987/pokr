@@ -178,7 +178,7 @@ public class Game {
             rotateActor();
             Set<Action> allowedActions = getAllowedActions(actor);
 
-            Action action = actor.act(allowedActions, MIN_BET, bet, moneyOnTable, Duration.millis(20000), Duration.millis(500));
+            Action action = actor.act(allowedActions, bet, moneyOnTable, Duration.millis(20000), Duration.millis(500));
             log.debug(actor.getName() + " " + action.getVerb());
             playersToAct--;
             switch (action) {
