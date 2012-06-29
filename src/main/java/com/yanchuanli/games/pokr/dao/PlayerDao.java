@@ -56,23 +56,23 @@ public class PlayerDao {
         }
         return players.get(udid);
     }
-    
+
     /**
      * 更新资产
-     * 
+     *
      * @param udid
      * @param money
      */
     public static void updateMoney(String udid, int money) {
-    	DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME,
-				MongoDB.COLL_USER);
+        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME,
+                MongoDB.COLL_USER);
 
-		DBObject query = new BasicDBObject();
-		query.put("udid", udid);
+        DBObject query = new BasicDBObject();
+        query.put("udid", udid);
 
-		DBObject doc = new BasicDBObject().append("$set",
-				new BasicDBObject().append("money", money));
-		coll.update(query, doc);
+        DBObject doc = new BasicDBObject().append("$set",
+                new BasicDBObject().append("money", money));
+        coll.update(query, doc);
     }
 
     /**
@@ -90,18 +90,8 @@ public class PlayerDao {
                 DBObject query = new BasicDBObject();
                 query.put("udid", targetPlayer.getUdid());
 
-
-                String bestHandStr = "";
-                int[] cards = targetPlayer.getBestHand().getCardArray();
-                for (int i = 0; i < cards.length; i++) {
-                    if (i == cards.length - 1) {
-                        bestHandStr = bestHandStr + String.valueOf(cards[i]);
-                    } else {
-                        bestHandStr = bestHandStr + String.valueOf(cards[i]) + "_";
-                    }
-                }
                 DBObject doc = new BasicDBObject().append("$set", new BasicDBObject()
-                        .append("best", bestHandStr).append("br", targetPlayer.getBestHandRank()));
+                        .append("best", targetPlayer.getBestHand().getGIndexes()).append("br", targetPlayer.getBestHandRank()));
                 coll.update(query, doc);
             }
         }

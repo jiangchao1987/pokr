@@ -22,6 +22,8 @@ public class Test {
     private static Player actor;
 
     public static void main(String[] args) throws UnknownHostException {
+
+
         Table table = new Table();
         Player a = new Player("a", "a");
         Player b = new Player("b", "b");

@@ -27,6 +27,9 @@ public class HandEvaluator {
 
         HandEvaluator handEval = new HandEvaluator();
 
+
+        log.info(handEval.getBest5CardHand(hand1).getGIndexes());
+
         log.info(handEval.getBest5CardHand(hand1));
         log.info(handEval.getBest5CardHand(hand2));
 

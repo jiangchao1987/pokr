@@ -195,7 +195,12 @@ public class Hand {
     public String getGIndexes() {
         StringBuffer sb = new StringBuffer();
         for (int i = 1; i <= cards[0]; i++) {
-            sb.append(getCard(i).getIndex() + "_");
+            if (i == cards[0]) {
+                sb.append(getCard(i).getIndex());
+            } else {
+                sb.append(getCard(i).getIndex() + "_");
+            }
+
         }
         return sb.toString();
     }
