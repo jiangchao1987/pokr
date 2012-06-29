@@ -37,7 +37,6 @@ public class Game implements Runnable {
     private int moneyOnTable;
     private Player actor;
 
-    private int MIN_BET = 10;
     private int actorPosition;
     private boolean gaming = false;
     private boolean stop = false;
@@ -243,7 +242,7 @@ public class Game implements Runnable {
             }
 
             NotificationCenter.otherPlayerStartAction(playersToForward, actor.getUdid());
-            Action action = actor.act(allowedActions, MIN_BET, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval());
+            Action action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval());
 
             log.debug(" id: " + actor.getUdid() + " name: " + actor.getName()
                     + " action: " + action.getVerb());

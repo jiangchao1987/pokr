@@ -169,7 +169,7 @@ public class Player {
         this.avatar = avatar;
     }
 
-    public Action act(Set<Action> actions, int minBet, int currentBet, int moneyOnTable, Duration bettingDuration, Duration inactivityCheckInterval) {
+    public Action act(Set<Action> actions, int currentBet, int moneyOnTable, Duration bettingDuration, Duration inactivityCheckInterval) {
         int counter = 0;
         int sleepCount = (int) (bettingDuration.inMillis() / inactivityCheckInterval.inMillis());
         log.debug(bettingDuration.inMillis() + "/" + inactivityCheckInterval.inMillis() + "=" + sleepCount);
@@ -268,16 +268,16 @@ public class Player {
     public void setGlobalId(int globalId) {
         this.globalId = globalId;
     }
-    
+
     public int getCustomAvatar() {
-		return customAvatar;
-	}
+        return customAvatar;
+    }
 
-	public void setCustomAvatar(int customAvatar) {
-		this.customAvatar = customAvatar;
-	}
+    public void setCustomAvatar(int customAvatar) {
+        this.customAvatar = customAvatar;
+    }
 
-	@Override
+    @Override
     public String toString() {
         return "Player [globalId=" + globalId + ", udid=" + udid + ", name=" + name
                 + ", session=" + session + ", hand=" + hand + ", bestHand="
