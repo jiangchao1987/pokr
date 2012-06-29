@@ -90,7 +90,6 @@ public class Game implements Runnable {
             // flop the betting round
             // deal the turn card (4th) on the table
             if (activePlayers.size() > 1) {
-
                 dealTurnCard();
                 doBettingRound();
                 if (activePlayers.size() > 1) {
@@ -101,8 +100,15 @@ public class Game implements Runnable {
                         bet = 0;
                         shutdown();
                     }
+                } else {
+                    shutdown();
                 }
+            } else {
+                shutdown();
             }
+
+        } else {
+            shutdown();
         }
 
 
@@ -165,10 +171,12 @@ public class Game implements Runnable {
         List<Player> results = new ArrayList<>();
 
         for (Player player : activePlayers) {
-            for (Card card : cardsOnTable) {
-                player.getHand().addCard(card);
+            if (player.isAlive()) {
+                for (Card card : cardsOnTable) {
+                    player.getHand().addCard(card);
+                }
+                results.add(player);
             }
-            results.add(player);
         }
 
 
