@@ -302,11 +302,17 @@ public class Game implements Runnable {
 
 
     private void postSmallBlind() {
-
+        actor.setBet(gc.getSmallBlindAmount());
+        moneyOnTable += actor.getBet();
+        String info = actor.getUdid() + "," + Action.SMALL_BLIND.getVerb() + ":" + actor.getBet() + "," + moneyOnTable;
+        NotificationCenter.forwardAction(activePlayers, info);
     }
 
     private void postBigBlind() {
-
+        actor.setBet(gc.getBigBlindAmount());
+        moneyOnTable += actor.getBet();
+        String info = actor.getUdid() + "," + Action.BIG_BLIND.getVerb() + ":" + actor.getBet() + "," + moneyOnTable;
+        NotificationCenter.forwardAction(activePlayers, info);
     }
 
     private void sayHello() {
