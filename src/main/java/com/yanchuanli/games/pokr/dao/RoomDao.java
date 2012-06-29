@@ -34,7 +34,6 @@ public class RoomDao {
 
     public static void init() {
         delete();
-
         insert(Config.ROOM_LEVEL_BEGINNER);
         insert(Config.ROOM_LEVEL_MASTER);
         insert(Config.ROOM_LEVEL_PROFESSIONAL);

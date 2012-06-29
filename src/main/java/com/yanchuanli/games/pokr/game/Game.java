@@ -5,6 +5,7 @@ import com.yanchuanli.games.pokr.basic.Card;
 import com.yanchuanli.games.pokr.basic.Deck;
 import com.yanchuanli.games.pokr.basic.PlayerRankComparator;
 import com.yanchuanli.games.pokr.dao.PlayerDao;
+import com.yanchuanli.games.pokr.dao.RoomDao;
 import com.yanchuanli.games.pokr.model.Action;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.util.NotificationCenter;
@@ -51,8 +52,14 @@ public class Game implements Runnable {
         comparator = new PlayerRankComparator();
     }
 
-    public void addPlayer(Player player) {
-        availablePlayers.add(player);
+    public boolean addPlayer(Player player) {
+        boolean result = false;
+        if (availablePlayers.size() <= gc.getMaxPlayersCount()) {
+            availablePlayers.add(player);
+            RoomDao.updateCurrentPlayerCount(gc.getId(), availablePlayers.size());
+            result = true;
+        }
+        return result;
     }
 
 
