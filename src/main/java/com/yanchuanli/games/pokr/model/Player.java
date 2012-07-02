@@ -191,7 +191,7 @@ public class Player {
             input = scanner.nextLine();
         } else {
 
-            while (getInput() == null && counter < sleepCount) {
+            while (getInput() == null && counter < sleepCount && isAlive()) {
                 try {
                     Thread.sleep(inactivityCheckInterval.inMillis());
                     counter++;
@@ -202,7 +202,7 @@ public class Player {
             }
         }
 
-        if (counter >= sleepCount && input == null) {
+        if (input == null) {
             result = Action.FOLD;
         } else {
             log.debug(name + " input:[" + input + "]");
