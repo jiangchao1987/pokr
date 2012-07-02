@@ -3,6 +3,7 @@ package com.yanchuanli.games.pokr.game;
 import com.google.code.tempusfugit.temporal.Duration;
 import com.yanchuanli.games.pokr.basic.Card;
 import com.yanchuanli.games.pokr.basic.Deck;
+import com.yanchuanli.games.pokr.basic.HandEvaluator;
 import com.yanchuanli.games.pokr.basic.PlayerRankComparator;
 import com.yanchuanli.games.pokr.dao.PlayerDao;
 import com.yanchuanli.games.pokr.dao.RoomDao;
@@ -41,6 +42,7 @@ public class Game implements Runnable {
     private int actorPosition;
     private boolean gaming = false;
     private boolean stop = false;
+    private HandEvaluator handEval;
 
 
     public Game(GameConfig gc) {
@@ -50,6 +52,7 @@ public class Game implements Runnable {
         cardsOnTable = new ArrayList<>();
         deck = new Deck();
         comparator = new PlayerRankComparator();
+        handEval = new HandEvaluator();
     }
 
     public boolean addPlayer(Player player) {
@@ -186,8 +189,13 @@ public class Game implements Runnable {
             }
         }
 
-
-        Collections.sort(results, comparator);
+        if (results.size() > 1) {
+            Collections.sort(results, comparator);
+        } else {
+            Player player1 = results.get(0);
+            player1.setBestHand(handEval.getBest5CardHand(player1.getHand()));
+            player1.setNameOfBestHand(HandEvaluator.nameHandInChinese(player1.getBestHand()));
+        }
 
 
         StringBuilder sb = new StringBuilder();
@@ -203,6 +211,7 @@ public class Game implements Runnable {
                 sb.append(pp.getUdid()).append(",").append(pp.getName()).append(",").append(pp.getBestHand().getGIndexes()).append(",").append(pp.getNameOfBestHand()).append(",0;");
             }
         }
+        log.debug(sb.toString());
         NotificationCenter.winorlose(results, sb.toString());
 
         results.clear();
@@ -403,7 +412,7 @@ public class Game implements Runnable {
                 availablePlayers.remove(player);
             }
         }
-        log.debug(availablePlayers.size() + " players are waiting in " + gc.getName() + " ...");
+//        log.debug(availablePlayers.size() + " players are waiting in " + gc.getName() + " ...");
     }
 
     public void removePlayer(Player player) {

@@ -44,7 +44,9 @@ public class GameEngine {
         for (Integer roomId : games.keySet()) {
             Game game = games.get(roomId);
             for (Player p : game.getAvailablePlayers()) {
-                p.getSession().close(true);
+                if (p.isAlive()) {
+                    p.getSession().close(true);
+                }
             }
             game.stopGame();
         }

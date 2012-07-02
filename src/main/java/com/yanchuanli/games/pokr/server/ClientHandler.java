@@ -37,6 +37,9 @@ public class ClientHandler extends IoHandlerAdapter {
         super.messageReceived(session, message);
         if (message instanceof IoBuffer) {
             IoBuffer buffer = (IoBuffer) message;
+
+
+
             List<Map<Integer, String>> list = Util.ioBufferToString(buffer);
             for (Map<Integer, String> map : list) {
                 for (Integer key : map.keySet()) {
