@@ -103,9 +103,8 @@ public class ServiceCenter {
      * @param session
      * @param info    房间id,用户udid,用户名
      */
-    private void leaveRoom(IoSession session, String info) {
+    public void leaveRoom(IoSession session, String info) {
         String[] cmds = info.split(",");
-
         Game game = GameEngine.getGame(Integer.parseInt(cmds[0]));
         Player player = new Player(cmds[1], cmds[2]);
         game.removePlayer(player);
@@ -123,9 +122,9 @@ public class ServiceCenter {
         Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
         game.addPlayer(newplayer);
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (Player player : game.getAvailablePlayers()) {
-            sb.append(player.getUdid() + "," + player.getName() + "," + player.getMoney() + ";");
+            sb.append(player.getUdid()).append(",").append(player.getName()).append(",").append(player.getMoney()).append(";");
         }
 
         NotificationCenter.sayHello(game.getAvailablePlayers(), sb.toString());

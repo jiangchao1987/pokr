@@ -42,6 +42,7 @@ public class Player {
     private int customAvatar;
     private boolean smallBlind;
     private boolean bigBlind;
+    private int roomid;
 
     public Player(String id, String name) {
         this.udid = id;
@@ -174,14 +175,14 @@ public class Player {
     public Action act(Set<Action> actions, int currentBet, int moneyOnTable, Duration bettingDuration, Duration inactivityCheckInterval) {
         int counter = 0;
         int sleepCount = (int) (bettingDuration.inMillis() / inactivityCheckInterval.inMillis());
-        log.debug(bettingDuration.inMillis() + "/" + inactivityCheckInterval.inMillis() + "=" + sleepCount);
+//        log.debug(bettingDuration.inMillis() + "/" + inactivityCheckInterval.inMillis() + "=" + sleepCount);
         String actionStr = "";
         Action result;
 
         for (Action action : actions) {
             actionStr = actionStr + action.getVerb() + "_";
         }
-        log.debug(actionStr);
+        log.debug("allowed actions for " + getUdid() + ":" + getName() + " :" + actionStr);
 
         // notify this user for allowed actions
         NotificationCenter.act(this.getSession(), this.getUdid() + "," + this.getName() + "," + actionStr + "," + moneyOnTable);
@@ -314,5 +315,13 @@ public class Player {
 
     public void setBigBlind(boolean bigBlind) {
         this.bigBlind = bigBlind;
+    }
+
+    public int getRoomid() {
+        return roomid;
+    }
+
+    public void setRoomid(int roomid) {
+        this.roomid = roomid;
     }
 }

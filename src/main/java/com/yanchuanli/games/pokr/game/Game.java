@@ -58,6 +58,7 @@ public class Game implements Runnable {
     public boolean addPlayer(Player player) {
         boolean result = false;
         if (availablePlayers.size() <= gc.getMaxPlayersCount()) {
+            player.setRoomid(gc.getId());
             availablePlayers.add(player);
             RoomDao.updateCurrentPlayerCount(gc.getId(), availablePlayers.size());
             result = true;

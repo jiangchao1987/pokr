@@ -39,9 +39,16 @@ public class ServerHandler extends IoHandlerAdapter {
     // 当一个客户端关闭时
     public void sessionClosed(IoSession session) {
         Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
+
         player.setAlive(false);
         player.setSession(null);
         Memory.sessionsOnServer.remove(String.valueOf(session.getId()));
+        if (player.getRoomid() != Integer.MIN_VALUE) {
+            String info = player.getRoomid() + "," + player.getUdid() + "," + player.getName();
+            ServiceCenter.getInstance().leaveRoom(session, info);
+        }
+
+
         log.info(player.getUdid() + ":" + player.getName() + " is now disconnected !");
     }
 
