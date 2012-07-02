@@ -195,18 +195,22 @@ public class Game implements Runnable {
         }
         NotificationCenter.gameover(results, sb.toString());
 
+        sb = new StringBuffer();
         for (int i = 0; i < results.size(); i++) {
             if (i == 0) {
                 Player winner = results.get(i);
                 log.debug(winner.getName() + " wins!");
                 PlayerDao.updateBestHandOfPlayer(winner);
                 PlayerDao.updateMaxWin(winner.getUdid(), moneyOnTable);
-                NotificationCenter.winorlose(results.get(i).getSession(), results.get(i).getUdid() + "," + results.get(i).getName() + ",1", 10);
+                sb.append(results.get(i).getUdid() + "," + results.get(i).getName() + ",1;");
+//                NotificationCenter.winorlose(results.get(i).getSession(), results.get(i).getUdid() + "," + results.get(i).getName() + ",1", 10);
             } else {
                 log.debug(results.get(i).getName() + " loses!");
-                NotificationCenter.winorlose(results.get(i).getSession(), results.get(i).getUdid() + "," + results.get(i).getName() + ",0", 10);
+                sb.append(results.get(i).getUdid() + "," + results.get(i).getName() + ",0;");
+//                NotificationCenter.winorlose(results.get(i).getSession(), results.get(i).getUdid() + "," + results.get(i).getName() + ",0", 10);
             }
         }
+        NotificationCenter.winorlose(activePlayers, sb.toString());
 
         results.clear();
         gaming = false;
@@ -277,7 +281,8 @@ public class Game implements Runnable {
                     if (this.activePlayers.size() == 1) {
                         log.debug(this.activePlayers.get(0).getName() + " win ...");
                         playersToAct = 0;
-                        NotificationCenter.winorlose(this.activePlayers.get(0).getSession(), this.activePlayers.get(0).getUdid() + "," + this.activePlayers.get(0).getName() + ",1", 10);
+//                        NotificationCenter.winorlose(this.activePlayers.get(0).getSession(), this.activePlayers.get(0).getUdid() + "," + this.activePlayers.get(0).getName() + ",1", 10);
+                        NotificationCenter.winorlose(this.activePlayers, this.activePlayers.get(0).getUdid() + "," + this.activePlayers.get(0).getName() + ",1");
                     }
                     break;
             }
