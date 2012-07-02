@@ -193,8 +193,12 @@ public class Game implements Runnable {
             Collections.sort(results, comparator);
         } else {
             Player player1 = results.get(0);
-            player1.setBestHand(handEval.getBest5CardHand(player1.getHand()));
-            player1.setNameOfBestHand(HandEvaluator.nameHandInChinese(player1.getBestHand()));
+            if (player1.getHand().size() < 5) {
+
+            } else {
+                player1.setBestHand(handEval.getBest5CardHand(player1.getHand()));
+                player1.setNameOfBestHand(HandEvaluator.nameHandInChinese(player1.getBestHand()));
+            }
         }
 
 
