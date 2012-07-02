@@ -169,7 +169,7 @@ public class Player {
         this.avatar = avatar;
     }
 
-    public Action act(Set<Action> actions, int currentBet, int moneyOnTable, Duration bettingDuration, Duration inactivityCheckInterval) {
+    public Action act(Set<Action> actions, int currentBet, int minBet, int moneyOnTable, Duration bettingDuration, Duration inactivityCheckInterval) {
         int counter = 0;
         int sleepCount = (int) (bettingDuration.inMillis() / inactivityCheckInterval.inMillis());
         log.debug(bettingDuration.inMillis() + "/" + inactivityCheckInterval.inMillis() + "=" + sleepCount);
@@ -182,7 +182,7 @@ public class Player {
         log.debug(actionStr);
 
         // notify this user for allowed actions
-        NotificationCenter.act(this.getSession(), this.getUdid() + "," + this.getName() + "," + actionStr + "," + moneyOnTable);
+        NotificationCenter.act(this.getSession(), this.getUdid() + "," + this.getName() + "," + actionStr + "," + String.valueOf(minBet) + "," + moneyOnTable);
 
         if (Config.offlineDebug) {
             Scanner scanner = new Scanner(System.in);
