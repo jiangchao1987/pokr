@@ -40,6 +40,8 @@ public class Player {
     private int maxWin;
     private String avatar;
     private int customAvatar;
+    private boolean smallBlind;
+    private boolean bigBlind;
 
     public Player(String id, String name) {
         this.udid = id;
@@ -294,5 +296,23 @@ public class Player {
         hand.makeEmpty();
         bestHand = null;
         bestHandRank = Integer.MIN_VALUE;
+        smallBlind = false;
+        bigBlind = false;
+    }
+
+    public boolean isSmallBlind() {
+        return smallBlind;
+    }
+
+    public void setSmallBlind(boolean smallBlind) {
+        this.smallBlind = smallBlind;
+    }
+
+    public boolean isBigBlind() {
+        return bigBlind;
+    }
+
+    public void setBigBlind(boolean bigBlind) {
+        this.bigBlind = bigBlind;
     }
 }

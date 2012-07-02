@@ -10,6 +10,7 @@ import com.yanchuanli.games.pokr.model.Action;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.util.NotificationCenter;
 import com.yanchuanli.games.pokr.util.Util;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -122,7 +123,9 @@ public class Game implements Runnable {
         int smallBlindIndex = (actorPosition + 1) % activePlayers.size();
         int bigBlindIndex = (actorPosition + 2) % activePlayers.size();
         Player smallBlind = activePlayers.get(smallBlindIndex);
+        smallBlind.setSmallBlind(true);
         Player bigBlind = activePlayers.get(bigBlindIndex);
+        bigBlind.setBigBlind(true);
         NotificationCenter.markSmallBlind(activePlayers, smallBlind.getUdid());
         NotificationCenter.markBigBlind(activePlayers, bigBlind.getUdid());
 
@@ -191,7 +194,6 @@ public class Game implements Runnable {
         for (int i = 0; i < results.size(); i++) {
             Player pp = results.get(i);
             if (i == 0) {
-
                 log.debug(pp.getName() + " wins!");
                 PlayerDao.updateBestHandOfPlayer(pp);
                 PlayerDao.updateMaxWin(pp.getUdid(), moneyOnTable);
@@ -272,8 +274,7 @@ public class Game implements Runnable {
                     if (this.activePlayers.size() == 1) {
                         log.debug(this.activePlayers.get(0).getName() + " win ...");
                         playersToAct = 0;
-//                        NotificationCenter.winorlose(this.activePlayers.get(0).getSession(), this.activePlayers.get(0).getUdid() + "," + this.activePlayers.get(0).getName() + ",1", 10);
-                        NotificationCenter.winorlose(this.activePlayers, this.activePlayers.get(0).getUdid() + "," + this.activePlayers.get(0).getName() + ",1");
+//                        shutdown();
                     }
                     break;
             }
@@ -371,20 +372,19 @@ public class Game implements Runnable {
                         log.debug("game will start in 1 seconds ...");
                         Thread.sleep(Duration.seconds(1).inMillis());
                     } catch (InterruptedException e) {
-                        log.error(e);
+                        log.error(ExceptionUtils.getStackTrace(e));
                     }
                     start();
-
                 }
                 try {
                     Thread.sleep(gc.getGameCheckInterval().inMillis());
                 } catch (InterruptedException e) {
-                    log.error(e);
+                    log.error(ExceptionUtils.getStackTrace(e));
                 }
 
             }
         } catch (Exception e) {
-            log.error(e);
+            log.error(ExceptionUtils.getStackTrace(e));
         }
 
     }
