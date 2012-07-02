@@ -203,11 +203,9 @@ public class Game implements Runnable {
                 PlayerDao.updateBestHandOfPlayer(winner);
                 PlayerDao.updateMaxWin(winner.getUdid(), moneyOnTable);
                 sb.append(results.get(i).getUdid() + "," + results.get(i).getName() + ",1;");
-//                NotificationCenter.winorlose(results.get(i).getSession(), results.get(i).getUdid() + "," + results.get(i).getName() + ",1", 10);
             } else {
                 log.debug(results.get(i).getName() + " loses!");
                 sb.append(results.get(i).getUdid() + "," + results.get(i).getName() + ",0;");
-//                NotificationCenter.winorlose(results.get(i).getSession(), results.get(i).getUdid() + "," + results.get(i).getName() + ",0", 10);
             }
         }
         NotificationCenter.winorlose(activePlayers, sb.toString());
