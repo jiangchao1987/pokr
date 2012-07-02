@@ -8,6 +8,7 @@ import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.util.Config;
 import com.yanchuanli.games.pokr.util.MongoDB;
 import com.yanchuanli.games.pokr.util.MongoDBFactory;
+import com.yanchuanli.games.pokr.util.TimeUtil;
 import com.yanchuanli.games.pokr.util.URLFetchUtil;
 
 import java.util.HashMap;
@@ -71,7 +72,7 @@ public class PlayerDao {
         query.put("udid", udid);
 
         DBObject doc = new BasicDBObject().append("$set",
-                new BasicDBObject().append("money", money));
+                new BasicDBObject().append("money", money).append("update", TimeUtil.unixtime()));
         coll.update(query, doc);
     }
 
@@ -91,7 +92,7 @@ public class PlayerDao {
                 query.put("udid", targetPlayer.getUdid());
 
                 DBObject doc = new BasicDBObject().append("$set", new BasicDBObject()
-                        .append("best", targetPlayer.getBestHand().getGIndexes()).append("br", targetPlayer.getBestHandRank()));
+                        .append("best", targetPlayer.getBestHand().getGIndexes()).append("br", targetPlayer.getBestHandRank()).append("update", TimeUtil.unixtime()));
                 coll.update(query, doc);
             }
         }
@@ -113,7 +114,7 @@ public class PlayerDao {
             query.put("udid", udid);
 
             DBObject doc = new BasicDBObject().append("$set",
-                    new BasicDBObject().append("max", maxWin));
+                    new BasicDBObject().append("max", maxWin).append("update", TimeUtil.unixtime()));
             coll.update(query, doc);
         }
     }
