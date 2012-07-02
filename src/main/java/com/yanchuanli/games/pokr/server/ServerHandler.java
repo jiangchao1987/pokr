@@ -42,7 +42,7 @@ public class ServerHandler extends IoHandlerAdapter {
         player.setAlive(false);
         player.setSession(null);
         Memory.sessionsOnServer.remove(String.valueOf(session.getId()));
-        log.info(player.getName() + " is now disconnected !");
+        log.info(player.getUdid() + ":" + player.getName() + " is now disconnected !");
     }
 
     // 当客户端发送的消息到达时:
@@ -50,10 +50,10 @@ public class ServerHandler extends IoHandlerAdapter {
         if (message instanceof IoBuffer) {
 
             IoBuffer buffer = (IoBuffer) message;
-            log.debug("remaining:"+buffer.remaining());
+//            log.debug("remaining:" + buffer.remaining());
 
             SocketAddress remoteAddress = session.getRemoteAddress();
-            log.info(remoteAddress + ":" + new String(buffer.array()));
+//            log.info(remoteAddress + ":" + new String(buffer.array()));
 
             List<Map<Integer, String>> list = Util.ioBufferToString(buffer);
             for (Map<Integer, String> map : list) {
