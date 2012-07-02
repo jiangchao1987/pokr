@@ -31,7 +31,7 @@ public class Player {
     private int money;
     private int bet;
     private String input;
-    private String nameOfHand;
+    private String nameOfBestHand;
     private int exp;
     private int winCount;
     private int loseCount;
@@ -253,12 +253,12 @@ public class Player {
         this.input = input;
     }
 
-    public String getNameOfHand() {
-        return nameOfHand;
+    public String getNameOfBestHand() {
+        return nameOfBestHand;
     }
 
-    public void setNameOfHand(String nameOfHand) {
-        this.nameOfHand = nameOfHand;
+    public void setNameOfBestHand(String nameOfBestHand) {
+        this.nameOfBestHand = nameOfBestHand;
     }
 
     public int getGlobalId() {
@@ -283,7 +283,7 @@ public class Player {
                 + ", session=" + session + ", hand=" + hand + ", bestHand="
                 + bestHand + ", bestHandRank=" + bestHandRank + ", alive=" + alive
                 + ", money=" + money + ", bet=" + bet + ", input=" + input
-                + ", nameOfHand=" + nameOfHand + ", exp=" + exp + ", winCount="
+                + ", nameOfBestHand=" + nameOfBestHand + ", exp=" + exp + ", winCount="
                 + winCount + ", loseCount=" + loseCount
                 + ", historicalBestHandRank=" + historicalBestHandRank
                 + ", historicalBestHand=" + historicalBestHand + ", maxWin="

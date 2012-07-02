@@ -24,12 +24,12 @@ public class PlayerRankComparator implements Comparator<Player> {
 
         if (player1.getBestHand() == null) {
             player1.setBestHand(handEval.getBest5CardHand(player1.getHand()));
-            player1.setNameOfHand(HandEvaluator.nameHandInChinese(player1.getBestHand()));
+            player1.setNameOfBestHand(HandEvaluator.nameHandInChinese(player1.getBestHand()));
         }
 
         if (player2.getBestHand() == null) {
             player2.setBestHand(handEval.getBest5CardHand(player2.getHand()));
-            player2.setNameOfHand(HandEvaluator.nameHandInChinese(player2.getBestHand()));
+            player2.setNameOfBestHand(HandEvaluator.nameHandInChinese(player2.getBestHand()));
         }
 
         if (player1.getBestHandRank() == Integer.MIN_VALUE) {

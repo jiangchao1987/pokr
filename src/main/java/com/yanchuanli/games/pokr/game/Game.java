@@ -127,9 +127,9 @@ public class Game implements Runnable {
         NotificationCenter.markBigBlind(activePlayers, bigBlind.getUdid());
 
         log.debug("[RotateDealer] current markCurrentDealer:" + dealerPosition);
-        log.debug("current dealer:"+dealer.getName());
-        log.debug("current smallblind:"+smallBlind.getName());
-        log.debug("current bigblind:"+bigBlind.getName());
+        log.debug("current dealer:" + dealer.getName());
+        log.debug("current smallblind:" + smallBlind.getName());
+        log.debug("current bigblind:" + bigBlind.getName());
 
     }
 
@@ -186,29 +186,22 @@ public class Game implements Runnable {
 
         Collections.sort(results, comparator);
 
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < results.size(); i++) {
-            Player player = results.get(i);
-            String wininfo = "#" + String.valueOf(i + 1) + " " + player.getName() + " " + player.getBestHandRank() + " " + player.getBestHand().toChineseString() + " " + player.getNameOfHand();
-            log.debug(wininfo);
-            sb.append(player.getUdid() + "," + player.getName() + "," + player.getNameOfHand() + ";");
-        }
-        NotificationCenter.gameover(results, sb.toString());
 
-        sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < results.size(); i++) {
+            Player pp = results.get(i);
             if (i == 0) {
-                Player winner = results.get(i);
-                log.debug(winner.getName() + " wins!");
-                PlayerDao.updateBestHandOfPlayer(winner);
-                PlayerDao.updateMaxWin(winner.getUdid(), moneyOnTable);
-                sb.append(results.get(i).getUdid() + "," + results.get(i).getName() + ",1;");
+
+                log.debug(pp.getName() + " wins!");
+                PlayerDao.updateBestHandOfPlayer(pp);
+                PlayerDao.updateMaxWin(pp.getUdid(), moneyOnTable);
+                sb.append(pp.getUdid()).append(",").append(pp.getName()).append(",").append(pp.getBestHand().getGIndexes()).append(",").append(pp.getNameOfBestHand()).append(",1;");
             } else {
-                log.debug(results.get(i).getName() + " loses!");
-                sb.append(results.get(i).getUdid() + "," + results.get(i).getName() + ",0;");
+                log.debug(pp + " loses!");
+                sb.append(pp.getUdid()).append(",").append(pp.getName()).append(",").append(pp.getBestHand().getGIndexes()).append(",").append(pp.getNameOfBestHand()).append(",0;");
             }
         }
-        NotificationCenter.winorlose(activePlayers, sb.toString());
+        NotificationCenter.winorlose(results, sb.toString());
 
         results.clear();
         gaming = false;
