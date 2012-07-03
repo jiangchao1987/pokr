@@ -62,7 +62,7 @@ public class ServerHandler extends IoHandlerAdapter {
             SocketAddress remoteAddress = session.getRemoteAddress();
 //            log.info(remoteAddress + ":" + new String(buffer.array()));
 
-            List<Map<Integer, String>> list = Util.ioBufferToString(buffer);
+            List<Map<Integer, String>> list = Util.ioBufferToString(session.getId(), buffer);
             for (Map<Integer, String> map : list) {
                 ServiceCenter.getInstance().processCommand(session, map);
             }
