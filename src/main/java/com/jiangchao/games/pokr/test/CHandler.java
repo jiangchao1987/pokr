@@ -17,7 +17,7 @@ public class CHandler extends IoHandlerAdapter {
 	@Override
 	public void sessionCreated(IoSession session) throws Exception {
 		super.sessionCreated(session);
-		Memory.sessionsOnClient.put(String.valueOf(session.getId()), session);
+		Memory.sessionsOnServer.put(String.valueOf(session.getId()), session);
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class CHandler extends IoHandlerAdapter {
 		super.messageReceived(session, message);
 		if (message instanceof IoBuffer) {
 			IoBuffer buffer = (IoBuffer) message;
-			List<Map<Integer, String>> list = Helper.ioBufferToString(buffer);
+			List<Map<Integer, String>> list = Helper.ioBufferToString(session.getId(), buffer);
 			for (Map<Integer, String> map : list) {
 				for (Integer key : map.keySet()) {
 					String info = map.get(key);
@@ -42,7 +42,7 @@ public class CHandler extends IoHandlerAdapter {
 	@Override
 	public void sessionClosed(IoSession session) throws Exception {
 		super.sessionClosed(session);
-		Memory.sessionsOnClient.remove(String.valueOf(session.getId()));
+		Memory.sessionsOnServer.remove(String.valueOf(session.getId()));
 	}
 
 }

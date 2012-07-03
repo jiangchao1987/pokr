@@ -40,7 +40,7 @@ public class ClientHandler extends IoHandlerAdapter {
 
 
 
-            List<Map<Integer, String>> list = Util.ioBufferToString(buffer);
+            List<Map<Integer, String>> list = Util.ioBufferToString(session.getId(), buffer);
             for (Map<Integer, String> map : list) {
                 for (Integer key : map.keySet()) {
 

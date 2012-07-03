@@ -29,12 +29,12 @@ public class SHandler extends IoHandlerAdapter {
 			throws Exception {
 		if (message instanceof IoBuffer) {
 			IoBuffer buffer = (IoBuffer) message;
-			log.debug("remaining:" + buffer.remaining());
+//			log.debug("remaining:" + buffer.remaining());
 
 			SocketAddress remoteAddress = session.getRemoteAddress();
-			log.info(remoteAddress + ":" + new String(buffer.array()));
+//			log.info(remoteAddress + ":" + new String(buffer.array()));
 
-			List<Map<Integer, String>> list = Helper.ioBufferToString(buffer);
+			List<Map<Integer, String>> list = Helper.ioBufferToString(session.getId(), buffer);
 			for (Map<Integer, String> map : list) {
 				// ServiceCenter.getInstance().processCommand(session, map);
 				log.info(map);

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
 
@@ -13,7 +14,10 @@ import com.yanchuanli.games.pokr.util.Config;
 
 public class Helper {
 
-	private static List<Byte> memoryByteList = new ArrayList<Byte>();
+//	private static List<Byte> memoryByteList = new ArrayList<Byte>();
+	private static Logger log = Logger.getLogger(Helper.class);
+	private static Map<Long, List<Byte>> memoryByteMap = new HashMap<Long, List<Byte>>();
+
 
 	public static void sendToAllUser(String message, int type) {
 		for (String s : Memory.sessionsOnServer.keySet()) {
@@ -82,10 +86,10 @@ public class Helper {
 		return bytes;
 	}
 
-	public static List<Map<Integer, String>> ioBufferToString(IoBuffer buffer) {
+	public static List<Map<Integer, String>> ioBufferToString(long sessionId, IoBuffer buffer) {
 		List<Map<Integer, String>> list = new ArrayList<Map<Integer, String>>();
 
-		List<Map<Integer, byte[]>> byteArrayList = decodeByteArray(buffer);
+		List<Map<Integer, byte[]>> byteArrayList = decodeByteArray(sessionId, buffer);
 		for (Map<Integer, byte[]> byteArrayMap : byteArrayList) {
 			Map<Integer, String> map = new HashMap<Integer, String>();
 			for (Integer key : byteArrayMap.keySet()) {
@@ -100,7 +104,8 @@ public class Helper {
 	/**
 	 * 从接收到的数据中解析出内容byteArray的Map。
 	 */
-	private static List<Map<Integer, byte[]>> decodeByteArray(IoBuffer buffer) {
+	private static List<Map<Integer, byte[]>> decodeByteArray(long sessionId, IoBuffer buffer) {
+		log.debug("sessionId: " + sessionId);
 		List<Map<Integer, byte[]>> list = new ArrayList<Map<Integer, byte[]>>();
 
 		List<Byte> tempByteList = new ArrayList<Byte>();
@@ -109,12 +114,18 @@ public class Helper {
 			tempByteList.add(tempByte);
 		}
 
-		memoryByteList.addAll(tempByteList);
+		List<Byte> memoryByteList = memoryByteMap.get(sessionId);
+		if (memoryByteList == null) {
+			memoryByteList = new ArrayList<Byte>();
+		}
+		memoryByteList.addAll(tempByteList);	//将缓存集合更新至最新
+		
 		if (tempByteList.get(tempByteList.size() - 1) == Config.START) {
 //			show(memoryByteList);
-			list = generateByteList();
+			list = generateByteList(memoryByteList);	//将最新的缓存集合转换成合法格式
 			memoryByteList.clear();
 		}
+		memoryByteMap.put(sessionId, memoryByteList);	//更新map中的缓存集合, 要么清空要么继续添加
 
 //		if (tempByteList.get(0) != Config.START
 //				|| tempByteList.get(tempByteList.size() - 1) != Config.START) {
@@ -129,7 +140,7 @@ public class Helper {
 		return list;
 	}
 	
-	private static List<Map<Integer, byte[]>> generateByteList() {
+	private static List<Map<Integer, byte[]>> generateByteList(List<Byte> memoryByteList) {
 		List<Map<Integer, byte[]>> list = new ArrayList<Map<Integer, byte[]>>();
 		
 		try {
