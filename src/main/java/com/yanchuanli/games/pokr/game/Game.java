@@ -70,7 +70,9 @@ public class Game implements Runnable {
     public void start() {
 
         reset();
+        // notify every player in game about others
         sayHello();
+        deal2Cards();
 
         // rotate markCurrentDealer position
         rotateDealer();
@@ -83,7 +85,7 @@ public class Game implements Runnable {
         postBigBlind();
 
         // deal 2 cards per player
-        deal2Cards();
+
         doBettingRound();
 
         // pre flop betting round
