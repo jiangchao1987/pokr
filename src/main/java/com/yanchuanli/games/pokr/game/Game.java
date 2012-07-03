@@ -421,13 +421,13 @@ public class Game implements Runnable {
                 availablePlayers.remove(player);
             }
         }
-//        log.debug(availablePlayers.size() + " players are waiting in " + gc.getName() + " ...");
     }
 
     public void removePlayer(Player player) {
         for (Player aplayer : activePlayers) {
             if (aplayer.getUdid().equals(player.getUdid())) {
                 activePlayers.remove(aplayer);
+                RoomDao.updateCurrentPlayerCount(gc.getId(), availablePlayers.size());
                 break;
             }
         }
