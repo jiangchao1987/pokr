@@ -1,6 +1,8 @@
 package com.yanchuanli.games.pokr.util;
 
 import com.yanchuanli.games.pokr.basic.Card;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
@@ -19,6 +21,7 @@ import java.util.Map;
 public class Util {
 
     private static Logger log = Logger.getLogger(Util.class);
+    private static List<Byte> memoryByteList = new ArrayList<Byte>();
 
     public static String cardsToString(List<Card> cardList) {
         String result = "";
@@ -34,60 +37,6 @@ public class Util {
             result += card.getIndex() + "_";
         }
         return result;
-    }
-
-
-    public static List<String> extractStringFromIoBuffer(IoBuffer buffer) {
-        List<String> list = new ArrayList<String>();
-        try {
-            boolean flag = true;
-            int part = 0;
-            while (flag) {
-                if (buffer.get(part + 0) == Config.START
-                        && buffer.get(part + 2) == Config.SPLIT) {
-                    byte[] bb = new byte[4];
-                    bb[0] = buffer.get(part + 3);
-                    bb[1] = buffer.get(part + 4);
-                    bb[2] = buffer.get(part + 5);
-                    bb[3] = buffer.get(part + 6);
-                    int size = bytesToInt(bb);
-                    if (buffer.get(part + size + 3 + 4) == Config.START) {
-                        byte[] b = new byte[size];
-                        for (int index = 0; index < b.length; index++) {
-                            b[index] = buffer.get(part + index + 3 + 4);
-                        }
-                        list.add(new String(b));
-                    }
-                    part = part + size + 4 + 4;
-                } else {
-                    flag = false;
-                }
-            }
-        } catch (Exception e) {
-//            log.error(e);
-        }
-        return list;
-    }
-
-    public static byte[] toByte(int type, String input) {
-        byte[] b = null;
-        byte[] length = null;
-
-        b = new byte[input.getBytes().length + 8];
-        length = intToByte(input.getBytes().length);
-        b[3] = length[0];
-        b[4] = length[1];
-        b[5] = length[2];
-        b[6] = length[3];
-        for (int index = 7; index < b.length - 1; index++) {
-            b[index] = input.getBytes()[index - 7];
-        }
-        b[0] = Config.START;
-        b[1] = (byte) type;
-        b[2] = Config.SPLIT;
-
-        b[b.length - 1] = (byte) Config.START;
-        return b;
     }
 
     public static byte[] intToByte(int i) {
@@ -107,7 +56,6 @@ public class Util {
         return length;
     }
 
-    // 2012-06-19
     public static byte[] stringToByteArray(int type, String input) {
         return encodeByteArray(type, input.getBytes());
     }
@@ -156,40 +104,55 @@ public class Util {
      * 从接收到的数据中解析出内容byteArray的Map。
      */
     private static List<Map<Integer, byte[]>> decodeByteArray(IoBuffer buffer) {
-        List<Map<Integer, byte[]>> list = new ArrayList<Map<Integer, byte[]>>();
+		List<Map<Integer, byte[]>> list = new ArrayList<Map<Integer, byte[]>>();
 
-        try {
-            boolean flag = true;
+		List<Byte> tempByteList = new ArrayList<Byte>();
+		while (buffer.hasRemaining()) {
+			byte tempByte = buffer.get();
+			tempByteList.add(tempByte);
+		}
+
+		memoryByteList.addAll(tempByteList);
+		if (tempByteList.get(tempByteList.size() - 1) == Config.START) {
+			list = generateByteList();
+			memoryByteList.clear();
+		}
+		
+		return list;
+	}
+	
+	private static List<Map<Integer, byte[]>> generateByteList() {
+		List<Map<Integer, byte[]>> list = new ArrayList<Map<Integer, byte[]>>();
+		
+		try {
             int part = 0;
-            while (flag) {
-                if (buffer.get(part + 0) == Config.START
-                        && buffer.get(part + 2) == Config.SPLIT) {
+            while (part < memoryByteList.size()) {
+                if (memoryByteList.get(part + 0) == Config.START
+                        && memoryByteList.get(part + 2) == Config.SPLIT) {
                     byte[] bb = new byte[4];
-                    bb[0] = buffer.get(part + 3);
-                    bb[1] = buffer.get(part + 4);
-                    bb[2] = buffer.get(part + 5);
-                    bb[3] = buffer.get(part + 6);
+                    bb[0] = memoryByteList.get(part + 3);
+                    bb[1] = memoryByteList.get(part + 4);
+                    bb[2] = memoryByteList.get(part + 5);
+                    bb[3] = memoryByteList.get(part + 6);
                     int size = bytesToInt(bb);
-                    if (buffer.get(part + size + 3 + 4) == Config.START) {
+                    if (memoryByteList.get(part + size + 3 + 4) == Config.START) {
                         Map<Integer, byte[]> map = new HashMap<Integer, byte[]>();
                         byte[] b = new byte[size];
                         for (int index = 0; index < b.length; index++) {
-                            b[index] = buffer.get(part + index + 3 + 4);
+                            b[index] = memoryByteList.get(part + index + 3 + 4);
                         }
-                        map.put((int) buffer.get(part + 1), b);
+                        map.put((int) memoryByteList.get(part + 1), b);
                         list.add(map);
                     }
                     part = part + size + 4 + 4;
-                } else {
-                    flag = false;
                 }
             }
         } catch (Exception e) {
-//			log.error(e);
+			log.error(ExceptionUtils.getStackTrace(e));
         }
-
-        return list;
-    }
+		
+		return list;
+	}
 
     public static void sendMsg(IoSession session, String input, int type) {
         if (!Config.offlineDebug) {
