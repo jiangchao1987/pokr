@@ -62,6 +62,13 @@ public class Game implements Runnable {
             availablePlayers.add(player);
             RoomDao.updateCurrentPlayerCount(gc.getId(), availablePlayers.size());
             result = true;
+
+            StringBuilder sb = new StringBuilder();
+            for (Player aplayer : availablePlayers) {
+                sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoney()).append(";");
+            }
+
+            NotificationCenter.sayHello(availablePlayers, sb.toString());
         }
         return result;
     }

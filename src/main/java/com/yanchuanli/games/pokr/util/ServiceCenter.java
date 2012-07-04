@@ -120,14 +120,9 @@ public class ServiceCenter {
     private void join(IoSession session, String info) {
         Game game = GameEngine.getGame(Integer.parseInt(info));
         Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
-        game.addPlayer(newplayer);
+        boolean success = game.addPlayer(newplayer);
 
-        StringBuilder sb = new StringBuilder();
-        for (Player player : game.getAvailablePlayers()) {
-            sb.append(player.getUdid()).append(",").append(player.getName()).append(",").append(player.getMoney()).append(";");
-        }
 
-        NotificationCenter.sayHello(game.getAvailablePlayers(), sb.toString());
     }
 
     /**
