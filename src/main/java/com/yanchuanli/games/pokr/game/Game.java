@@ -257,9 +257,9 @@ public class Game implements Runnable {
             //rotate the actor
 
             rotateActor();
-            log.debug("playersToAct: " + playersToAct + " id: " + actor.getUdid()
-                    + " name: "
-                    + actor.getName());
+
+            log.debug("playersToAct: " + playersToAct + " id: " + actor.getUdid() + " name: " + actor.getName());
+
 
             Set<Action> allowedActions = getAllowedActions(actor);
             List<Player> playersToForward = new ArrayList<>();
@@ -270,7 +270,22 @@ public class Game implements Runnable {
             }
 
             NotificationCenter.otherPlayerStartAction(playersToForward, actor.getUdid());
-            Action action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval());
+
+            Action action = null;
+
+            if (preflop) {
+                if (actor.isSmallBlind()) {
+                    action = Action.SMALL_BLIND;
+                    actor.setBet(gc.getSmallBlindAmount());
+                } else if (actor.isBigBlind()) {
+                    action = Action.BIG_BLIND;
+                    actor.setBet(gc.getBigBlindAmount());
+                } else {
+                    action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval());
+                }
+            } else {
+                action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval());
+            }
 
             log.debug(" id: " + actor.getUdid() + " name: " + actor.getName()
                     + " action: " + action.getVerb());
@@ -303,12 +318,27 @@ public class Game implements Runnable {
 //                        shutdown();
                     }
                     break;
+                case SMALL_BLIND:
+                    bet = actor.getBet();
+                    moneyOnTable += actor.getBet();
+                    break;
+                case BIG_BLIND:
+                    bet = actor.getBet();
+                    moneyOnTable += actor.getBet();
+                    break;
             }
             String info = actor.getUdid() + "," + action.getVerb() + ":" + actor.getBet() + "," + moneyOnTable;
 
-            NotificationCenter.forwardAction(playersToForward, info);
-            playersToForward.clear();
-            playersToForward = null;
+            if (action.getName().equals(Action.SMALL_BLIND.getName())) {
+                NotificationCenter.paySmallBlind(activePlayers, info);
+            } else if (action.getName().equals(Action.BIG_BLIND.getName())) {
+                NotificationCenter.payBigBlind(activePlayers, info);
+            } else {
+                NotificationCenter.forwardAction(playersToForward, info);
+                playersToForward.clear();
+                playersToForward = null;
+            }
+
         }
     }
 
@@ -341,7 +371,6 @@ public class Game implements Runnable {
             throw new IllegalStateException("No active activePlayers left");
         }
     }
-
 
     private void postSmallBlind() {
         actor.setBet(gc.getSmallBlindAmount());
