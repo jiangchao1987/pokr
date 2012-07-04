@@ -137,11 +137,13 @@ public class Game implements Runnable {
         NotificationCenter.markSmallBlind(activePlayers, smallBlind.getUdid());
         NotificationCenter.markBigBlind(activePlayers, bigBlind.getUdid());
 
+
         log.debug("[RotateDealer] current markCurrentDealer:" + dealerPosition);
         log.debug("current dealer:" + dealer.getName());
         log.debug("current smallblind:" + smallBlind.getName());
         log.debug("current bigblind:" + bigBlind.getName());
 
+        rotateActor();
     }
 
     private void deal2Cards() {
@@ -215,12 +217,14 @@ public class Game implements Runnable {
                 PlayerDao.updateBestHandOfPlayer(pp);
                 PlayerDao.updateMaxWin(pp.getUdid(), moneyOnTable);
                 if (pp.getBestHand() != null) {
+                    log.debug(pp.getName() + ":" + pp.getBestHand().toChineseString() + ":" + pp.getNameOfBestHand());
                     sb.append(pp.getUdid()).append(",").append(pp.getName()).append(",").append(pp.getBestHand().getGIndexes()).append(",").append(pp.getNameOfBestHand()).append(",").append(String.valueOf(moneyOnTable)).append(",1;");
                 } else {
                     sb.append(pp.getUdid()).append(",").append(pp.getName()).append(",").append("").append(",").append("").append(",").append("0").append(",1;");
                 }
             } else {
                 log.debug(pp + " loses!");
+                log.debug(pp.getName() + ":" + pp.getBestHand().toChineseString() + ":" + pp.getNameOfBestHand());
                 sb.append(pp.getUdid()).append(",").append(pp.getName()).append(",").append(pp.getBestHand().getGIndexes()).append(",").append(pp.getNameOfBestHand()).append(",").append("0").append(",0;");
             }
         }
