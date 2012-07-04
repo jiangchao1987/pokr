@@ -11,6 +11,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
     </properties>
 
     <dependencies>
@@ -62,6 +63,7 @@
     </dependencies>
     <build>
         <defaultGoal>compile</defaultGoal>
+        <finalName>${project.name}-${maven.build.timestamp}</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
