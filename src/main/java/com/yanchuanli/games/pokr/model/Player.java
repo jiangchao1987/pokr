@@ -2,6 +2,7 @@ package com.yanchuanli.games.pokr.model;
 
 import com.google.code.tempusfugit.temporal.Duration;
 import com.yanchuanli.games.pokr.basic.Hand;
+import com.yanchuanli.games.pokr.dao.PlayerDao;
 import com.yanchuanli.games.pokr.util.Config;
 import com.yanchuanli.games.pokr.util.NotificationCenter;
 import org.apache.log4j.Logger;
@@ -242,6 +243,7 @@ public class Player {
                 result = Action.BET;
             }
             money -= bet;
+            PlayerDao.updateMoney(udid, money);
         }
 
 
