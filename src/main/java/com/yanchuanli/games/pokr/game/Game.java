@@ -275,16 +275,14 @@ public class Game implements Runnable {
 
             if (preflop) {
                 if (actor.isSmallBlind()) {
-                    action = Action.SMALL_BLIND;
-                    actor.setBet(gc.getSmallBlindAmount());
+                    action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 1, gc.getSmallBlindAmount());
                 } else if (actor.isBigBlind()) {
-                    action = Action.BIG_BLIND;
-                    actor.setBet(gc.getBigBlindAmount());
+                    action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 2, gc.getBigBlindAmount());
                 } else {
-                    action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval());
+                    action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 0, 0);
                 }
             } else {
-                action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval());
+                action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 0, 0);
             }
 
             log.debug(" id: " + actor.getUdid() + " name: " + actor.getName()
@@ -327,6 +325,9 @@ public class Game implements Runnable {
                     moneyOnTable += actor.getBet();
                     break;
             }
+
+            //扣钱
+
             String info = actor.getUdid() + "," + action.getVerb() + ":" + actor.getBet() + "," + moneyOnTable;
 
             if (action.getName().equals(Action.SMALL_BLIND.getName())) {
@@ -339,6 +340,8 @@ public class Game implements Runnable {
                 playersToForward = null;
             }
 
+            //reset actor's bet
+            actor.setBet(0);
         }
     }
 

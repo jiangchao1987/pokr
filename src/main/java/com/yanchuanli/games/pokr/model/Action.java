@@ -27,12 +27,12 @@ public enum Action {
     /**
      * Posting the small blind.
      */
-    SMALL_BLIND("Small Blind", "posts the small blind"),
+    SMALL_BLIND("Small Blind", "sb"),
 
     /**
      * Posting the big blind.
      */
-    BIG_BLIND("Big Blind", "posts the big blind"),
+    BIG_BLIND("Big Blind", "bb"),
 
 
     /**

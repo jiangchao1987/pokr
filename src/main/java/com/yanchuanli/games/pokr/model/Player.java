@@ -172,43 +172,54 @@ public class Player {
         this.avatar = avatar;
     }
 
-    public Action act(Set<Action> actions, int currentBet, int moneyOnTable, Duration bettingDuration, Duration inactivityCheckInterval) {
-        int counter = 0;
-        int sleepCount = (int) (bettingDuration.inMillis() / inactivityCheckInterval.inMillis());
-//        log.debug(bettingDuration.inMillis() + "/" + inactivityCheckInterval.inMillis() + "=" + sleepCount);
-        String actionStr = "";
+    /*
+     * mode: 0 - 正常，1 - 小盲，2 - 大盲
+     * param blindamount 盲注数量
+     *
+     */
+
+    public Action act(Set<Action> actions, int currentBet, int moneyOnTable, Duration bettingDuration, Duration inactivityCheckInterval, int mode, int blindamount) {
         Action result;
+        if (mode == 0) {
+            int counter = 0;
+            int sleepCount = (int) (bettingDuration.inMillis() / inactivityCheckInterval.inMillis());
 
-        for (Action action : actions) {
-            actionStr = actionStr + action.getVerb() + "_";
-        }
-        log.debug("allowed actions for " + getUdid() + ":" + getName() + " :" + actionStr);
+            String actionStr = "";
 
-        // notify this user for allowed actions
-        NotificationCenter.act(this.getSession(), this.getUdid() + "," + this.getName() + "," + actionStr + "," + moneyOnTable);
 
-        if (Config.offlineDebug) {
-            Scanner scanner = new Scanner(System.in);
-            input = scanner.nextLine();
-        } else {
+            for (Action action : actions) {
+                actionStr = actionStr + action.getVerb() + "_";
+            }
+            log.debug("allowed actions for " + getUdid() + ":" + getName() + " :" + actionStr);
 
-            while (getInput() == null && counter < sleepCount && isAlive()) {
-                try {
-                    Thread.sleep(inactivityCheckInterval.inMillis());
-                    counter++;
-//                    log.debug("waiting for " + name + " ...");
-                } catch (InterruptedException e) {
-                    log.error(e);
+            // notify this user for allowed actions
+            NotificationCenter.act(this.getSession(), this.getUdid() + "," + this.getName() + "," + actionStr + "," + moneyOnTable);
+            if (Config.offlineDebug) {
+                Scanner scanner = new Scanner(System.in);
+                input = scanner.nextLine();
+            } else {
+                while (getInput() == null && counter < sleepCount && isAlive()) {
+                    try {
+                        Thread.sleep(inactivityCheckInterval.inMillis());
+                        counter++;
+                        //                    log.debug("waiting for " + name + " ...");
+                    } catch (InterruptedException e) {
+                        log.error(e);
+                    }
                 }
             }
+        } else if (mode == 1) {
+            input = "sb";
+        } else {
+            input = "bb";
         }
+
 
         if (input == null) {
             result = Action.FOLD;
         } else {
             log.debug(name + " input:[" + input + "]");
             if (input.startsWith("ca")) {
-                money -= currentBet;
                 setBet(currentBet);
                 result = Action.CALL;
             } else if (input.startsWith("c")) {
@@ -219,13 +230,18 @@ public class Player {
                 String[] inputs = input.split(":");
                 setBet(Integer.parseInt(inputs[1]));
                 result = Action.RAISE;
-                money -= bet;
+            } else if (input.startsWith("sb")) {
+                setBet(blindamount);
+                result = Action.SMALL_BLIND;
+            } else if (input.startsWith("bb")) {
+                setBet(blindamount);
+                result = Action.BIG_BLIND;
             } else {
                 String[] inputs = input.split(":");
                 setBet(Integer.parseInt(inputs[1]));
                 result = Action.BET;
-                money -= bet;
             }
+            money -= bet;
         }
 
 
