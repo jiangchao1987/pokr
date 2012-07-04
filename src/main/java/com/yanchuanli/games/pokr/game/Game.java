@@ -72,36 +72,38 @@ public class Game implements Runnable {
         reset();
         // notify every player in game about others
         sayHello();
-        deal2Cards();
+
 
         // rotate markCurrentDealer position
         rotateDealer();
 
-        // post the big blind and small blind
-        rotateActor();
-        postSmallBlind();
+        deal2Cards();
 
-        rotateActor();
-        postBigBlind();
+        // post the big blind and small blind
+//        rotateActor();
+//        postSmallBlind();
+
+//        rotateActor();
+//        postBigBlind();
 
         // deal 2 cards per player
 
-        doBettingRound();
+        doBettingRound(true);
 
         // pre flop betting round
         // deal 3 flp cards on the table
         if (activePlayers.size() > 1) {
             deal3FlipCards();
-            doBettingRound();
+            doBettingRound(false);
             // flop the betting round
             // deal the turn card (4th) on the table
             if (activePlayers.size() > 1) {
                 dealTurnCard();
-                doBettingRound();
+                doBettingRound(false);
                 if (activePlayers.size() > 1) {
 
                     dealRiverCard();
-                    doBettingRound();
+                    doBettingRound(false);
                     if (activePlayers.size() > 1) {
                         bet = 0;
                         shutdown();
@@ -213,13 +215,13 @@ public class Game implements Runnable {
                 PlayerDao.updateBestHandOfPlayer(pp);
                 PlayerDao.updateMaxWin(pp.getUdid(), moneyOnTable);
                 if (pp.getBestHand() != null) {
-                    sb.append(pp.getUdid()).append(",").append(pp.getName()).append(",").append(pp.getBestHand().getGIndexes()).append(",").append(pp.getNameOfBestHand()).append(",1;");
+                    sb.append(pp.getUdid()).append(",").append(pp.getName()).append(",").append(pp.getBestHand().getGIndexes()).append(",").append(pp.getNameOfBestHand()).append(",").append(String.valueOf(moneyOnTable)).append(",1;");
                 } else {
-                    sb.append(pp.getUdid()).append(",").append(pp.getName()).append(",").append("").append(",").append("").append(",1;");
+                    sb.append(pp.getUdid()).append(",").append(pp.getName()).append(",").append("").append(",").append("").append(",").append("0").append(",1;");
                 }
             } else {
                 log.debug(pp + " loses!");
-                sb.append(pp.getUdid()).append(",").append(pp.getName()).append(",").append(pp.getBestHand().getGIndexes()).append(",").append(pp.getNameOfBestHand()).append(",0;");
+                sb.append(pp.getUdid()).append(",").append(pp.getName()).append(",").append(pp.getBestHand().getGIndexes()).append(",").append(pp.getNameOfBestHand()).append(",").append("0").append(",0;");
             }
         }
         log.debug(sb.toString());
@@ -243,7 +245,7 @@ public class Game implements Runnable {
         log.debug("Game has been resetted ...");
     }
 
-    private void doBettingRound() {
+    private void doBettingRound(boolean preflop) {
         int playersToAct = activePlayers.size();
         actorPosition = dealerPosition;
         bet = 0;
