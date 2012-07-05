@@ -13,6 +13,7 @@ public class Config {
 
     public static final byte START = '$' & 0xFF;
     public static final byte SPLIT = '|' & 0xFF;
+    public static final byte END = '#' & 0xFF;
     public static final boolean offlineDebug = false;
 
     public static final int TYPE_LOGIN_INGAME = 0;

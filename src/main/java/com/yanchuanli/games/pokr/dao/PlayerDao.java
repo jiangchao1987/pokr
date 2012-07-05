@@ -52,7 +52,8 @@ public class PlayerDao {
             player.setHistoricalBestHandRank(Integer.parseInt(msgs[6]));
             player.setHistoricalBestHand(msgs[7]);
             player.setMaxWin(Integer.parseInt(msgs[8]));
-            player.setAvatar(msgs[9]);
+            player.setCustomAvatar(Integer.parseInt(msgs[9]));
+            player.setAvatar(msgs[10]);
             players.put(udid, player);
         }
         return players.get(udid);

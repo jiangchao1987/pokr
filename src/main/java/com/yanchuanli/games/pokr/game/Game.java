@@ -407,7 +407,7 @@ public class Game implements Runnable {
         }
         String info = "";
         for (Player player : activePlayers) {
-            info = info + player.getUdid() + "," + player.getName() + "," + player.getMoney() + ";";
+            info = info + player.getUdid() + "," + player.getName() + "," + player.getMoney() + "," + player.getCustomAvatar() + "," + player.getAvatar() + ";";
         }
         NotificationCenter.sayHello(activePlayers, info);
 

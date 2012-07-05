@@ -67,11 +67,11 @@ public class Helper {
 			return b;
 		}
 		if (type == 1) {
-			byte[] b = {97, 36, 36, 1, 124, 3, 0, 0, 0, 98, 98, 98, 36, 36, 2, 124};
+			byte[] b = {97, 35, 36, 1, 124, 3, 0, 0, 0, 98, 98, 98, 35, 36, 2, 124};
 			return b;
 		}
 		if (type == 2) {
-			byte[] b = {2, 0, 0, 0, 99, 99, 36};
+			byte[] b = {2, 0, 0, 0, 99, 99, 35};
 			return b;
 		}
 		return null;
@@ -120,7 +120,7 @@ public class Helper {
 		}
 		memoryByteList.addAll(tempByteList);	//将缓存集合更新至最新
 		
-		if (tempByteList.get(tempByteList.size() - 1) == Config.START) {
+		if (tempByteList.get(tempByteList.size() - 1) == Config.END) {
 //			show(memoryByteList);
 			list = generateByteList(memoryByteList);	//将最新的缓存集合转换成合法格式
 			memoryByteList.clear();
@@ -154,7 +154,7 @@ public class Helper {
                     bb[2] = memoryByteList.get(part + 5);
                     bb[3] = memoryByteList.get(part + 6);
                     int size = bytesToInt(bb);
-                    if (memoryByteList.get(part + size + 3 + 4) == Config.START) {
+                    if (memoryByteList.get(part + size + 3 + 4) == Config.END) {
                         Map<Integer, byte[]> map = new HashMap<Integer, byte[]>();
                         byte[] b = new byte[size];
                         for (int index = 0; index < b.length; index++) {
