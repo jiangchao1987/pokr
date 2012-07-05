@@ -152,7 +152,7 @@ public class NotificationCenter {
     }
 
     public static void sayHello(List<Player> players, String info) {
-        notifyAllOnTable(players, info, Config.TYPE_USER_INGAME);
+        notifyAllOnTable(players, info, Config.TYPE_JOIN_INGAME);
     }
 
     public static void login(IoSession session, String info) {

@@ -52,7 +52,7 @@ public class TCPServer {
 //                Util.sendToAll(input);
             for (String s : Memory.sessionsOnServer.keySet()) {
                 Player player = Memory.sessionsOnServer.get(s);
-                Util.sendMsg(player.getSession(), input, Config.TYPE_USER_INGAME);
+                Util.sendMsg(player.getSession(), input, Config.TYPE_JOIN_INGAME);
             }
 
 

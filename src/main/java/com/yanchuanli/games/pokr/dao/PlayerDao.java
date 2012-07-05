@@ -54,6 +54,8 @@ public class PlayerDao {
             player.setMaxWin(Integer.parseInt(msgs[8]));
             player.setCustomAvatar(Integer.parseInt(msgs[9]));
             player.setAvatar(msgs[10]);
+            player.setSex(Integer.parseInt(msgs[11]));
+            player.setAddress(msgs[12]);
             players.put(udid, player);
         }
         return players.get(udid);
@@ -139,7 +141,10 @@ public class PlayerDao {
             player.setHistoricalBestHandRank((Integer) obj.get("br"));
             player.setHistoricalBestHand((String) obj.get("best"));
             player.setMaxWin((Integer) obj.get("max"));
+            player.setCustomAvatar((Integer) obj.get("customAvatar"));
             player.setAvatar((String) obj.get("face"));
+            player.setSex((Integer) obj.get("sex"));
+            player.setAddress((String) obj.get("address"));
         }
 
         return player;

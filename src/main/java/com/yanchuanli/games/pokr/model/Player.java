@@ -44,6 +44,8 @@ public class Player {
     private boolean smallBlind;
     private boolean bigBlind;
     private int roomid;
+    private int sex;
+	private String address;
 
     public Player(String id, String name) {
         this.udid = id;
@@ -172,6 +174,22 @@ public class Player {
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
+    
+    public int getSex() {
+		return sex;
+	}
+
+	public void setSex(int sex) {
+		this.sex = sex;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
 
     /*
      * mode: 0 - 正常，1 - 小盲，2 - 大盲
@@ -179,7 +197,7 @@ public class Player {
      *
      */
 
-    public Action act(Set<Action> actions, int currentBet, int moneyOnTable, Duration bettingDuration, Duration inactivityCheckInterval, int mode, int blindamount) {
+	public Action act(Set<Action> actions, int currentBet, int moneyOnTable, Duration bettingDuration, Duration inactivityCheckInterval, int mode, int blindamount) {
         Action result;
         if (mode == 0) {
             int counter = 0;

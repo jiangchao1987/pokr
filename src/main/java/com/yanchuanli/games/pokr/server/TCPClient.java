@@ -59,6 +59,8 @@ public class TCPClient {
                 } else if (input.startsWith("j")) {
                     String[] cmds = input.split(":");
                     sendToServer(cmds[1], 3);
+                } else if (input.startsWith("sb")) {
+                	sendToServer(input.split(":")[1], 4);
                 } else if (input.startsWith("li")) {
                     sendToServer(String.valueOf(Config.ROOM_LEVEL_BEGINNER), 2);
                 } else if (input.startsWith("l")) {

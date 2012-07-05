@@ -67,6 +67,9 @@ public class ServiceCenter {
                 case Config.TYPE_JOIN_INGAME:
                     join(session, map.get(key));
                     break;
+                case Config.TYPE_USERSTANDBY_INGAME:
+                	userStandBy(session, map.get(key));
+                	break;
                 case Config.TYPE_LEAVEROOM_INGAME:
                     leaveRoom(session, map.get(key));
                     break;
@@ -124,6 +127,16 @@ public class ServiceCenter {
 
 
     }
+    
+    /**
+     * 某个用户的头像下载完毕
+     * 
+     * @param session 当前用户session
+     * @param info	当前房间id
+     */
+    private void userStandBy(IoSession session, String info) {
+    	
+    }
 
     /**
      * 列出指定等级的房间列表
@@ -169,12 +182,13 @@ public class ServiceCenter {
         Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);
 
         StringBuffer sb = new StringBuffer();
-        sb.append(player.getUdid() + "," + player.getName() + ","
-                + player.getMoney() + "," + player.getExp() + ","
-                + player.getWinCount() + "," + player.getLoseCount() + ","
-                + player.getHistoricalBestHandRank() + ","
-                + player.getHistoricalBestHand() + "," + player.getMaxWin()
-                + "," + player.getCustomAvatar() + "," + player.getAvatar());
+		sb.append(player.getUdid() + "," + player.getName() + ","
+				+ player.getMoney() + "," + player.getExp() + ","
+				+ player.getWinCount() + "," + player.getLoseCount() + ","
+				+ player.getHistoricalBestHandRank() + ","
+				+ player.getHistoricalBestHand() + "," + player.getMaxWin()
+				+ "," + player.getCustomAvatar() + "," + player.getAvatar()
+				+ "," + player.getSex() + "," + player.getAddress());
         NotificationCenter.login(session, sb.toString());
     }
 

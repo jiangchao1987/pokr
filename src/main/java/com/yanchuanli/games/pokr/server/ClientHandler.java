@@ -63,7 +63,7 @@ public class ClientHandler extends IoHandlerAdapter {
                             }
                             log.debug(username + ":" + debuginfo);
                             break;
-                        case Config.TYPE_USER_INGAME:
+                        case Config.TYPE_JOIN_INGAME:
 
                             break;
                         case Config.TYPE_CARD_INGAME:

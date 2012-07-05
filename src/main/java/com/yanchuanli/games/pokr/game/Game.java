@@ -65,7 +65,7 @@ public class Game implements Runnable {
 
             StringBuilder sb = new StringBuilder();
             for (Player aplayer : availablePlayers) {
-                sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoney()).append(";");
+                sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoney()).append(",").append(aplayer.getCustomAvatar()).append(",").append(aplayer.getAvatar()).append(",").append(aplayer.getSex()).append(",").append(aplayer.getAddress()).append(";");
             }
 
             NotificationCenter.sayHello(availablePlayers, sb.toString());
@@ -407,7 +407,7 @@ public class Game implements Runnable {
         }
         String info = "";
         for (Player player : activePlayers) {
-            info = info + player.getUdid() + "," + player.getName() + "," + player.getMoney() + "," + player.getCustomAvatar() + "," + player.getAvatar() + ";";
+            info = info + player.getUdid() + "," + player.getName() + "," + player.getMoney() + "," + player.getCustomAvatar() + "," + player.getAvatar() + "," + player.getSex() + "," + player.getAddress() + ";";
         }
         NotificationCenter.sayHello(activePlayers, info);
 
