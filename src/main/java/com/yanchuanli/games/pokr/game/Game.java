@@ -31,6 +31,7 @@ public class Game implements Runnable {
     private static Logger log = Logger.getLogger(Game.class);
     private List<Player> activePlayers;
     private List<Player> availablePlayers;
+    private Map<String, Player> waitingPlayers;
     private List<Card> cardsOnTable;
     private Deck deck;
     private int dealerPosition;
@@ -49,10 +50,15 @@ public class Game implements Runnable {
         this.gc = gc;
         activePlayers = new CopyOnWriteArrayList<>();
         availablePlayers = new CopyOnWriteArrayList<>();
+        waitingPlayers = new HashMap<>();
         cardsOnTable = new ArrayList<>();
         deck = new Deck();
         comparator = new PlayerRankComparator();
         handEval = new HandEvaluator();
+    }
+
+    public void prepareToJoin(Player player) {
+        waitingPlayers.put(player.getUdid(), player);
     }
 
     public boolean addPlayer(Player player) {
