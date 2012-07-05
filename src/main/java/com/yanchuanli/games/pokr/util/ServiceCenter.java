@@ -123,7 +123,7 @@ public class ServiceCenter {
     private void join(IoSession session, String info) {
         Game game = GameEngine.getGame(Integer.parseInt(info));
         Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
-        boolean success = game.addPlayer(newplayer);
+        game.prepareToJoin(newplayer);
 
 
     }

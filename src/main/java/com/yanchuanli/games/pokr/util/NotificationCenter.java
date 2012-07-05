@@ -159,6 +159,10 @@ public class NotificationCenter {
         notifySpecificOnTable(session, info, Config.TYPE_LOGIN_INGAME);
     }
 
+    public static void respondToPrepareToEnter(IoSession session,String info){
+        notifySpecificOnTable(session, info, Config.TYPE_JOIN_INGAME);
+    }
+
     /**
      * 通知桌面上所有玩家。
      */

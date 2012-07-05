@@ -59,24 +59,17 @@ public class Game implements Runnable {
 
     public void prepareToJoin(Player player) {
         waitingPlayers.put(player.getUdid(), player);
+        StringBuilder sb = new StringBuilder();
+        for (Player aplayer : activePlayers) {
+            sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoney()).append(",").append(aplayer.getCustomAvatar()).append(",").append(aplayer.getAvatar()).append(",").append(aplayer.getSex()).append(",").append(aplayer.getAddress()).append(";");
+        }
+
+        NotificationCenter.respondToPrepareToEnter(player.getSession(), sb.toString());
     }
 
-    public boolean addPlayer(Player player) {
-        boolean result = false;
-        if (availablePlayers.size() <= gc.getMaxPlayersCount()) {
-            player.setRoomid(gc.getId());
-            availablePlayers.add(player);
-            RoomDao.updateCurrentPlayerCount(gc.getId(), availablePlayers.size());
-            result = true;
-
-            StringBuilder sb = new StringBuilder();
-            for (Player aplayer : availablePlayers) {
-                sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoney()).append(",").append(aplayer.getCustomAvatar()).append(",").append(aplayer.getAvatar()).append(",").append(aplayer.getSex()).append(",").append(aplayer.getAddress()).append(";");
-            }
-
-            NotificationCenter.sayHello(availablePlayers, sb.toString());
-        }
-        return result;
+    public void addPlayer(Player player) {
+        waitingPlayers.remove(player.getUdid());
+        availablePlayers.add(player);
     }
 
 
@@ -406,7 +399,10 @@ public class Game implements Runnable {
         gaming = true;
         for (Player player : availablePlayers) {
             if (player.isAlive()) {
-                activePlayers.add(player);
+                if (activePlayers.size() < gc.getMaxPlayersCount()) {
+                    activePlayers.add(player);
+                    player.setRoomid(gc.getId());
+                }
             } else {
                 availablePlayers.remove(player);
             }
@@ -415,6 +411,9 @@ public class Game implements Runnable {
         for (Player player : activePlayers) {
             info = info + player.getUdid() + "," + player.getName() + "," + player.getMoney() + "," + player.getCustomAvatar() + "," + player.getAvatar() + "," + player.getSex() + "," + player.getAddress() + ";";
         }
+
+
+        RoomDao.updateCurrentPlayerCount(gc.getId(), activePlayers.size());
         NotificationCenter.sayHello(activePlayers, info);
 
     }
