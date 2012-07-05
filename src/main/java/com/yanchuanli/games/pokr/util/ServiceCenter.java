@@ -135,7 +135,9 @@ public class ServiceCenter {
      * @param info	当前房间id
      */
     private void userStandBy(IoSession session, String info) {
-    	
+        Game game = GameEngine.getGame(Integer.parseInt(info));
+        Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
+        game.addPlayer(newplayer);
     }
 
     /**
