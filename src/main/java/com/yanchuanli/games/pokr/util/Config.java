@@ -46,4 +46,13 @@ public class Config {
     public static final int ROOM_LEVEL_PROFESSIONAL = 2;
     public static final int ROOM_LEVEL_MASTER = 3;
     public static final int ROOM_LEVEL_VIP = 4;
+
+    public static final int ACTION_TYPE_SMALL_BLIND = 0;
+    public static final int ACTION_TYPE_BIG_BLIND = 1;
+    public static final int ACTION_TYPE_ALL_IN = 2;
+    public static final int ACTION_TYPE_CHECK = 3;
+    public static final int ACTION_TYPE_CALL = 4;
+    public static final int ACTION_TYPE_BET = 6;
+    public static final int ACTION_TYPE_RAISE = 7;
+    public static final int ACTION_TYPE_FOLD = 8;
 }

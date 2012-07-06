@@ -9,6 +9,7 @@ import com.yanchuanli.games.pokr.dao.PlayerDao;
 import com.yanchuanli.games.pokr.dao.RoomDao;
 import com.yanchuanli.games.pokr.model.Action;
 import com.yanchuanli.games.pokr.model.Player;
+import com.yanchuanli.games.pokr.model.Pot;
 import com.yanchuanli.games.pokr.util.NotificationCenter;
 import com.yanchuanli.games.pokr.util.Util;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -44,6 +45,7 @@ public class Game implements Runnable {
     private boolean gaming = false;
     private boolean stop = false;
     private HandEvaluator handEval;
+    private List<Pot> pots;
 
 
     public Game(GameConfig gc) {
@@ -52,6 +54,7 @@ public class Game implements Runnable {
         availablePlayers = new CopyOnWriteArrayList<>();
         waitingPlayers = new HashMap<>();
         cardsOnTable = new ArrayList<>();
+        pots = new ArrayList<>();
         deck = new Deck();
         comparator = new PlayerRankComparator();
         handEval = new HandEvaluator();
@@ -96,13 +99,6 @@ public class Game implements Runnable {
 
         deal2Cards();
 
-        // post the big blind and small blind
-//        rotateActor();
-//        postSmallBlind();
-
-//        rotateActor();
-//        postBigBlind();
-
         // deal 2 cards per player
 
         doBettingRound(true);
@@ -118,7 +114,6 @@ public class Game implements Runnable {
                 dealTurnCard();
                 doBettingRound(false);
                 if (activePlayers.size() > 1) {
-
                     dealRiverCard();
                     doBettingRound(false);
                     if (activePlayers.size() > 1) {
@@ -131,7 +126,6 @@ public class Game implements Runnable {
             } else {
                 shutdown();
             }
-
         } else {
             shutdown();
         }
@@ -259,6 +253,7 @@ public class Game implements Runnable {
         moneyOnTable = 0;
         cardsOnTable.clear();
         activePlayers.clear();
+        pots.clear();
         for (Player player : availablePlayers) {
             player.reset();
 
@@ -341,6 +336,9 @@ public class Game implements Runnable {
                     bet = actor.getBet();
                     moneyOnTable += actor.getBet();
                     break;
+                case ALLIN:
+                    break;
+
             }
 
             //扣钱

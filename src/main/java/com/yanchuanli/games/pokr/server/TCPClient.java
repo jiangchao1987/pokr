@@ -56,22 +56,24 @@ public class TCPClient {
                     sendToServer(input, 5);
                 } else if (input.startsWith("r")) {
                     sendToServer(input, 5);
+                } else if (input.startsWith("ai")) {
+                    sendToServer(input, 5);
                 } else if (input.startsWith("j")) {
                     String[] cmds = input.split(":");
                     sendToServer(cmds[1], 3);
                 } else if (input.startsWith("sb")) {
-                	sendToServer(input.split(":")[1], 4);
+                    sendToServer(input.split(":")[1], 4);
                 } else if (input.startsWith("li")) {
                     sendToServer(String.valueOf(Config.ROOM_LEVEL_BEGINNER), 2);
                 } else if (input.startsWith("l")) {
 //                    sendToServer(String.valueOf((int) (Math.random() * 10000)) + "," + Config.SRC_IPHONE_GUEST, 0);
-                	// eg:   l:jiangchao  [udid, password, souce]
-                	sendToServer(input.split(":")[1] + "," + input.split(":")[1] + "123," + Config.SRC_IPHONE_GUEST, 0);
+                    // eg:   l:jiangchao  [udid, password, souce]
+                    sendToServer(input.split(":")[1] + "," + input.split(":")[1] + "123," + Config.SRC_IPHONE_GUEST, 0);
                     sendToServer("1001", 3);
                     sendToServer("1001", 4);
                 } else if (input.startsWith("s")) {
-                	// eg: s:jiangchao
-                	sendToServer("1001," + input.split(":")[1] + ",ban ge tong kuai!", 17);
+                    // eg: s:jiangchao
+                    sendToServer("1001," + input.split(":")[1] + ",ban ge tong kuai!", 17);
                 }
 
                 input = scanner.nextLine();

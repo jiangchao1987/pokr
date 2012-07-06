@@ -1,12 +1,13 @@
 package com.yanchuanli.games.pokr.test;
 
 import com.yanchuanli.games.pokr.model.Player;
-import com.yanchuanli.games.pokr.model.Table;
 import org.apache.log4j.Logger;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Copyright Candou.com
@@ -23,19 +24,12 @@ public class Test {
 
     public static void main(String[] args) throws UnknownHostException {
 
-
-        Table table = new Table();
-        Player a = new Player("a", "a");
-        Player b = new Player("b", "b");
-        Player c = new Player("c", "c");
-        table.joinTable(a);
-        table.joinTable(b);
-        table.joinTable(c);
-
-        for (int i = 0; i < 6; i++) {
-            Player p = table.nextPlayer();
-            log.debug(p);
-        }
+        Set<String> test = new HashSet<>();
+        String a = "123";
+        test.add(a);
+        test.add("123");
+        test.remove("456");
+        log.debug(test.size());
     }
 
     private static void rotateActor() {
