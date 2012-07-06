@@ -9,7 +9,6 @@ import com.yanchuanli.games.pokr.dao.PlayerDao;
 import com.yanchuanli.games.pokr.dao.RoomDao;
 import com.yanchuanli.games.pokr.model.Action;
 import com.yanchuanli.games.pokr.model.Player;
-import com.yanchuanli.games.pokr.util.Config;
 import com.yanchuanli.games.pokr.util.NotificationCenter;
 import com.yanchuanli.games.pokr.util.Util;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -61,21 +60,27 @@ public class Game implements Runnable {
     public void prepareToJoin(Player player) {
         waitingPlayers.put(player.getUdid(), player);
         StringBuilder sb = new StringBuilder();
-        if (activePlayers.size() == 0) {
-            sb.append(String.valueOf(Config.GAMEINFO_NOTSTARTED));
-        } else {
+        if (gaming) {
             for (Player aplayer : activePlayers) {
                 sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoney()).append(",").append(aplayer.getCustomAvatar()).append(",").append(aplayer.getAvatar()).append(",").append(aplayer.getSex()).append(",").append(aplayer.getAddress()).append(";");
             }
-
+        } else {
+            for (Player aplayer : availablePlayers) {
+                sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoney()).append(",").append(aplayer.getCustomAvatar()).append(",").append(aplayer.getAvatar()).append(",").append(aplayer.getSex()).append(",").append(aplayer.getAddress()).append(";");
+            }
         }
 
         NotificationCenter.respondToPrepareToEnter(player.getSession(), sb.toString());
     }
 
     public void addPlayer(Player player) {
-        waitingPlayers.remove(player.getUdid());
-        availablePlayers.add(player);
+        if (activePlayers.size() + availablePlayers.size() <= gc.getMaxPlayersCount()) {
+            waitingPlayers.remove(player.getUdid());
+            availablePlayers.add(player);
+        } else {
+            //TODO 告诉他坐下失败
+        }
+
     }
 
 
@@ -403,6 +408,7 @@ public class Game implements Runnable {
 
     private void sayHello() {
         gaming = true;
+
         for (Player player : availablePlayers) {
             if (player.isAlive()) {
                 if (activePlayers.size() < gc.getMaxPlayersCount()) {
