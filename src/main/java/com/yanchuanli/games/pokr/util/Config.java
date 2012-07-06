@@ -37,7 +37,7 @@ public class Config {
     public static final int TYPE_MARKBIGBLIND_INGAME = 18;
     public static final int TYPE_MARKSMALLBLIND_INGAME = 19;
 
-    public static final String GAMEINFO_NOTSTARTED = "notstarted";
+    public static final int GAMEINFO_NOTSTARTED = 0;
 
     public static final int SRC_IPHONE_GUEST = 0;
     public static final int SRC_IPAD_GUEST = 1;

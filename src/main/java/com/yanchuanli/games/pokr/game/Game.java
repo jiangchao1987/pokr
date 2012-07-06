@@ -62,7 +62,7 @@ public class Game implements Runnable {
         waitingPlayers.put(player.getUdid(), player);
         StringBuilder sb = new StringBuilder();
         if (activePlayers.size() == 0) {
-            sb.append(Config.GAMEINFO_NOTSTARTED);
+            sb.append(String.valueOf(Config.GAMEINFO_NOTSTARTED));
         } else {
             for (Player aplayer : activePlayers) {
                 sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoney()).append(",").append(aplayer.getCustomAvatar()).append(",").append(aplayer.getAvatar()).append(",").append(aplayer.getSex()).append(",").append(aplayer.getAddress()).append(";");
