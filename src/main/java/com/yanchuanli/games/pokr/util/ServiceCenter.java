@@ -68,8 +68,8 @@ public class ServiceCenter {
                     join(session, map.get(key));
                     break;
                 case Config.TYPE_USERSTANDBY_INGAME:
-                	userStandBy(session, map.get(key));
-                	break;
+                    userStandBy(session, map.get(key));
+                    break;
                 case Config.TYPE_LEAVEROOM_INGAME:
                     leaveRoom(session, map.get(key));
                     break;
@@ -127,12 +127,12 @@ public class ServiceCenter {
 
 
     }
-    
+
     /**
      * 某个用户的头像下载完毕
-     * 
+     *
      * @param session 当前用户session
-     * @param info	当前房间id
+     * @param info    当前房间id
      */
     private void userStandBy(IoSession session, String info) {
         Game game = GameEngine.getGame(Integer.parseInt(info));
@@ -151,7 +151,7 @@ public class ServiceCenter {
         List<Room> rooms = RoomDao.getRooms(type);
         StringBuffer sb = new StringBuffer();
         for (Room room : rooms) {
-            sb.append(room.getId() + ",");
+            sb.append(room.getId()).append(",");
         }
         String result = sb.toString();
         if (result.endsWith(",")) {
@@ -184,13 +184,13 @@ public class ServiceCenter {
         Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);
 
         StringBuffer sb = new StringBuffer();
-		sb.append(player.getUdid() + "," + player.getName() + ","
-				+ player.getMoney() + "," + player.getExp() + ","
-				+ player.getWinCount() + "," + player.getLoseCount() + ","
-				+ player.getHistoricalBestHandRank() + ","
-				+ player.getHistoricalBestHand() + "," + player.getMaxWin()
-				+ "," + player.getCustomAvatar() + "," + player.getAvatar()
-				+ "," + player.getSex() + "," + player.getAddress());
+        sb.append(player.getUdid()).append(",").append(player.getName()).append(",").append(
+                player.getMoney()).append(",").append(player.getExp() + ","
+                + player.getWinCount() + "," + player.getLoseCount() + ","
+                + player.getHistoricalBestHandRank() + ","
+                + player.getHistoricalBestHand() + "," + player.getMaxWin()
+                + "," + player.getCustomAvatar() + "," + player.getAvatar()
+                + "," + player.getSex() + "," + player.getAddress());
         NotificationCenter.login(session, sb.toString());
     }
 
