@@ -1,11 +1,9 @@
 package com.yanchuanli.games.pokr.model;
 
 import com.yanchuanli.games.pokr.util.Config;
+import org.apache.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Copyright Candou.com
@@ -15,23 +13,96 @@ import java.util.Set;
  */
 public class Pot {
 
-    private Set<String> noFoldPlayers;
-    private List<Record> history;
     private int money;
+
+    private List<Map<String, Integer>> pots;
+    private Map<String, Integer> currentPot;
+    private List<Record> currentAllInPlayers;
+    private int moneyOfFoldPlayers;
+    private List<Integer> moneyListOfFoldPlayers;
+    private RecordComparator comparator;
+    private static Logger log = Logger.getLogger(Pot.class);
 
     public Pot() {
         money = 0;
-        noFoldPlayers = new HashSet<>();
-        history = new ArrayList<>();
+        moneyOfFoldPlayers = 0;
+        moneyListOfFoldPlayers = new ArrayList<>();
+        pots = new ArrayList<>();
+        currentPot = new HashMap<>();
+        comparator = new RecordComparator();
+        currentAllInPlayers = new ArrayList<>();
     }
 
     public void addRecord(Record record) {
-        history.add(record);
+
         money += record.getBet();
-        if (record.getActionType() == Config.ACTION_TYPE_FOLD) {
-            noFoldPlayers.remove(record.getUdid());
+        if (currentPot.containsKey(record.getUdid())) {
+            int currentBetOfPlayer = currentPot.get(record.getUdid());
+            currentBetOfPlayer += record.getBet();
+            currentPot.put(record.getUdid(), currentBetOfPlayer);
         } else {
-            noFoldPlayers.add(record.getUdid());
+            currentPot.put(record.getUdid(), record.getBet());
+        }
+
+        if (record.getActionType() == Config.ACTION_TYPE_ALL_IN) {
+            currentAllInPlayers.add(record);
+        } else if (record.getActionType() == Config.ACTION_TYPE_FOLD) {
+            int hisBet = currentPot.get(record.getUdid());
+            moneyOfFoldPlayers += hisBet;
+            currentPot.remove(record.getUdid());
+        }
+    }
+
+    public void buildPotList() {
+        Collections.sort(currentAllInPlayers, comparator);
+        for (int i = 0; i < currentAllInPlayers.size(); i++) {
+            String minAllInPlayer = currentAllInPlayers.get(i).getUdid();
+            int minBet = currentPot.get(minAllInPlayer);
+            Map<String, Integer> smallPot = new HashMap<>();
+            Iterator<String> it = currentPot.keySet().iterator();
+            while (it.hasNext()) {
+                String udid = it.next();
+                int hisBet = currentPot.get(udid);
+                if (hisBet <= minBet) {
+                    smallPot.put(udid, hisBet);
+                    it.remove();
+                } else {
+                    hisBet = hisBet - minBet;
+                    smallPot.put(udid, minBet);
+                    currentPot.put(udid, hisBet);
+                }
+            }
+
+            pots.add(smallPot);
+        }
+
+        //在遍历完所有AllIn玩家后，还可能存在在AllIn玩家之后的下一个玩家raise他的情况。
+        if (!currentPot.isEmpty()) {
+            Map<String, Integer> smallPot = new HashMap<>();
+            Iterator<String> it = currentPot.keySet().iterator();
+            while (it.hasNext()) {
+                String udid = it.next();
+                smallPot.put(udid, currentPot.get(udid));
+                it.remove();
+            }
+            pots.add(smallPot);
+        }
+
+
+        currentPot.clear();
+        currentAllInPlayers.clear();
+        moneyListOfFoldPlayers.add(moneyOfFoldPlayers);
+        moneyOfFoldPlayers = 0;
+
+    }
+
+
+    public void finish() {
+        if (!currentPot.isEmpty()) {
+            pots.add(currentPot);
+        }
+        for (Map<String, Integer> m : pots) {
+            log.debug(m);
         }
     }
 
@@ -39,8 +110,29 @@ public class Pot {
         return money;
     }
 
-    public Set<String> getPlayersUDID() {
-        return noFoldPlayers;
+
+    public List<Map<String, Integer>> getPots() {
+        return pots;
+    }
+
+    public int potsCount() {
+        return pots.size();
+    }
+
+    public Map<String, Integer> getPotAtIndex(int index) {
+        return pots.get(index);
+    }
+
+    public int getMoneyAtIndex(int index) {
+        int result = 0;
+        Map<String, Integer> m = getPotAtIndex(index);
+        log.debug(m);
+        for (String udid : m.keySet()) {
+            Integer t = m.get(udid);
+            result += t;
+        }
+        result += moneyListOfFoldPlayers.get(index);
+        return result;
     }
 
 

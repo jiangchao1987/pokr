@@ -109,6 +109,10 @@ public enum Action {
         return verb;
     }
 
+    public int getVerbType() {
+        return verbType;
+    }
+
     /*
     * (non-Javadoc)
     * @see java.lang.Enum#toString()

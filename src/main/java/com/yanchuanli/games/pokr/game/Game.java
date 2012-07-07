@@ -10,6 +10,7 @@ import com.yanchuanli.games.pokr.dao.RoomDao;
 import com.yanchuanli.games.pokr.model.Action;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.model.Pot;
+import com.yanchuanli.games.pokr.model.Record;
 import com.yanchuanli.games.pokr.util.NotificationCenter;
 import com.yanchuanli.games.pokr.util.Util;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -30,9 +31,17 @@ public class Game implements Runnable {
     private GameConfig gc;
 
     private static Logger log = Logger.getLogger(Game.class);
+
+    //还活在游戏中的用户
     private List<Player> activePlayers;
+    //可以进入游戏的用户
     private List<Player> availablePlayers;
+    //进入房间了的用户
     private Map<String, Player> waitingPlayers;
+    //本次游戏的所有用户
+    private Map<String, Player> allPlayersInGame;
+
+
     private List<Card> cardsOnTable;
     private Deck deck;
     private int dealerPosition;
@@ -52,6 +61,7 @@ public class Game implements Runnable {
         this.gc = gc;
         activePlayers = new CopyOnWriteArrayList<>();
         availablePlayers = new CopyOnWriteArrayList<>();
+        allPlayersInGame = new HashMap<>();
         waitingPlayers = new HashMap<>();
         cardsOnTable = new ArrayList<>();
         pots = new ArrayList<>();
@@ -118,16 +128,16 @@ public class Game implements Runnable {
                     doBettingRound(false);
                     if (activePlayers.size() > 1) {
                         bet = 0;
-                        shutdown();
+                        showdown();
                     }
                 } else {
-                    shutdown();
+                    showdown();
                 }
             } else {
-                shutdown();
+                showdown();
             }
         } else {
-            shutdown();
+            showdown();
         }
 
 
@@ -192,7 +202,7 @@ public class Game implements Runnable {
         NotificationCenter.dealRiverCard(activePlayers, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
     }
 
-    private void shutdown() {
+    private void showdown() {
 
         log.debug("OnTable: " + Util.cardsToString(cardsOnTable));
 
@@ -219,6 +229,13 @@ public class Game implements Runnable {
             }
         }
 
+        for (int i = pots.size() - 1; i >= 0; i--) {
+            Pot pot = pots.get(i);
+            List<Player> playersInThisRound = new ArrayList<>();
+//            for (String udid : pot.getPlayersUDID()) {
+//                playersInThisRound.add(allPlayersInGame.get(udid));
+//            }
+        }
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < results.size(); i++) {
@@ -253,6 +270,7 @@ public class Game implements Runnable {
         moneyOnTable = 0;
         cardsOnTable.clear();
         activePlayers.clear();
+        allPlayersInGame.clear();
         pots.clear();
         for (Player player : availablePlayers) {
             player.reset();
@@ -262,6 +280,7 @@ public class Game implements Runnable {
     }
 
     private void doBettingRound(boolean preflop) {
+        Pot pot = new Pot();
         int playersToAct = activePlayers.size();
         actorPosition = dealerPosition;
         bet = 0;
@@ -297,6 +316,9 @@ public class Game implements Runnable {
                 action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 0, 0);
             }
 
+            Record record = new Record(actor.getUdid(), action.getVerbType(), actor.getBet());
+            pot.addRecord(record);
+
             log.debug(" id: " + actor.getUdid() + " name: " + actor.getName()
                     + " action: " + action.getVerb());
             playersToAct--;
@@ -325,7 +347,7 @@ public class Game implements Runnable {
                     if (this.activePlayers.size() == 1) {
                         log.debug(this.activePlayers.get(0).getName() + " win ...");
                         playersToAct = 0;
-//                        shutdown();
+//                        showdown();
                     }
                     break;
                 case SMALL_BLIND:
@@ -358,6 +380,8 @@ public class Game implements Runnable {
             //reset actor's bet
             actor.setBet(0);
         }
+
+        pots.add(pot);
     }
 
 
@@ -412,6 +436,7 @@ public class Game implements Runnable {
                 if (activePlayers.size() < gc.getMaxPlayersCount()) {
                     activePlayers.add(player);
                     player.setRoomid(gc.getId());
+                    allPlayersInGame.put(player.getUdid(), player);
                 }
             } else {
                 availablePlayers.remove(player);

@@ -1,13 +1,14 @@
 package com.yanchuanli.games.pokr.test;
 
 import com.yanchuanli.games.pokr.model.Player;
+import com.yanchuanli.games.pokr.model.Pot;
+import com.yanchuanli.games.pokr.model.Record;
+import com.yanchuanli.games.pokr.util.Config;
 import org.apache.log4j.Logger;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Copyright Candou.com
@@ -24,24 +25,27 @@ public class Test {
 
     public static void main(String[] args) throws UnknownHostException {
 
-        Set<String> test = new HashSet<>();
-        String a = "123";
-        test.add(a);
-        test.add("123");
-        test.remove("456");
-        log.debug(test.size());
+        Record record1 = new Record("a", Config.ACTION_TYPE_BET, 25);
+        Record record2 = new Record("b", Config.ACTION_TYPE_ALL_IN, 12);
+        Record record3 = new Record("c", Config.ACTION_TYPE_ALL_IN, 20);
+        Record record4 = new Record("d", Config.ACTION_TYPE_CALL, 25);
+        Record record5 = new Record("e", Config.ACTION_TYPE_RAISE, 30);
+        Record record6 = new Record("a", Config.ACTION_TYPE_ALL_IN, 10);
+        Record record7 = new Record("d", Config.ACTION_TYPE_CALL, 10);
+        Record record9 = new Record("e", Config.ACTION_TYPE_FOLD, 0);
+
+        Pot pot = new Pot();
+        pot.addRecord(record1);
+        pot.addRecord(record2);
+        pot.addRecord(record3);
+        pot.addRecord(record4);
+        pot.addRecord(record5);
+        pot.addRecord(record6);
+        pot.addRecord(record7);
+     //   pot.addRecord(record8);
+        pot.addRecord(record9);
+        pot.buildPotList();
+        pot.finish();
     }
 
-    private static void rotateActor() {
-        if (players.size() > 0) {
-            do {
-                actorPosition = (actorPosition + 1) % players.size();
-                actor = players.get(actorPosition);
-            } while (!players.contains(actor));
-
-        } else {
-            // Should never happen.
-            throw new IllegalStateException("No active players left");
-        }
-    }
 }

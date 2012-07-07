@@ -1,7 +1,7 @@
 package com.yanchuanli.games.pokr.model;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Copyright Candou.com
@@ -10,31 +10,22 @@ import java.util.List;
  * Date: 12-6-20
  */
 public class MoneyPool {
-    private int money;
-    private List<Player> players;
 
-    public MoneyPool(int money) {
-        this.money = money;
-        this.players = new ArrayList<>();
+    private List<Pot> pots;
+    private Pot currentpot;
+    private Map<String, Integer> currentPot;
+    private List<Record> currentAllInPlayers;
+    private RecordComparator comparator;
+
+    public MoneyPool() {
+
     }
 
-    public int getMoney() {
-        return money;
+    public void addRecord(Record record) {
+//        pot.addRecord(record);
     }
 
-    public void setMoney(int money) {
-        this.money = money;
-    }
+    public void buildPotList(){
 
-    public void addMoney(int bet) {
-        this.money += bet;
-    }
-
-    public List<Player> getPlayers() {
-        return players;
-    }
-
-    public void addPlayer(Player player) {
-        this.players.add(player);
     }
 }
