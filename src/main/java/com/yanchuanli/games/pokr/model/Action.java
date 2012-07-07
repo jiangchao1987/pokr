@@ -65,7 +65,9 @@ public enum Action {
     /**
      * Folding.
      */
-    FOLD("Fold", "f", Config.ACTION_TYPE_FOLD),;
+    FOLD("Fold", "f", Config.ACTION_TYPE_FOLD),
+
+    CONTINUE("Fold", "con", Config.ACTION_TYPE_FOLD),;
 
 
     /**

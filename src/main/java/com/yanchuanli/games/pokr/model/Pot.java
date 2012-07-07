@@ -14,7 +14,6 @@ import java.util.*;
 public class Pot {
 
     private int money;
-
     private List<Map<String, Integer>> pots;
     private Map<String, Integer> currentPot;
     private List<Record> currentAllInPlayers;
@@ -50,6 +49,17 @@ public class Pot {
             int hisBet = currentPot.get(record.getUdid());
             moneyOfFoldPlayers += hisBet;
             currentPot.remove(record.getUdid());
+
+            // he would also "fold" in all previous pots and re-calculate the money there
+            for (int i = 0; i < pots.size(); i++) {
+                int moneyOfFoldPlayersInThatRound = moneyListOfFoldPlayers.get(i);
+                Map<String, Integer> thatPot = getPotAtIndex(i);
+                if (thatPot.containsKey(record.getUdid())) {
+                    moneyOfFoldPlayersInThatRound += thatPot.get(record.getUdid());
+                    thatPot.remove(record.getUdid());
+                    moneyListOfFoldPlayers.set(i, moneyOfFoldPlayersInThatRound);
+                }
+            }
         }
     }
 
@@ -89,7 +99,9 @@ public class Pot {
         }
 
 
-        currentPot.clear();
+        currentPot = pots.get(pots.size() - 1);
+        pots.remove(pots.size() - 1);
+
         currentAllInPlayers.clear();
         moneyListOfFoldPlayers.add(moneyOfFoldPlayers);
         moneyOfFoldPlayers = 0;
@@ -135,5 +147,20 @@ public class Pot {
         return result;
     }
 
+    public void clear() {
+        money = 0;
+        moneyOfFoldPlayers = 0;
+        moneyListOfFoldPlayers.clear();
+        pots.clear();
+        currentPot.clear();
+        currentAllInPlayers.clear();
+    }
 
+    public void takeMoneyAway(int amount) {
+        money -= amount;
+    }
+
+    public boolean hasMoneyLeft() {
+        return money == 0;
+    }
 }

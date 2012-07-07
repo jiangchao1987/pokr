@@ -55,4 +55,5 @@ public class Config {
     public static final int ACTION_TYPE_BET = 6;
     public static final int ACTION_TYPE_RAISE = 7;
     public static final int ACTION_TYPE_FOLD = 8;
+    public static final int ACTION_TYPE_CONTINUE = 9;
 }

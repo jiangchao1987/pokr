@@ -229,8 +229,10 @@ public class Player {
             }
         } else if (mode == 1) {
             input = "sb";
-        } else {
+        } else if (mode == 2) {
             input = "bb";
+        } else {
+            input = "continue";
         }
 
 
@@ -238,7 +240,10 @@ public class Player {
             result = Action.FOLD;
         } else {
             log.debug(name + " input:[" + input + "]");
-            if (input.startsWith("ca")) {
+            if (input.startsWith("co")) {
+                setBet(0);
+                result = Action.CONTINUE;
+            } else if (input.startsWith("ca")) {
                 setBet(currentBet);
                 result = Action.CALL;
             } else if (input.startsWith("c")) {
@@ -362,5 +367,9 @@ public class Player {
 
     public void setRoomid(int roomid) {
         this.roomid = roomid;
+    }
+
+    public boolean inRoom(int roomID) {
+        return roomid == roomID;
     }
 }

@@ -54,7 +54,7 @@ public class Game implements Runnable {
     private boolean gaming = false;
     private boolean stop = false;
     private HandEvaluator handEval;
-    private List<Pot> pots;
+    private Pot pot;
 
 
     public Game(GameConfig gc) {
@@ -64,7 +64,7 @@ public class Game implements Runnable {
         allPlayersInGame = new HashMap<>();
         waitingPlayers = new HashMap<>();
         cardsOnTable = new ArrayList<>();
-        pots = new ArrayList<>();
+        pot = new Pot();
         deck = new Deck();
         comparator = new PlayerRankComparator();
         handEval = new HandEvaluator();
@@ -204,6 +204,9 @@ public class Game implements Runnable {
 
     private void showdown() {
 
+
+        pot.finish();
+
         log.debug("OnTable: " + Util.cardsToString(cardsOnTable));
 
         List<Player> results = new ArrayList<>();
@@ -229,13 +232,8 @@ public class Game implements Runnable {
             }
         }
 
-        for (int i = pots.size() - 1; i >= 0; i--) {
-            Pot pot = pots.get(i);
-            List<Player> playersInThisRound = new ArrayList<>();
-//            for (String udid : pot.getPlayersUDID()) {
-//                playersInThisRound.add(allPlayersInGame.get(udid));
-//            }
-        }
+
+
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < results.size(); i++) {
@@ -271,7 +269,7 @@ public class Game implements Runnable {
         cardsOnTable.clear();
         activePlayers.clear();
         allPlayersInGame.clear();
-        pots.clear();
+        pot.clear();
         for (Player player : availablePlayers) {
             player.reset();
 
@@ -293,6 +291,7 @@ public class Game implements Runnable {
 
 
             Set<Action> allowedActions = getAllowedActions(actor);
+
             List<Player> playersToForward = new ArrayList<>();
             for (Player player : this.activePlayers) {
                 if (player != actor) {
@@ -313,14 +312,18 @@ public class Game implements Runnable {
                     action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 0, 0);
                 }
             } else {
-                action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 0, 0);
+                if (allowedActions.size() == 1 && allowedActions.contains(Action.CONTINUE)) {
+                    action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 3, 0);
+                } else {
+                    action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 0, 0);
+                }
+
             }
 
             Record record = new Record(actor.getUdid(), action.getVerbType(), actor.getBet());
             pot.addRecord(record);
 
-            log.debug(" id: " + actor.getUdid() + " name: " + actor.getName()
-                    + " action: " + action.getVerb());
+            log.debug(" id: " + actor.getUdid() + " name: " + actor.getName() + " action: " + action.getVerb());
             playersToAct--;
 
             switch (action) {
@@ -331,12 +334,12 @@ public class Game implements Runnable {
                     moneyOnTable += actor.getBet();
                     break;
                 case BET:
-                    bet = actor.getBet();
+                    bet = bet >= actor.getBet() ? bet : actor.getBet();
                     moneyOnTable += actor.getBet();
                     playersToAct = activePlayers.size() - 1;
                     break;
                 case RAISE:
-                    bet = actor.getBet();
+                    bet = bet >= actor.getBet() ? bet : actor.getBet();
                     moneyOnTable += actor.getBet();
                     playersToAct = activePlayers.size() - 1;
                     break;
@@ -359,6 +362,10 @@ public class Game implements Runnable {
                     moneyOnTable += actor.getBet();
                     break;
                 case ALLIN:
+                    bet = bet >= actor.getBet() ? bet : actor.getBet();
+                    moneyOnTable += actor.getBet();
+                    break;
+                case CONTINUE:
                     break;
 
             }
@@ -381,23 +388,28 @@ public class Game implements Runnable {
             actor.setBet(0);
         }
 
-        pots.add(pot);
+        pot.buildPotList();
     }
 
 
     public Set<Action> getAllowedActions(Player player) {
         Set<Action> actions = new HashSet<Action>();
-        if (bet == 0) {
-            actions.add(Action.CHECK);
-            actions.add(Action.RAISE);
-        } else {
-            actions.add(Action.CALL);
-            if (player.getMoney() > bet) {
+        if (player.getMoney() != 0) {
+            if (bet == 0) {
+                actions.add(Action.CHECK);
                 actions.add(Action.RAISE);
+            } else {
+                actions.add(Action.CALL);
+                if (player.getMoney() > bet) {
+                    actions.add(Action.RAISE);
+                }
             }
-
+            actions.add(Action.ALLIN);
+            actions.add(Action.FOLD);
+        } else {
+            actions.add(Action.CONTINUE);
         }
-        actions.add(Action.FOLD);
+
         return actions;
     }
 
@@ -414,19 +426,6 @@ public class Game implements Runnable {
         }
     }
 
-    private void postSmallBlind() {
-        actor.setBet(gc.getSmallBlindAmount());
-        moneyOnTable += actor.getBet();
-        String info = actor.getUdid() + "," + Action.SMALL_BLIND.getVerb() + ":" + actor.getBet() + "," + moneyOnTable;
-        NotificationCenter.forwardAction(activePlayers, info);
-    }
-
-    private void postBigBlind() {
-        actor.setBet(gc.getBigBlindAmount());
-        moneyOnTable += actor.getBet();
-        String info = actor.getUdid() + "," + Action.BIG_BLIND.getVerb() + ":" + actor.getBet() + "," + moneyOnTable;
-        NotificationCenter.forwardAction(activePlayers, info);
-    }
 
     private void sayHello() {
         gaming = true;
