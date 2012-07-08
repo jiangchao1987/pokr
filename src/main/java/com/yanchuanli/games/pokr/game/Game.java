@@ -221,7 +221,11 @@ public class Game implements Runnable {
         }
 
         if (results.size() > 1) {
-            Collections.sort(results, comparator);
+
+            List<List<Player>> rankedPlayerList = GameUtil.rankPlayers(results);
+            for (int i = 0; i < rankedPlayerList.size(); i++) {
+                List<Player> winners = rankedPlayerList.get(i);
+            }
         } else {
             Player player1 = results.get(0);
             if (player1.getHand().size() < 5) {
@@ -231,8 +235,6 @@ public class Game implements Runnable {
                 player1.setNameOfBestHand(HandEvaluator.nameHandInChinese(player1.getBestHand()));
             }
         }
-
-
 
 
         StringBuilder sb = new StringBuilder();
@@ -400,7 +402,7 @@ public class Game implements Runnable {
                 actions.add(Action.RAISE);
             } else {
                 actions.add(Action.CALL);
-                if (player.getMoney() > bet) {
+                if (player.getMoney() >= bet * 2) {
                     actions.add(Action.RAISE);
                 }
             }
