@@ -98,14 +98,16 @@ public class Pot {
                 it.remove();
             }
             pots.add(smallPot);
-        }else {
+        } else {
             log.debug("currentPot empty:" + currentPot);
         }
         log.debug(potsCount() + " pots existed ...");
 
         log.debug(pots);
         currentPot = pots.get(pots.size() - 1);
+        log.debug("currentpot:" + currentPot);
         pots.remove(pots.size() - 1);
+        log.debug("currentpot:" + currentPot);
 
         currentAllInPlayers.clear();
         moneyListOfFoldPlayers.add(moneyOfFoldPlayers);

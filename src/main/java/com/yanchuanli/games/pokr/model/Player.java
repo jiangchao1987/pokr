@@ -271,7 +271,7 @@ public class Player {
                 result = Action.BET;
             }
             money -= bet;
-            PlayerDao.updateMoney(udid, money);
+            PlayerDao.cashBack(this, money);
         }
 
 

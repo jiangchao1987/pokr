@@ -68,6 +68,7 @@ public class Game implements Runnable {
         deck = new Deck();
         comparator = new PlayerRankComparator();
         handEval = new HandEvaluator();
+        pot = new Pot();
     }
 
     public void prepareToJoin(Player player) {
@@ -291,7 +292,7 @@ public class Game implements Runnable {
     }
 
     private void doBettingRound(boolean preflop) {
-        Pot pot = new Pot();
+
         int playersToAct = activePlayers.size();
         actorPosition = dealerPosition;
         bet = 0;
@@ -312,7 +313,6 @@ public class Game implements Runnable {
                     }
                 }
 
-                NotificationCenter.otherPlayerStartAction(playersToForward, actor.getUdid());
 
                 Action action = null;
 
@@ -326,12 +326,18 @@ public class Game implements Runnable {
                         action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 2, gc.getBigBlindAmount());
                         actor.setBigBlind(false);
                     } else {
+                        NotificationCenter.otherPlayerStartAction(playersToForward, actor.getUdid());
+
                         action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 0, 0);
+
                     }
                 } else {
+
                     if (allowedActions.size() == 1 && allowedActions.contains(Action.CONTINUE)) {
                         action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 3, 0);
                     } else {
+                        NotificationCenter.otherPlayerStartAction(playersToForward, actor.getUdid());
+
                         action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 0, 0);
                     }
 

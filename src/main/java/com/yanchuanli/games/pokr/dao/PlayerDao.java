@@ -24,7 +24,7 @@ public class PlayerDao {
     static {
         players = new HashMap<>();
     }
-    
+
     /**
      * 从WebServer获取用户信息
      *
@@ -56,10 +56,10 @@ public class PlayerDao {
         }
         return players.get(udid);
     }
-    
+
     /**
      * 更新赢的次数
-     * 
+     *
      * @param udid
      * @param winCount
      */
@@ -74,10 +74,10 @@ public class PlayerDao {
                 new BasicDBObject().append("win", winCount).append("update", TimeUtil.unixtime()));
         coll.update(query, doc);
     }
-    
+
     /**
      * 更新输的次数
-     * 
+     *
      * @param udid
      * @param loseCount
      */
@@ -187,15 +187,16 @@ public class PlayerDao {
             player.setMoney(buyIn);
             // minus money
             updateMoney(player.getUdid(), player.getTotalMoney() - buyIn);
+            player.setTotalMoney(player.getTotalMoney() - buyIn);
         } else {
             //TODO 弹出购买IAP的按钮
         }
     }
 
     public static void cashBack(Player player, int holding) {
-    	Player persistence = queryByUdid(player.getUdid());
-    	// plus money
-    	updateMoney(player.getUdid(), persistence.getMoney() + holding);
+        Player persistence = queryByUdid(player.getUdid());
+        // plus money
+        updateMoney(player.getUdid(), persistence.getMoney() + holding);
     }
 
 }
