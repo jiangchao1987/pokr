@@ -185,14 +185,17 @@ public class PlayerDao {
     public static void buyIn(Player player, int buyIn) {
         if (player.getTotalMoney() > buyIn) {
             player.setMoney(buyIn);
-
+            // minus money
+            updateMoney(player.getUdid(), player.getTotalMoney() - buyIn);
         } else {
             //TODO 弹出购买IAP的按钮
         }
     }
 
     public static void cashBack(Player player, int holding) {
-
+    	Player persistence = queryByUdid(player.getUdid());
+    	// plus money
+    	updateMoney(player.getUdid(), persistence.getMoney() + holding);
     }
 
 }
