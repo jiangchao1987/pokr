@@ -182,7 +182,7 @@ public class PlayerDao {
         return player;
     }
 
-    public void buyIn(Player player, int buyIn) {
+    public static void buyIn(Player player, int buyIn) {
         if (player.getTotalMoney() > buyIn) {
             player.setMoney(buyIn);
 
@@ -191,7 +191,7 @@ public class PlayerDao {
         }
     }
 
-    public void cashBack(Player player, int holding) {
+    public static void cashBack(Player player, int holding) {
 
     }
 

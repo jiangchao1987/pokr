@@ -90,6 +90,7 @@ public class Game implements Runnable {
         if (activePlayers.size() + availablePlayers.size() <= gc.getMaxPlayersCount()) {
             waitingPlayers.remove(player.getUdid());
             availablePlayers.add(player);
+            PlayerDao.buyIn(player, gc.getMaxHolding() / 2);
         } else {
             //TODO 告诉他坐下失败
         }
@@ -253,6 +254,7 @@ public class Game implements Runnable {
                 log.debug(pp.getName() + " wins!");
                 PlayerDao.updateBestHandOfPlayer(pp);
                 PlayerDao.updateMaxWin(pp.getUdid(), moneyOnTable);
+
                 if (pp.getBestHand() != null) {
                     log.debug(pp.getName() + ":" + pp.getBestHand().toChineseString() + ":" + pp.getNameOfBestHand());
                     sb.append(pp.getUdid()).append(",").append(pp.getName()).append(",").append(pp.getBestHand().getGIndexes()).append(",").append(pp.getNameOfBestHand()).append(",").append(String.valueOf(moneyOnTable)).append(",1;");
