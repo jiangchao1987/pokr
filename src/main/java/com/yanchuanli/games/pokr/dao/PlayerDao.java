@@ -41,7 +41,7 @@ public class PlayerDao {
             String[] msgs = htmlContent.split(",");
 
             Player player = new Player(msgs[0], msgs[1]);
-            player.setMoney(Integer.parseInt(msgs[2]));
+            player.setTotalMoney(Integer.parseInt(msgs[2]));
             player.setExp(Integer.parseInt(msgs[3]));
             player.setWinCount(Integer.parseInt(msgs[4]));
             player.setLoseCount(Integer.parseInt(msgs[5]));
@@ -183,7 +183,7 @@ public class PlayerDao {
     }
 
     public void buyIn(Player player, int buyIn) {
-        if (player.getMoney() > buyIn) {
+        if (player.getTotalMoney() > buyIn) {
             player.setMoney(buyIn);
 
         } else {
