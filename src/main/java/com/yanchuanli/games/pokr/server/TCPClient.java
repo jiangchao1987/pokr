@@ -56,7 +56,7 @@ public class TCPClient {
                     sendToServer(input, 5);
                 } else if (input.startsWith("r")) {
                     sendToServer(input, 5);
-                } else if (input.startsWith("ai")) {
+                } else if (input.startsWith("a")) {
                     sendToServer(input, 5);
                 } else if (input.startsWith("j")) {
                     String[] cmds = input.split(":");
