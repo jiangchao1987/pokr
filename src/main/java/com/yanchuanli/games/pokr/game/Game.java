@@ -226,6 +226,7 @@ public class Game implements Runnable {
             for (int i = 0; i < rankedPlayerList.size(); i++) {
                 List<Player> winners = rankedPlayerList.get(i);
             }
+
         } else {
             Player player1 = results.get(0);
             if (player1.getHand().size() < 5) {
@@ -308,8 +309,12 @@ public class Game implements Runnable {
             if (preflop) {
                 if (actor.isSmallBlind()) {
                     action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 1, gc.getSmallBlindAmount());
+                    actor.setSmallBlind(false);
+                    playersToAct++;
+                    // 再让小盲跟一次
                 } else if (actor.isBigBlind()) {
                     action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 2, gc.getBigBlindAmount());
+                    actor.setBigBlind(false);
                 } else {
                     action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 0, 0);
                 }
