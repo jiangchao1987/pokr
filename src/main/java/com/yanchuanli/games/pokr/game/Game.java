@@ -321,15 +321,15 @@ public class Game implements Runnable {
                         action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 1, gc.getSmallBlindAmount());
                         actor.setSmallBlind(false);
                         playersToAct++;
+                        log.debug("small blind playersToAct:" + playersToAct);
                         // 再让小盲跟一次
                     } else if (actor.isBigBlind()) {
                         action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 2, gc.getBigBlindAmount());
                         actor.setBigBlind(false);
                     } else {
                         NotificationCenter.otherPlayerStartAction(playersToForward, actor.getUdid());
-
                         action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 0, 0);
-
+                        log.debug("123");
                     }
                 } else {
 
@@ -347,7 +347,6 @@ public class Game implements Runnable {
                 pot.addRecord(record);
 
                 log.debug(" id: " + actor.getUdid() + " name: " + actor.getName() + " has " + action.getVerb());
-                playersToAct--;
 
                 switch (action) {
                     case CHECK:
