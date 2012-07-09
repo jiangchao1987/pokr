@@ -85,7 +85,7 @@ public class TCPClient {
 
     private static void sendToServer(String msg, int status) {
         for (String s : Memory.sessionsOnClient.keySet()) {
-            log.info("session:" + s);
+            log.info("session:" + s + " status:" + status);
             Util.sendMsg(Memory.sessionsOnClient.get(s), msg, status);
         }
     }

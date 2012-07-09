@@ -54,6 +54,7 @@ public class ServerHandler extends IoHandlerAdapter {
 
     // 当客户端发送的消息到达时:
     public void messageReceived(IoSession session, Object message) throws Exception {
+        log.debug(message);
         if (message instanceof IoBuffer) {
 
             IoBuffer buffer = (IoBuffer) message;

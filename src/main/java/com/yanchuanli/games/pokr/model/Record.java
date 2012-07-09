@@ -34,4 +34,14 @@ public class Record {
     public long getTimestamp() {
         return timestamp;
     }
+
+    @Override
+    public String toString() {
+        return "Record{" +
+                "udid='" + udid + '\'' +
+                ", actionType=" + actionType +
+                ", bet=" + bet +
+                ", timestamp=" + timestamp +
+                '}';
+    }
 }

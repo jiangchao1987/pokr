@@ -131,12 +131,15 @@ public class Game implements Runnable {
                         showdown();
                     }
                 } else {
+                    log.debug(134);
                     showdown();
                 }
             } else {
+                log.debug(137);
                 showdown();
             }
         } else {
+            log.debug(140);
             showdown();
         }
 
@@ -228,13 +231,18 @@ public class Game implements Runnable {
             }
 
         } else {
-            Player player1 = results.get(0);
-            if (player1.getHand().size() < 5) {
+            if (results.size() == 1) {
+                Player player1 = results.get(0);
+                if (player1.getHand().size() < 5) {
 
+                } else {
+                    player1.setBestHand(handEval.getBest5CardHand(player1.getHand()));
+                    player1.setNameOfBestHand(HandEvaluator.nameHandInChinese(player1.getBestHand()));
+                }
             } else {
-                player1.setBestHand(handEval.getBest5CardHand(player1.getHand()));
-                player1.setNameOfBestHand(HandEvaluator.nameHandInChinese(player1.getBestHand()));
+
             }
+
         }
 
 
@@ -287,112 +295,120 @@ public class Game implements Runnable {
         bet = 0;
         while (playersToAct > 0) {
             //rotate the actor
+            try {
+                playersToAct--;
+                rotateActor();
+                log.debug("playersToAct: " + playersToAct + " id: " + actor.getUdid() + " name: " + actor.getName());
 
-            rotateActor();
 
-            log.debug("playersToAct: " + playersToAct + " id: " + actor.getUdid() + " name: " + actor.getName());
+                Set<Action> allowedActions = getAllowedActions(actor);
 
-
-            Set<Action> allowedActions = getAllowedActions(actor);
-
-            List<Player> playersToForward = new ArrayList<>();
-            for (Player player : this.activePlayers) {
-                if (player != actor) {
-                    playersToForward.add(player);
-                }
-            }
-
-            NotificationCenter.otherPlayerStartAction(playersToForward, actor.getUdid());
-
-            Action action = null;
-
-            if (preflop) {
-                if (actor.isSmallBlind()) {
-                    action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 1, gc.getSmallBlindAmount());
-                    actor.setSmallBlind(false);
-                    playersToAct++;
-                    // 再让小盲跟一次
-                } else if (actor.isBigBlind()) {
-                    action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 2, gc.getBigBlindAmount());
-                    actor.setBigBlind(false);
-                } else {
-                    action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 0, 0);
-                }
-            } else {
-                if (allowedActions.size() == 1 && allowedActions.contains(Action.CONTINUE)) {
-                    action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 3, 0);
-                } else {
-                    action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 0, 0);
-                }
-
-            }
-
-            Record record = new Record(actor.getUdid(), action.getVerbType(), actor.getBet());
-            pot.addRecord(record);
-
-            log.debug(" id: " + actor.getUdid() + " name: " + actor.getName() + " action: " + action.getVerb());
-            playersToAct--;
-
-            switch (action) {
-                case CHECK:
-                    // do nothing
-                    break;
-                case CALL:
-                    moneyOnTable += actor.getBet();
-                    break;
-                case BET:
-                    bet = bet >= actor.getBet() ? bet : actor.getBet();
-                    moneyOnTable += actor.getBet();
-                    playersToAct = activePlayers.size() - 1;
-                    break;
-                case RAISE:
-                    bet = bet >= actor.getBet() ? bet : actor.getBet();
-                    moneyOnTable += actor.getBet();
-                    playersToAct = activePlayers.size() - 1;
-                    break;
-                case FOLD:
-                    actor.getHand().makeEmpty();
-                    this.activePlayers.remove(actor);
-                    actorPosition--;
-                    if (this.activePlayers.size() == 1) {
-                        log.debug(this.activePlayers.get(0).getName() + " win ...");
-                        playersToAct = 0;
-//                        showdown();
+                List<Player> playersToForward = new ArrayList<>();
+                for (Player player : this.activePlayers) {
+                    if (player != actor) {
+                        playersToForward.add(player);
                     }
-                    break;
-                case SMALL_BLIND:
-                    bet = actor.getBet();
-                    moneyOnTable += actor.getBet();
-                    break;
-                case BIG_BLIND:
-                    bet = actor.getBet();
-                    moneyOnTable += actor.getBet();
-                    break;
-                case ALLIN:
-                    bet = bet >= actor.getBet() ? bet : actor.getBet();
-                    moneyOnTable += actor.getBet();
-                    break;
-                case CONTINUE:
-                    break;
+                }
 
+                NotificationCenter.otherPlayerStartAction(playersToForward, actor.getUdid());
+
+                Action action = null;
+
+                if (preflop) {
+                    if (actor.isSmallBlind()) {
+                        action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 1, gc.getSmallBlindAmount());
+                        actor.setSmallBlind(false);
+                        playersToAct++;
+                        // 再让小盲跟一次
+                    } else if (actor.isBigBlind()) {
+                        action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 2, gc.getBigBlindAmount());
+                        actor.setBigBlind(false);
+                    } else {
+                        action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 0, 0);
+                    }
+                } else {
+                    if (allowedActions.size() == 1 && allowedActions.contains(Action.CONTINUE)) {
+                        action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 3, 0);
+                    } else {
+                        action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 0, 0);
+                    }
+
+                }
+
+                Record record = new Record(actor.getUdid(), action.getVerbType(), actor.getBet());
+                pot.addRecord(record);
+
+                log.debug(" id: " + actor.getUdid() + " name: " + actor.getName() + " has " + action.getVerb());
+                playersToAct--;
+
+                switch (action) {
+                    case CHECK:
+                        // do nothing
+                        break;
+                    case CALL:
+                        moneyOnTable += actor.getBet();
+                        break;
+                    case BET:
+                        bet = bet >= actor.getBet() ? bet : actor.getBet();
+                        moneyOnTable += actor.getBet();
+                        playersToAct = activePlayers.size() - 1;
+                        break;
+                    case RAISE:
+                        bet = bet >= actor.getBet() ? bet : actor.getBet();
+                        moneyOnTable += actor.getBet();
+                        playersToAct = activePlayers.size() - 1;
+                        break;
+                    case FOLD:
+                        actor.getHand().makeEmpty();
+                        this.activePlayers.remove(actor);
+                        actorPosition--;
+                        if (this.activePlayers.size() == 1) {
+                            log.debug(this.activePlayers.get(0).getName() + " win ...");
+                            playersToAct = 0;
+                            //                        showdown();
+                        }
+                        break;
+                    case SMALL_BLIND:
+                        bet = actor.getBet();
+                        moneyOnTable += actor.getBet();
+                        break;
+                    case BIG_BLIND:
+                        bet = actor.getBet();
+                        moneyOnTable += actor.getBet();
+                        break;
+                    case ALLIN:
+                        if (actor.getBet() > bet) {
+                            playersToAct = activePlayers.size() - 1;
+                            bet = actor.getBet();
+                        }
+                        moneyOnTable += actor.getBet();
+                        break;
+                    case CONTINUE:
+                        break;
+
+                }
+
+                //扣钱
+
+                String info = actor.getUdid() + "," + action.getVerb() + ":" + actor.getBet() + "," + moneyOnTable;
+
+                if (action.getName().equals(Action.SMALL_BLIND.getName())) {
+                    NotificationCenter.paySmallBlind(activePlayers, info);
+                } else if (action.getName().equals(Action.BIG_BLIND.getName())) {
+                    NotificationCenter.payBigBlind(activePlayers, info);
+                } else {
+                    NotificationCenter.forwardAction(playersToForward, info);
+                    playersToForward.clear();
+                    playersToForward = null;
+                }
+
+                //reset actor's bet
+                actor.setBet(0);
+            } catch (IllegalStateException e) {
+                log.error(ExceptionUtils.getStackTrace(e));
             }
 
-            //扣钱
 
-            String info = actor.getUdid() + "," + action.getVerb() + ":" + actor.getBet() + "," + moneyOnTable;
-
-            if (action.getName().equals(Action.SMALL_BLIND.getName())) {
-                NotificationCenter.paySmallBlind(activePlayers, info);
-            } else if (action.getName().equals(Action.BIG_BLIND.getName())) {
-                NotificationCenter.payBigBlind(activePlayers, info);
-            } else {
-                NotificationCenter.forwardAction(playersToForward, info);
-                playersToForward.clear();
-                playersToForward = null;
-            }
-
-            //reset actor's bet
-            actor.setBet(0);
         }
 
         pot.buildPotList();
@@ -409,12 +425,15 @@ public class Game implements Runnable {
                 if (player.getMoney() >= bet) {
                     actions.add(Action.CALL);
                 }
-
                 if (player.getMoney() >= bet * 2) {
                     actions.add(Action.RAISE);
                 }
+
+                if (player.getMoney() > 0) {
+                    actions.add(Action.ALLIN);
+                }
             }
-            actions.add(Action.ALLIN);
+
             actions.add(Action.FOLD);
         } else {
             actions.add(Action.CONTINUE);

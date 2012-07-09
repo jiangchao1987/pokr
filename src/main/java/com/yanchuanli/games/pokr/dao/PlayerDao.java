@@ -5,11 +5,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.yanchuanli.games.pokr.model.Player;
-import com.yanchuanli.games.pokr.util.Config;
-import com.yanchuanli.games.pokr.util.MongoDB;
-import com.yanchuanli.games.pokr.util.MongoDBFactory;
-import com.yanchuanli.games.pokr.util.TimeUtil;
-import com.yanchuanli.games.pokr.util.URLFetchUtil;
+import com.yanchuanli.games.pokr.util.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -148,6 +144,19 @@ public class PlayerDao {
         }
 
         return player;
+    }
+
+    public void buyIn(Player player, int buyIn) {
+        if (player.getMoney() > buyIn) {
+            player.setHoldings(buyIn);
+
+        } else {
+            //TODO 弹出购买IAP的按钮
+        }
+    }
+
+    public void cashBack(Player player, int holding) {
+
     }
 
 }

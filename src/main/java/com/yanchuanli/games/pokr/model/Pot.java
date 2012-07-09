@@ -33,7 +33,7 @@ public class Pot {
     }
 
     public void addRecord(Record record) {
-
+        log.debug(record);
         money += record.getBet();
         if (currentPot.containsKey(record.getUdid())) {
             int currentBetOfPlayer = currentPot.get(record.getUdid());
@@ -86,8 +86,10 @@ public class Pot {
             pots.add(smallPot);
         }
 
+        log.debug(potsCount() + " pots existed ...");
         //在遍历完所有AllIn玩家后，还可能存在在AllIn玩家之后的下一个玩家raise他的情况。
         if (!currentPot.isEmpty()) {
+            log.debug("currentPot non empty:" + currentPot);
             Map<String, Integer> smallPot = new HashMap<>();
             Iterator<String> it = currentPot.keySet().iterator();
             while (it.hasNext()) {
@@ -96,9 +98,12 @@ public class Pot {
                 it.remove();
             }
             pots.add(smallPot);
+        }else {
+            log.debug("currentPot empty:" + currentPot);
         }
+        log.debug(potsCount() + " pots existed ...");
 
-
+        log.debug(pots);
         currentPot = pots.get(pots.size() - 1);
         pots.remove(pots.size() - 1);
 

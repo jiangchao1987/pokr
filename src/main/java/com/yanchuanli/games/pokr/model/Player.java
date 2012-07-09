@@ -31,6 +31,8 @@ public class Player {
     private boolean alive;
     private int money;
     private int bet;
+    //进这个房间buy in的筹码
+    private int holdings;
     private String input;
     private String nameOfBestHand;
     private int exp;
@@ -371,5 +373,13 @@ public class Player {
 
     public boolean inRoom(int roomID) {
         return roomid == roomID;
+    }
+
+    public int getHoldings() {
+        return holdings;
+    }
+
+    public void setHoldings(int holdings) {
+        this.holdings = holdings;
     }
 }
