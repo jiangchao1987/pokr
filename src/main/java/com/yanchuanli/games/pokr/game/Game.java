@@ -406,7 +406,10 @@ public class Game implements Runnable {
                 actions.add(Action.CHECK);
                 actions.add(Action.RAISE);
             } else {
-                actions.add(Action.CALL);
+                if (player.getMoney() >= bet) {
+                    actions.add(Action.CALL);
+                }
+
                 if (player.getMoney() >= bet * 2) {
                     actions.add(Action.RAISE);
                 }
