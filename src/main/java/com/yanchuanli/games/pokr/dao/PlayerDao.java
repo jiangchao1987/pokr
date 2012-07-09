@@ -24,7 +24,7 @@ public class PlayerDao {
     static {
         players = new HashMap<>();
     }
-
+    
     /**
      * 从WebServer获取用户信息
      *
@@ -55,6 +55,42 @@ public class PlayerDao {
             players.put(udid, player);
         }
         return players.get(udid);
+    }
+    
+    /**
+     * 更新赢的次数
+     * 
+     * @param udid
+     * @param winCount
+     */
+    public static void updateWinCount(String udid, int winCount) {
+        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME,
+                MongoDB.COLL_USER);
+
+        DBObject query = new BasicDBObject();
+        query.put("udid", udid);
+
+        DBObject doc = new BasicDBObject().append("$set",
+                new BasicDBObject().append("win", winCount).append("update", TimeUtil.unixtime()));
+        coll.update(query, doc);
+    }
+    
+    /**
+     * 更新输的次数
+     * 
+     * @param udid
+     * @param loseCount
+     */
+    public static void updateLoseCount(String udid, int loseCount) {
+        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME,
+                MongoDB.COLL_USER);
+
+        DBObject query = new BasicDBObject();
+        query.put("udid", udid);
+
+        DBObject doc = new BasicDBObject().append("$set",
+                new BasicDBObject().append("lose", loseCount).append("update", TimeUtil.unixtime()));
+        coll.update(query, doc);
     }
 
     /**
