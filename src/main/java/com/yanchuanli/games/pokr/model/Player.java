@@ -375,11 +375,11 @@ public class Player {
         return roomid == roomID;
     }
 
-    public static Logger getLog() {
-        return log;
+    public int getTotalMoney() {
+        return TotalMoney;
     }
 
-    public static void setLog(Logger log) {
-        Player.log = log;
+    public void setTotalMoney(int totalMoney) {
+        TotalMoney = totalMoney;
     }
 }
