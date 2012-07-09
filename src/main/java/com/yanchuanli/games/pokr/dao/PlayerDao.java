@@ -184,7 +184,7 @@ public class PlayerDao {
 
     public void buyIn(Player player, int buyIn) {
         if (player.getMoney() > buyIn) {
-            player.setHoldings(buyIn);
+            player.setMoney(buyIn);
 
         } else {
             //TODO 弹出购买IAP的按钮

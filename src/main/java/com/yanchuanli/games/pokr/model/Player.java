@@ -32,7 +32,7 @@ public class Player {
     private int money;
     private int bet;
     //进这个房间buy in的筹码
-    private int holdings;
+    private int TotalMoney;
     private String input;
     private String nameOfBestHand;
     private int exp;
@@ -375,11 +375,11 @@ public class Player {
         return roomid == roomID;
     }
 
-    public int getHoldings() {
-        return holdings;
+    public static Logger getLog() {
+        return log;
     }
 
-    public void setHoldings(int holdings) {
-        this.holdings = holdings;
+    public static void setLog(Logger log) {
+        Player.log = log;
     }
 }
