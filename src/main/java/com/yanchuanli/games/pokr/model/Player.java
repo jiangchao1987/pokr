@@ -260,7 +260,7 @@ public class Player {
             } else if (input.startsWith("bb")) {
                 setBet(blindamount);
                 result = Action.BIG_BLIND;
-            } else if (input.startsWith("ai")) {
+            } else if (input.startsWith("a")) {
                 setBet(money);
                 result = Action.ALLIN;
             } else {
