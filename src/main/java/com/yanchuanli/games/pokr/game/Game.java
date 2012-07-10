@@ -216,18 +216,46 @@ public class Game implements Runnable {
 
         List<Player> results = new ArrayList<>();
 
+        StringBuilder cardsInfo = new StringBuilder();
         for (Player player : activePlayers) {
             if (player.isAlive()) {
+                cardsInfo.append(player.getUdid()).append(",").append(player.getHand().getGIndexes()).append(";");
                 for (Card card : cardsOnTable) {
                     player.getHand().addCard(card);
                 }
                 results.add(player);
             }
         }
+        NotificationCenter.show2cards(results, cardsInfo.toString());
+
+        //TODO 告诉每人的
 
         if (results.size() > 1) {
-
             List<List<Player>> rankedPlayerList = GameUtil.rankPlayers(results);
+            for (int i = pot.potsCount() - 1; i >= 0; i--) {
+                Map<String, Integer> playersInThisPot = pot.getPotAtIndex(i);
+
+                boolean thisIsWinnerGroup = true;
+                for (List<Player> players : rankedPlayerList) {
+                    for (Player player : players) {
+                        if (playersInThisPot.containsKey(player.getUdid())) {
+
+                        } else {
+                            thisIsWinnerGroup = false;
+                            break;
+                        }
+                    }
+                    if (thisIsWinnerGroup) {
+                        int totalMoney = pot.getMoneyAtIndex(i);
+                        int moneyForEveryOne = totalMoney / players.size();
+                        for (Player player : players) {
+                            PlayerDao.cashBack(player, moneyForEveryOne);
+                        }
+                        break;
+                    }
+                }
+            }
+
             for (int i = 0; i < rankedPlayerList.size(); i++) {
                 List<Player> winners = rankedPlayerList.get(i);
             }

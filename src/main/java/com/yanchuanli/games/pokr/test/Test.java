@@ -1,9 +1,6 @@
 package com.yanchuanli.games.pokr.test;
 
 import com.yanchuanli.games.pokr.model.Player;
-import com.yanchuanli.games.pokr.model.Pot;
-import com.yanchuanli.games.pokr.model.Record;
-import com.yanchuanli.games.pokr.util.Config;
 import org.apache.log4j.Logger;
 
 import java.net.UnknownHostException;
@@ -25,21 +22,14 @@ public class Test {
 
     public static void main(String[] args) throws UnknownHostException {
 
-        Record record1 = new Record("a", Config.ACTION_TYPE_SMALL_BLIND, 25);
-        Record record2 = new Record("b", Config.ACTION_TYPE_BIG_BLIND, 50);
-        Record record3 = new Record("a", Config.ACTION_TYPE_CALL, 25);
-        Record record9 = new Record("a", Config.ACTION_TYPE_FOLD, 0);
+        List<String> test = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            test.add(String.valueOf(i));
+        }
 
-        Pot pot = new Pot();
-        pot.addRecord(record1);
-        pot.addRecord(record2);
-        pot.addRecord(record3);
-        pot.buildPotList();
-     //   pot.addRecord(record8);
-        pot.addRecord(record9);
-        pot.buildPotList();
-
-        pot.finish();
+        for (int i = test.size() - 1; i >= 0; i--) {
+            log.debug(test.get(i));
+        }
     }
 
 }
