@@ -92,7 +92,8 @@ public class Game implements Runnable {
             waitingPlayers.remove(player.getUdid());
 
             availablePlayers.add(player);
-            PlayerDao.buyIn(player, gc.getMaxHolding() / 2);
+            PlayerDao.buyIn(player, 10000);
+            log.debug("money now:" + player.getMoney());
         } else {
             //TODO 告诉他坐下失败
         }
@@ -166,7 +167,7 @@ public class Game implements Runnable {
 
 
         log.debug("[RotateDealer] current markCurrentDealer:" + dealerPosition);
-        log.debug("current dealer:" + dealer.getName());
+        log.debug("current deal¢er:" + dealer.getName());
         log.debug("current smallblind:" + smallBlind.getName());
         log.debug("current bigblind:" + bigBlind.getName());
 

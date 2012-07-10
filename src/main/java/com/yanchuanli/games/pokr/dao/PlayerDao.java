@@ -6,6 +6,7 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.util.*;
+import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +21,7 @@ public class PlayerDao {
 
     private static Map<String, Player> players;
     private static int globalid = 0;
+    private static Logger log = Logger.getLogger(PlayerDao.class);
 
     static {
         players = new HashMap<>();
@@ -188,7 +190,9 @@ public class PlayerDao {
             // minus money
             updateMoney(player.getUdid(), player.getTotalMoney() - buyIn);
             player.setTotalMoney(player.getTotalMoney() - buyIn);
+            log.debug(player.getName() + " has buyed in " + player.getMoney());
         } else {
+            log.debug(player.getName() + " total:" + player.getTotalMoney());
             //TODO 弹出购买IAP的按钮
         }
     }
