@@ -257,19 +257,24 @@ public class Player {
             } else if (input.startsWith("r")) {
                 String[] inputs = input.split(":");
                 setBetThisTime(Integer.parseInt(inputs[1]));
+                betThisRound += betThisTime;
                 result = Action.RAISE;
             } else if (input.startsWith("sb")) {
                 setBetThisTime(blindamount);
+                betThisRound += betThisTime;
                 result = Action.SMALL_BLIND;
             } else if (input.startsWith("bb")) {
                 setBetThisTime(blindamount);
+                betThisRound += betThisTime;
                 result = Action.BIG_BLIND;
             } else if (input.startsWith("a")) {
                 setBetThisTime(money);
+                betThisRound += betThisTime;
                 result = Action.ALLIN;
             } else {
                 String[] inputs = input.split(":");
                 setBetThisTime(Integer.parseInt(inputs[1]));
+                betThisRound += betThisTime;
                 result = Action.BET;
             }
             money -= betThisTime;
@@ -383,5 +388,13 @@ public class Player {
 
     public void setTotalMoney(int totalMoney) {
         TotalMoney = totalMoney;
+    }
+
+    public int getBetThisRound() {
+        return betThisRound;
+    }
+
+    public void setBetThisRound(int betThisRound) {
+        this.betThisRound = betThisRound;
     }
 }

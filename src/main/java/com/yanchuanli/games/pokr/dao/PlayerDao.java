@@ -99,7 +99,7 @@ public class PlayerDao {
      * @param udid
      * @param money
      */
-    public static void updateMoney(String udid, int money) {
+    private static void updateMoney(String udid, int money) {
         DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME,
                 MongoDB.COLL_USER);
 
@@ -194,9 +194,12 @@ public class PlayerDao {
     }
 
     public static void cashBack(Player player, int holding) {
-        Player persistence = queryByUdid(player.getUdid());
-        // plus money
-        updateMoney(player.getUdid(), persistence.getMoney() + holding);
+        if (holding > 0) {
+            Player persistence = queryByUdid(player.getUdid());
+            // plus money
+            updateMoney(player.getUdid(), persistence.getMoney() + holding);
+        }
+
     }
 
 }

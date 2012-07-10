@@ -270,11 +270,14 @@ public class Game implements Runnable {
                         break;
                     }
                 }
-
+                //每个边池给客户端足够做动画的时间
                 NotificationCenter.winorlose(playersListInThisPot, sb.toString());
+                try {
+                    Thread.sleep(gc.getInactivityCheckInterval().inMillis() * 2);
+                } catch (InterruptedException e) {
+                    log.error(ExceptionUtils.getStackTrace(e));
+                }
             }
-
-
         } else {
             if (results.size() == 1) {
                 Player player1 = results.get(0);
@@ -289,7 +292,6 @@ public class Game implements Runnable {
             }
 
         }
-
 
 
         results.clear();
@@ -318,6 +320,9 @@ public class Game implements Runnable {
         actorPosition = dealerPosition;
         bet = 0;
 
+        for (Player player : activePlayers) {
+            player.setBetThisRound(0);
+        }
 
         while (playersToAct > 0) {
             //rotate the actor
@@ -352,7 +357,6 @@ public class Game implements Runnable {
                     } else {
                         NotificationCenter.otherPlayerStartAction(playersToForward, actor.getUdid());
                         action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 0, 0);
-                        log.debug("123");
                     }
                 } else {
 
@@ -360,7 +364,6 @@ public class Game implements Runnable {
                         action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 3, 0);
                     } else {
                         NotificationCenter.otherPlayerStartAction(playersToForward, actor.getUdid());
-
                         action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 0, 0);
                     }
 
@@ -571,6 +574,14 @@ public class Game implements Runnable {
         for (Player aplayer : activePlayers) {
             if (aplayer.getUdid().equals(player.getUdid())) {
                 activePlayers.remove(aplayer);
+                RoomDao.updateCurrentPlayerCount(gc.getId(), activePlayers.size());
+                break;
+            }
+        }
+
+        for (Player aplayer : availablePlayers) {
+            if (aplayer.getUdid().equals(player.getUdid())) {
+                availablePlayers.remove(aplayer);
                 RoomDao.updateCurrentPlayerCount(gc.getId(), availablePlayers.size());
                 break;
             }
