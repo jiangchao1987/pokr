@@ -36,6 +36,7 @@ public class Config {
     public static final int TYPE_CHAT_INGAME = 17;
     public static final int TYPE_MARKBIGBLIND_INGAME = 18;
     public static final int TYPE_MARKSMALLBLIND_INGAME = 19;
+    public static final int TYPE_SHOW2CARDS = 20;
 
     public static final int GAMEINFO_NOTSTARTED = 0;
 

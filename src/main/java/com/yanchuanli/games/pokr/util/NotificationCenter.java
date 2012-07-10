@@ -119,6 +119,11 @@ public class NotificationCenter {
 //    public static void winorlose(IoSession session, String info, int money) {
 //        notifySpecificOnTable(session, info, Config.TYPE_WINORLOSE_INGAME);
 //    }
+    
+    public static void show2cards(List<Player> players, String info) {
+    	notifyAllOnTable(players, info, Config.TYPE_SHOW2CARDS);
+    }
+    
     public static void winorlose(List<Player> players, String info) {
     	notifyAllOnTable(players, info, Config.TYPE_WINORLOSE_INGAME);
     }
