@@ -166,7 +166,7 @@ public class PlayerDao {
         while (cur.hasNext()) {
             DBObject obj = cur.next();
             player = new Player((String) obj.get("udid"), (String) obj.get("name"));
-            player.setMoney((Integer) obj.get("money"));
+            player.setTotalMoney((Integer) obj.get("money"));
             player.setExp((Integer) obj.get("exp"));
             player.setWinCount((Integer) obj.get("win"));
             player.setLoseCount((Integer) obj.get("lose"));

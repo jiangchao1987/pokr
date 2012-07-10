@@ -90,6 +90,7 @@ public class Game implements Runnable {
     public void addPlayer(Player player) {
         if (activePlayers.size() + availablePlayers.size() <= gc.getMaxPlayersCount()) {
             waitingPlayers.remove(player.getUdid());
+
             availablePlayers.add(player);
             PlayerDao.buyIn(player, gc.getMaxHolding() / 2);
         } else {
@@ -229,7 +230,6 @@ public class Game implements Runnable {
         NotificationCenter.show2cards(results, cardsInfo.toString());
 
 
-
         if (results.size() > 1) {
             List<List<Player>> rankedPlayerList = GameUtil.rankPlayers(results);
             for (int i = pot.potsCount() - 1; i >= 0; i--) {
@@ -246,8 +246,10 @@ public class Game implements Runnable {
                         }
                     }
                     if (thisIsWinnerGroup) {
+
                         int totalMoney = pot.getMoneyAtIndex(i);
                         int moneyForEveryOne = totalMoney / players.size();
+                        log.debug("total money:" + totalMoney);
 
                         for (Player player : players) {
                             PlayerDao.cashBack(player, moneyForEveryOne);
@@ -288,30 +290,7 @@ public class Game implements Runnable {
 
         }
 
-        /*
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < results.size(); i++) {
-            Player pp = results.get(i);
-            if (i == 0) {
-                log.debug(pp.getName() + " wins!");
-                PlayerDao.updateBestHandOfPlayer(pp);
-                PlayerDao.updateMaxWin(pp.getUdid(), moneyOnTable);
 
-                if (pp.getBestHand() != null) {
-                    log.debug(pp.getName() + ":" + pp.getBestHand().toChineseString() + ":" + pp.getNameOfBestHand());
-                    sb.append(pp.getUdid()).append(",").append(pp.getName()).append(",").append(pp.getBestHand().getGIndexes()).append(",").append(pp.getNameOfBestHand()).append(",").append(String.valueOf(moneyOnTable)).append(",1;");
-                } else {
-                    sb.append(pp.getUdid()).append(",").append(pp.getName()).append(",").append("").append(",").append("").append(",").append("0").append(",1;");
-                }
-            } else {
-                log.debug(pp + " loses!");
-                log.debug(pp.getName() + ":" + pp.getBestHand().toChineseString() + ":" + pp.getNameOfBestHand());
-                sb.append(pp.getUdid()).append(",").append(pp.getName()).append(",").append(pp.getBestHand().getGIndexes()).append(",").append(pp.getNameOfBestHand()).append(",").append("0").append(",0;");
-            }
-        }
-        log.debug(sb.toString());
-        NotificationCenter.winorlose(results, sb.toString());
-         */
 
         results.clear();
         gaming = false;
@@ -338,6 +317,8 @@ public class Game implements Runnable {
         int playersToAct = activePlayers.size();
         actorPosition = dealerPosition;
         bet = 0;
+
+
         while (playersToAct > 0) {
             //rotate the actor
             try {
@@ -385,7 +366,7 @@ public class Game implements Runnable {
 
                 }
 
-                Record record = new Record(actor.getUdid(), action.getVerbType(), actor.getBet());
+                Record record = new Record(actor.getUdid(), action.getVerbType(), actor.getBetThisTime());
                 pot.addRecord(record);
 
                 log.debug(" id: " + actor.getUdid() + " name: " + actor.getName() + " has " + action.getVerb());
@@ -395,16 +376,16 @@ public class Game implements Runnable {
                         // do nothing
                         break;
                     case CALL:
-                        moneyOnTable += actor.getBet();
+                        moneyOnTable += actor.getBetThisTime();
                         break;
                     case BET:
-                        bet = bet >= actor.getBet() ? bet : actor.getBet();
-                        moneyOnTable += actor.getBet();
+                        bet = bet >= actor.getBetThisTime() ? bet : actor.getBetThisTime();
+                        moneyOnTable += actor.getBetThisTime();
                         playersToAct = activePlayers.size() - 1;
                         break;
                     case RAISE:
-                        bet = bet >= actor.getBet() ? bet : actor.getBet();
-                        moneyOnTable += actor.getBet();
+                        bet = bet >= actor.getBetThisTime() ? bet : actor.getBetThisTime();
+                        moneyOnTable += actor.getBetThisTime();
                         playersToAct = activePlayers.size() - 1;
                         break;
                     case FOLD:
@@ -414,23 +395,22 @@ public class Game implements Runnable {
                         if (this.activePlayers.size() == 1) {
                             log.debug(this.activePlayers.get(0).getName() + " win ...");
                             playersToAct = 0;
-                            //                        showdown();
                         }
                         break;
                     case SMALL_BLIND:
-                        bet = actor.getBet();
-                        moneyOnTable += actor.getBet();
+                        bet = actor.getBetThisTime();
+                        moneyOnTable += actor.getBetThisTime();
                         break;
                     case BIG_BLIND:
-                        bet = actor.getBet();
-                        moneyOnTable += actor.getBet();
+                        bet = actor.getBetThisTime();
+                        moneyOnTable += actor.getBetThisTime();
                         break;
                     case ALLIN:
-                        if (actor.getBet() > bet) {
+                        if (actor.getBetThisTime() > bet) {
                             playersToAct = activePlayers.size() - 1;
-                            bet = actor.getBet();
+                            bet = actor.getBetThisTime();
                         }
-                        moneyOnTable += actor.getBet();
+                        moneyOnTable += actor.getBetThisTime();
                         break;
                     case CONTINUE:
                         break;
@@ -439,7 +419,7 @@ public class Game implements Runnable {
 
                 //扣钱
 
-                String info = actor.getUdid() + "," + action.getVerb() + ":" + actor.getBet() + "," + moneyOnTable;
+                String info = actor.getUdid() + "," + action.getVerb() + ":" + actor.getBetThisTime() + "," + moneyOnTable;
 
                 if (action.getName().equals(Action.SMALL_BLIND.getName())) {
                     NotificationCenter.paySmallBlind(activePlayers, info);
@@ -452,7 +432,7 @@ public class Game implements Runnable {
                 }
 
                 //reset actor's bet
-                actor.setBet(0);
+                actor.setBetThisTime(0);
             } catch (IllegalStateException e) {
                 log.error(ExceptionUtils.getStackTrace(e));
             }

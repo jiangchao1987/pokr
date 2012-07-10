@@ -29,9 +29,10 @@ public class Player {
     private Hand bestHand;
     private int bestHandRank;
     private boolean alive;
-    private int money;
-    private int bet;
     //进这个房间buy in的筹码
+    private int money;
+    private int betThisTime;
+    private int betThisRound;
     private int TotalMoney;
     private String input;
     private String nameOfBestHand;
@@ -243,10 +244,11 @@ public class Player {
         } else {
             log.debug(name + " input:[" + input + "]");
             if (input.startsWith("co")) {
-                setBet(0);
+                setBetThisTime(0);
                 result = Action.CONTINUE;
             } else if (input.startsWith("ca")) {
-                setBet(currentBet);
+                int diff = currentBet - betThisRound;
+                setBetThisTime(diff);
                 result = Action.CALL;
             } else if (input.startsWith("c")) {
                 result = Action.CHECK;
@@ -254,23 +256,23 @@ public class Player {
                 result = Action.FOLD;
             } else if (input.startsWith("r")) {
                 String[] inputs = input.split(":");
-                setBet(Integer.parseInt(inputs[1]));
+                setBetThisTime(Integer.parseInt(inputs[1]));
                 result = Action.RAISE;
             } else if (input.startsWith("sb")) {
-                setBet(blindamount);
+                setBetThisTime(blindamount);
                 result = Action.SMALL_BLIND;
             } else if (input.startsWith("bb")) {
-                setBet(blindamount);
+                setBetThisTime(blindamount);
                 result = Action.BIG_BLIND;
             } else if (input.startsWith("a")) {
-                setBet(money);
+                setBetThisTime(money);
                 result = Action.ALLIN;
             } else {
                 String[] inputs = input.split(":");
-                setBet(Integer.parseInt(inputs[1]));
+                setBetThisTime(Integer.parseInt(inputs[1]));
                 result = Action.BET;
             }
-            money -= bet;
+            money -= betThisTime;
             PlayerDao.cashBack(this, money);
         }
 
@@ -282,12 +284,12 @@ public class Player {
 
     }
 
-    public int getBet() {
-        return bet;
+    public int getBetThisTime() {
+        return betThisTime;
     }
 
-    public void setBet(int bet) {
-        this.bet = bet;
+    public void setBetThisTime(int betThisTime) {
+        this.betThisTime = betThisTime;
     }
 
     public void win(int bet) {
@@ -331,7 +333,7 @@ public class Player {
         return "Player [globalId=" + globalId + ", udid=" + udid + ", name=" + name
                 + ", session=" + session + ", hand=" + hand + ", bestHand="
                 + bestHand + ", bestHandRank=" + bestHandRank + ", alive=" + alive
-                + ", money=" + money + ", bet=" + bet + ", input=" + input
+                + ", money=" + money + ", betThisTime=" + betThisTime + ", input=" + input
                 + ", nameOfBestHand=" + nameOfBestHand + ", exp=" + exp + ", winCount="
                 + winCount + ", loseCount=" + loseCount
                 + ", historicalBestHandRank=" + historicalBestHandRank
