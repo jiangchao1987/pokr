@@ -228,13 +228,14 @@ public class Game implements Runnable {
         }
         NotificationCenter.show2cards(results, cardsInfo.toString());
 
-        //TODO 告诉每人的
+
 
         if (results.size() > 1) {
             List<List<Player>> rankedPlayerList = GameUtil.rankPlayers(results);
             for (int i = pot.potsCount() - 1; i >= 0; i--) {
+                StringBuilder sb = new StringBuilder();
                 Map<String, Integer> playersInThisPot = pot.getPotAtIndex(i);
-
+                List<Player> playersListInThisPot = new ArrayList<>();
                 boolean thisIsWinnerGroup = true;
                 for (List<Player> players : rankedPlayerList) {
                     for (Player player : players) {
@@ -242,23 +243,35 @@ public class Game implements Runnable {
 
                         } else {
                             thisIsWinnerGroup = false;
-                            break;
                         }
                     }
                     if (thisIsWinnerGroup) {
                         int totalMoney = pot.getMoneyAtIndex(i);
                         int moneyForEveryOne = totalMoney / players.size();
+
                         for (Player player : players) {
                             PlayerDao.cashBack(player, moneyForEveryOne);
+                            sb.append(player.getUdid()).append(",").append(player.getNameOfBestHand()).append(",").append("2").append(",").append("0_1_2").append(",").append(String.valueOf(moneyForEveryOne)).append(";");
+                            playersInThisPot.remove(player.getUdid());
+                            playersListInThisPot.add(player);
+                        }
+
+                        for (String s : playersInThisPot.keySet()) {
+                            for (Player player : activePlayers) {
+                                if (player.getUdid().equals(s)) {
+                                    sb.append(player.getUdid()).append(",").append(player.getNameOfBestHand()).append(",").append("2").append(",").append("0_1_2").append(",").append(String.valueOf(0)).append(";");
+                                    playersListInThisPot.add(player);
+                                    break;
+                                }
+                            }
                         }
                         break;
                     }
                 }
+
+                NotificationCenter.winorlose(playersListInThisPot, sb.toString());
             }
 
-            for (int i = 0; i < rankedPlayerList.size(); i++) {
-                List<Player> winners = rankedPlayerList.get(i);
-            }
 
         } else {
             if (results.size() == 1) {
@@ -275,7 +288,7 @@ public class Game implements Runnable {
 
         }
 
-
+        /*
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < results.size(); i++) {
             Player pp = results.get(i);
@@ -298,6 +311,7 @@ public class Game implements Runnable {
         }
         log.debug(sb.toString());
         NotificationCenter.winorlose(results, sb.toString());
+         */
 
         results.clear();
         gaming = false;
