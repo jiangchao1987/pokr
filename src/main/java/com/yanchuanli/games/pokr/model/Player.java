@@ -401,4 +401,47 @@ public class Player {
     public void addMoney(int reward) {
         this.money += reward;
     }
+
+    public int getGIndexesForOwnCardsUsedInBestFive() {
+        int result = 0;
+        int[] ownCards = hand.getCardArray();
+        int firstCard = ownCards[0];
+        int secondCard = ownCards[1];
+        boolean firstCardIncluded = false;
+        boolean secondCardIncluded = false;
+        int[] bestHandCardArray = bestHand.getCardArray();
+        for (int i = 0; i < bestHandCardArray.length; i++) {
+            if (bestHandCardArray[i] == firstCard) {
+                firstCardIncluded = true;
+            }
+            if (bestHandCardArray[i] == secondCard) {
+                secondCardIncluded = true;
+            }
+        }
+
+        if (firstCardIncluded && secondCardIncluded) {
+            result = 3;
+        } else if (firstCardIncluded) {
+            result = 1;
+        } else if (secondCardIncluded) {
+            result = 2;
+        } else {
+            result = 0;
+        }
+        return result;
+    }
+
+    public String getIndexesForUsedCommunityCardsInBestFive(int[] communityCards) {
+        String result = "";
+        int[] bestCardsArray = bestHand.getCardArray();
+        for (int i = 0; i < communityCards.length; i++) {
+            for (int j = 0; j < bestCardsArray.length; j++) {
+                if (communityCards[i] == bestCardsArray[j]) {
+                    result = result + String.valueOf(i) + "_";
+                    break;
+                }
+            }
+        }
+        return result;
+    }
 }

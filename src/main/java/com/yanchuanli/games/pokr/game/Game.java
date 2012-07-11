@@ -179,8 +179,9 @@ public class Game implements Runnable {
             for (int i = 0; i < 2; i++) {
                 Card card = deck.dealCard();
                 player.getHand().addCard(card);
+                log.debug(player.getHand().getGIndexes());
             }
-            log.debug(player.getName() + " got " + player.getHand().toChineseString());
+//            log.debug(player.getName() + " got " + player.getHand().toChineseString());
             NotificationCenter.deal2Cards(player.getSession(), player.getUdid() + "," + player.getName() + "," + player.getHand().getGIndexes());
         }
         NotificationCenter.deal2CardsOnAllDevices(activePlayers, actor.getUdid());
@@ -226,6 +227,7 @@ public class Game implements Runnable {
                     player.getHand().addCard(card);
                 }
                 results.add(player);
+//                log.debug(player.getHand().getGIndexes());
             }
         }
         NotificationCenter.show2cards(results, cardsInfo.toString());
@@ -233,6 +235,10 @@ public class Game implements Runnable {
 
         if (results.size() > 1) {
             List<List<Player>> rankedPlayerList = GameUtil.rankPlayers(results);
+            int[] cardsArray = new int[5];
+            for (int i = 0; i < cardsOnTable.size(); i++) {
+                cardsArray[i] = cardsOnTable.get(i).getIndex();
+            }
             for (int i = pot.potsCount() - 1; i >= 0; i--) {
                 StringBuilder sb = new StringBuilder();
                 Map<String, Integer> playersInThisPot = pot.getPotAtIndex(i);
@@ -255,7 +261,7 @@ public class Game implements Runnable {
                         for (Player player : players) {
                             player.addMoney(moneyForEveryOne);
                             PlayerDao.cashBack(player, moneyForEveryOne);
-                            sb.append(player.getUdid()).append(",").append(player.getNameOfBestHand()).append(",").append("2").append(",").append("0_1_2").append(",").append(String.valueOf(moneyForEveryOne)).append(";");
+                            sb.append(player.getUdid()).append(",").append(player.getNameOfBestHand()).append(",").append(String.valueOf(player.getGIndexesForOwnCardsUsedInBestFive())).append(",").append(player.getIndexesForUsedCommunityCardsInBestFive(cardsArray)).append(",").append(String.valueOf(moneyForEveryOne)).append(";");
                             playersInThisPot.remove(player.getUdid());
                             playersListInThisPot.add(player);
                         }
@@ -263,7 +269,7 @@ public class Game implements Runnable {
                         for (String s : playersInThisPot.keySet()) {
                             for (Player player : activePlayers) {
                                 if (player.getUdid().equals(s)) {
-                                    sb.append(player.getUdid()).append(",").append(player.getNameOfBestHand()).append(",").append("2").append(",").append("0_1_2").append(",").append(String.valueOf(0)).append(";");
+                                    sb.append(player.getUdid()).append(",").append(player.getNameOfBestHand()).append(",").append(String.valueOf(player.getGIndexesForOwnCardsUsedInBestFive())).append(",").append(player.getIndexesForUsedCommunityCardsInBestFive(cardsArray)).append(",").append(String.valueOf(0)).append(";");
                                     playersListInThisPot.add(player);
                                     break;
                                 }
