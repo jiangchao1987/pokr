@@ -39,6 +39,7 @@ public class PlayerDao {
         String htmlContent = URLFetchUtil.fetch(Config.webServerBase
                 + "login?udid=" + udid + "&password=" + password + "&source="
                 + source);
+//        log.debug(htmlContent);
         if (htmlContent != null && !htmlContent.trim().isEmpty()) {
             String[] msgs = htmlContent.split(",");
 
@@ -188,8 +189,9 @@ public class PlayerDao {
         if (player.getTotalMoney() > buyIn) {
             player.setMoney(buyIn);
             // minus money
-            updateMoney(player.getUdid(), player.getTotalMoney() - buyIn);
-            player.setTotalMoney(player.getTotalMoney() - buyIn);
+//            updateMoney(player.getUdid(), player.getTotalMoney() - buyIn);
+            log.debug("updatemoney:" + player.getUdid() + ":" + player.getTotalMoney() + "-" + buyIn + "=" + (player.getTotalMoney() - buyIn));
+//            player.setTotalMoney(player.getTotalMoney() - buyIn);
             log.debug(player.getName() + " has buyed in " + player.getMoney());
         } else {
             log.debug(player.getName() + " total:" + player.getTotalMoney());
@@ -198,11 +200,12 @@ public class PlayerDao {
     }
 
     public static void cashBack(Player player, int holding) {
-        if (holding > 0) {
-            Player persistence = queryByUdid(player.getUdid());
-            // plus money
-            updateMoney(player.getUdid(), persistence.getMoney() + holding);
-        }
+        log.debug("cashback:" + player.getUdid() + ":" + holding);
+
+        Player persistence = queryByUdid(player.getUdid());
+        // plus money
+        updateMoney(player.getUdid(), persistence.getTotalMoney() + holding);
+
 
     }
 

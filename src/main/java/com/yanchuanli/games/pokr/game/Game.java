@@ -253,6 +253,7 @@ public class Game implements Runnable {
                         log.debug("total money:" + totalMoney);
 
                         for (Player player : players) {
+                            player.addMoney(moneyForEveryOne);
                             PlayerDao.cashBack(player, moneyForEveryOne);
                             sb.append(player.getUdid()).append(",").append(player.getNameOfBestHand()).append(",").append("2").append(",").append("0_1_2").append(",").append(String.valueOf(moneyForEveryOne)).append(";");
                             playersInThisPot.remove(player.getUdid());

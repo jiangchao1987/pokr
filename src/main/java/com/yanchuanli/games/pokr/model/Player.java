@@ -278,7 +278,7 @@ public class Player {
                 result = Action.BET;
             }
             money -= betThisTime;
-            PlayerDao.cashBack(this, money);
+            PlayerDao.cashBack(this, -betThisTime);
         }
 
 
@@ -396,5 +396,9 @@ public class Player {
 
     public void setBetThisRound(int betThisRound) {
         this.betThisRound = betThisRound;
+    }
+
+    public void addMoney(int reward) {
+        this.money += reward;
     }
 }

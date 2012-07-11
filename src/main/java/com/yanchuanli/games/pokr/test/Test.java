@@ -30,6 +30,14 @@ public class Test {
         for (int i = test.size() - 1; i >= 0; i--) {
             log.debug(test.get(i));
         }
+
+        int a = 10;
+        int b = -15;
+        log.debug(add(a, b));
+    }
+
+    public static int add(int a, int b) {
+        return a + b;
     }
 
 }
