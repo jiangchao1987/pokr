@@ -19,17 +19,17 @@ import java.util.List;
  * Date: 12-6-22
  */
 public class RoomDao {
-	
-	public static void updateCurrentPlayerCount(int roomId, int currentPlayerCount) {
-    	DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME,
-				MongoDB.COLL_ROOM);
 
-		DBObject query = new BasicDBObject();
-		query.put("id", roomId);
+    public static void updateCurrentPlayerCount(int roomId, int currentPlayerCount) {
+        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME,
+                MongoDB.COLL_ROOM);
 
-		DBObject doc = new BasicDBObject().append("$set",
-				new BasicDBObject().append("currentPlayerCount", currentPlayerCount));
-		coll.update(query, doc);
+        DBObject query = new BasicDBObject();
+        query.put("id", roomId);
+
+        DBObject doc = new BasicDBObject().append("$set",
+                new BasicDBObject().append("currentPlayerCount", currentPlayerCount));
+        coll.update(query, doc);
     }
 
     public static void init() {
@@ -53,7 +53,19 @@ public class RoomDao {
             DBObject doc = new BasicDBObject();
             int roomId = Integer.parseInt(level + "000") + i;
             doc.put("id", roomId);
-            doc.put("name", "room" + roomId);
+            switch (i) {
+                case 1:
+                    doc.put("name", "锦衣玉食");
+                    break;
+                case 2:
+                    doc.put("name", "点石成金");
+                    break;
+                default:
+                    doc.put("name", "财源滚滚");
+                    break;
+            }
+
+
             doc.put("smallBlindAmount", 5 * level);
             doc.put("bigBlindAmount", 10 * level);
             doc.put("minHolding", 100 * level);
@@ -98,7 +110,7 @@ public class RoomDao {
 
         return rooms;
     }
-    
+
     public static List<Room> getRooms(int level) {
         return query(level);
     }
