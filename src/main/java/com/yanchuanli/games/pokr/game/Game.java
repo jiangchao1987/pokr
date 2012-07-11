@@ -119,18 +119,18 @@ public class Game implements Runnable {
 
         // pre flop betting round
         // deal 3 flp cards on the table
-        if (activePlayers.size() > 1) {
+        if (activePlayers.size() > 1 && !stop) {
             deal3FlipCards();
             doBettingRound(false);
             // flop the betting round
             // deal the turn card (4th) on the table
-            if (activePlayers.size() > 1) {
+            if (activePlayers.size() > 1 && !stop) {
                 dealTurnCard();
                 doBettingRound(false);
-                if (activePlayers.size() > 1) {
+                if (activePlayers.size() > 1 && !stop) {
                     dealRiverCard();
                     doBettingRound(false);
-                    if (activePlayers.size() > 1) {
+                    if (activePlayers.size() > 1 && !stop) {
                         bet = 0;
                         showdown();
                     }
@@ -220,6 +220,7 @@ public class Game implements Runnable {
         List<Player> results = new ArrayList<>();
 
         StringBuilder cardsInfo = new StringBuilder();
+
         for (Player player : activePlayers) {
             if (player.isAlive()) {
                 cardsInfo.append(player.getUdid()).append(",").append(player.getHand().getGIndexes()).append(";");
@@ -227,9 +228,9 @@ public class Game implements Runnable {
                     player.getHand().addCard(card);
                 }
                 results.add(player);
-//                log.debug(player.getHand().getGIndexes());
             }
         }
+        log.debug("show2cards:" + cardsInfo.toString());
         NotificationCenter.show2cards(results, cardsInfo.toString());
 
 
@@ -289,16 +290,14 @@ public class Game implements Runnable {
         } else {
             if (results.size() == 1) {
                 Player player1 = results.get(0);
-                if (player1.getHand().size() < 5) {
-
-                } else {
-                    player1.setBestHand(handEval.getBest5CardHand(player1.getHand()));
-                    player1.setNameOfBestHand(HandEvaluator.nameHandInChinese(player1.getBestHand()));
-                }
-            } else {
-
+                StringBuilder sb = new StringBuilder();
+                player1.addMoney(pot.getMoney());
+                PlayerDao.cashBack(player1, pot.getMoney());
+                sb.append(player1.getUdid()).append(",").append("").append(",").append("").append(",").append("").append(",").append(String.valueOf(pot.getMoney())).append(";");
+                List<Player> playersListInThisPot = new ArrayList<>();
+                playersListInThisPot.add(player1);
+                NotificationCenter.winorlose(playersListInThisPot, sb.toString());
             }
-
         }
 
 
@@ -332,7 +331,7 @@ public class Game implements Runnable {
             player.setBetThisRound(0);
         }
 
-        while (playersToAct > 0) {
+        while (playersToAct > 0 && !stop) {
             //rotate the actor
             try {
                 playersToAct--;
@@ -582,6 +581,7 @@ public class Game implements Runnable {
         for (Player aplayer : activePlayers) {
             if (aplayer.getUdid().equals(player.getUdid())) {
                 activePlayers.remove(aplayer);
+                log.debug(player.getName() + " has left the room " + gc.getName());
                 RoomDao.updateCurrentPlayerCount(gc.getId(), activePlayers.size());
                 break;
             }
@@ -590,9 +590,12 @@ public class Game implements Runnable {
         for (Player aplayer : availablePlayers) {
             if (aplayer.getUdid().equals(player.getUdid())) {
                 availablePlayers.remove(aplayer);
+                log.debug(player.getName() + " has left the room " + gc.getName());
                 RoomDao.updateCurrentPlayerCount(gc.getId(), availablePlayers.size());
                 break;
             }
         }
+
+
     }
 }
