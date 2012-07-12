@@ -64,6 +64,8 @@ public class Game implements Runnable {
         activePlayers = new CopyOnWriteArrayList<>();
         availablePlayers = new CopyOnWriteArrayList<>();
         allPlayersInGame = new HashMap<>();
+        allWinningUsers = new HashSet<>();
+
         waitingPlayers = new HashMap<>();
         cardsOnTable = new ArrayList<>();
         pot = new Pot();
@@ -265,6 +267,7 @@ public class Game implements Runnable {
                             player.addMoney(moneyForEveryOne);
                             PlayerDao.cashBack(player, moneyForEveryOne);
                             PlayerDao.updateMaxWin(player.getUdid(), moneyForEveryOne);
+                            allWinningUsers.add(player.getUdid());
                             sb.append(player.getUdid()).append(",").append(player.getNameOfBestHand()).append(",").append(String.valueOf(player.getGIndexesForOwnCardsUsedInBestFive())).append(",").append(player.getIndexesForUsedCommunityCardsInBestFive(cardsArray)).append(",").append(String.valueOf(moneyForEveryOne)).append(";");
                             playersInThisPot.remove(player.getUdid());
                             playersListInThisPot.add(player);
@@ -289,6 +292,17 @@ public class Game implements Runnable {
                 } catch (InterruptedException e) {
                     log.error(ExceptionUtils.getStackTrace(e));
                 }
+
+                for (String s : allPlayersInGame.keySet()) {
+                    Player player = allPlayersInGame.get(s);
+                    if (allPlayersInGame.containsKey(s)) {
+                        PlayerDao.updateWinCount(player);
+                    } else {
+                        if (player.inRoom(gc.getId()) && player.isAlive()) {
+                            PlayerDao.updateLoseCount(player);
+                        }
+                    }
+                }
             }
         } else {
             if (results.size() == 1) {
@@ -296,6 +310,7 @@ public class Game implements Runnable {
                 StringBuilder sb = new StringBuilder();
                 player1.addMoney(pot.getMoney());
                 PlayerDao.cashBack(player1, pot.getMoney());
+                PlayerDao.updateWinCount(player1);
                 sb.append(player1.getUdid()).append(",").append("").append(",").append("").append(",").append("").append(",").append(String.valueOf(pot.getMoney())).append(";");
                 List<Player> playersListInThisPot = new ArrayList<>();
                 playersListInThisPot.add(player1);
@@ -316,6 +331,7 @@ public class Game implements Runnable {
         cardsOnTable.clear();
         activePlayers.clear();
         allPlayersInGame.clear();
+        allWinningUsers.clear();
         pot.clear();
 
         for (Player player : availablePlayers) {
@@ -584,6 +600,7 @@ public class Game implements Runnable {
     public void removePlayer(Player player) {
         for (Player aplayer : activePlayers) {
             if (aplayer.getUdid().equals(player.getUdid())) {
+                player.setRoomid(Integer.MIN_VALUE);
                 activePlayers.remove(aplayer);
                 log.debug(player.getName() + " has left the room " + gc.getName());
                 RoomDao.updateCurrentPlayerCount(gc.getId(), activePlayers.size());
@@ -594,6 +611,7 @@ public class Game implements Runnable {
         for (Player aplayer : availablePlayers) {
             if (aplayer.getUdid().equals(player.getUdid())) {
                 availablePlayers.remove(aplayer);
+                player.setRoomid(Integer.MIN_VALUE);
                 log.debug(player.getName() + " has left the room " + gc.getName());
                 RoomDao.updateCurrentPlayerCount(gc.getId(), availablePlayers.size());
                 break;
