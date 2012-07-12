@@ -194,11 +194,9 @@ public class PlayerDao {
 
     public static void cashBack(Player player, int holding) {
         log.debug("cashback:" + player.getUdid() + ":" + holding);
-
         Player persistence = queryByUdid(player.getUdid());
         // plus money
         updateMoney(player.getUdid(), persistence.getTotalMoney() + holding);
-
 
     }
 
