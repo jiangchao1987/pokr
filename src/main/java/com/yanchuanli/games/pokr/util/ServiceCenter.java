@@ -194,7 +194,7 @@ public class ServiceCenter {
                 + player.getHistoricalBestHandRank() + ","
                 + player.getHistoricalBestHand() + "," + player.getMaxWin()
                 + "," + player.getCustomAvatar() + "," + player.getAvatar()
-                + "," + player.getSex() + "," + player.getAddress());
+                + "," + player.getSex() + "," + player.getAddress() + "," + player.getCurrentLevel());
         NotificationCenter.login(session, sb.toString());
 
     }

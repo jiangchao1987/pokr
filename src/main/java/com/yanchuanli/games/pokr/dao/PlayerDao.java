@@ -46,15 +46,16 @@ public class PlayerDao {
             Player player = new Player(msgs[0], msgs[1]);
             player.setTotalMoney(Integer.parseInt(msgs[2]));
             player.setExp(Integer.parseInt(msgs[3]));
-            player.setWinCount(Integer.parseInt(msgs[4]));
-            player.setLoseCount(Integer.parseInt(msgs[5]));
-            player.setHistoricalBestHandRank(Integer.parseInt(msgs[6]));
-            player.setHistoricalBestHand(msgs[7]);
-            player.setMaxWin(Integer.parseInt(msgs[8]));
-            player.setCustomAvatar(Integer.parseInt(msgs[9]));
-            player.setAvatar(msgs[10]);
-            player.setSex(Integer.parseInt(msgs[11]));
-            player.setAddress(msgs[12]);
+            player.setCurrentLevel(Integer.parseInt(msgs[4]));
+            player.setWinCount(Integer.parseInt(msgs[5]));
+            player.setLoseCount(Integer.parseInt(msgs[6]));
+            player.setHistoricalBestHandRank(Integer.parseInt(msgs[7]));
+            player.setHistoricalBestHand(msgs[8]);
+            player.setMaxWin(Integer.parseInt(msgs[9]));
+            player.setCustomAvatar(Integer.parseInt(msgs[10]));
+            player.setAvatar(msgs[11]);
+            player.setSex(Integer.parseInt(msgs[12]));
+            player.setAddress(msgs[13]);
             players.put(udid, player);
         }
         return players.get(udid);
