@@ -67,15 +67,10 @@ public class PlayerDao {
      * @param winCount
      */
     public static void updateWinCount(String udid, int winCount) {
-        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME,
-                MongoDB.COLL_USER);
-
-        DBObject query = new BasicDBObject();
-        query.put("udid", udid);
-
-        DBObject doc = new BasicDBObject().append("$set",
-                new BasicDBObject().append("win", winCount).append("update", TimeUtil.unixtime()));
-        coll.update(query, doc);
+        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
+        DBObject searchQuery = new BasicDBObject("udid", udid);
+        DBObject incQuery = new BasicDBObject("$inc", new BasicDBObject("win", winCount));
+        coll.update(searchQuery, incQuery);
     }
 
     /**
@@ -85,15 +80,10 @@ public class PlayerDao {
      * @param loseCount
      */
     public static void updateLoseCount(String udid, int loseCount) {
-        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME,
-                MongoDB.COLL_USER);
-
-        DBObject query = new BasicDBObject();
-        query.put("udid", udid);
-
-        DBObject doc = new BasicDBObject().append("$set",
-                new BasicDBObject().append("lose", loseCount).append("update", TimeUtil.unixtime()));
-        coll.update(query, doc);
+        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
+        DBObject searchQuery = new BasicDBObject("udid", udid);
+        DBObject incQuery = new BasicDBObject("$inc", new BasicDBObject("lose", loseCount));
+        coll.update(searchQuery, incQuery);
     }
 
     /**

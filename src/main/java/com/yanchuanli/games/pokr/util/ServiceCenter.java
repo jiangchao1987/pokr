@@ -180,8 +180,10 @@ public class ServiceCenter {
      * @param info    udid,password,source[0|1|...]
      */
     private void login(IoSession session, String info) {
+
         String[] msgs = info.split(",");
         Player player = PlayerDao.getPlayer(msgs[0], msgs[1], Integer.parseInt(msgs[2]));
+        log.debug(player.getName() + " has logged in ...");
         player.setSession(session);
         Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);
 
@@ -194,6 +196,8 @@ public class ServiceCenter {
                 + "," + player.getCustomAvatar() + "," + player.getAvatar()
                 + "," + player.getSex() + "," + player.getAddress());
         NotificationCenter.login(session, sb.toString());
+
+        PlayerDao.updateWinCount(player.getUdid(), 1);
     }
 
     private void createRoom() {
