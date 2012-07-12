@@ -56,6 +56,7 @@ public class PlayerDao {
             player.setAvatar(msgs[11]);
             player.setSex(Integer.parseInt(msgs[12]));
             player.setAddress(msgs[13]);
+            player.setRoomid(Integer.MIN_VALUE);
             players.put(udid, player);
         }
         return players.get(udid);
@@ -171,6 +172,7 @@ public class PlayerDao {
             player.setAvatar((String) obj.get("face"));
             player.setSex((Integer) obj.get("sex"));
             player.setAddress((String) obj.get("address"));
+            player.setRoomid(Integer.MIN_VALUE);
         }
 
         return player;
