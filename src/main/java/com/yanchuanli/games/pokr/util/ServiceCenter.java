@@ -197,7 +197,6 @@ public class ServiceCenter {
                 + "," + player.getSex() + "," + player.getAddress());
         NotificationCenter.login(session, sb.toString());
 
-        PlayerDao.updateWinCount(player.getUdid(), 1);
     }
 
     private void createRoom() {

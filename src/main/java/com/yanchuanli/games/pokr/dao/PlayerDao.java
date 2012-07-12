@@ -63,27 +63,27 @@ public class PlayerDao {
     /**
      * 更新赢的次数
      *
-     * @param udid
-     * @param winCount
+     * @param player
      */
-    public static void updateWinCount(String udid, int winCount) {
+    public static void updateWinCount(Player player) {
         DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
-        DBObject searchQuery = new BasicDBObject("udid", udid);
-        DBObject incQuery = new BasicDBObject("$inc", new BasicDBObject("win", winCount));
+        DBObject searchQuery = new BasicDBObject("udid", player.getUdid());
+        DBObject incQuery = new BasicDBObject("$inc", new BasicDBObject("win", 1));
         coll.update(searchQuery, incQuery);
+        player.setWinCount(player.getWinCount() + 1);
     }
 
     /**
      * 更新输的次数
      *
-     * @param udid
-     * @param loseCount
+     * @param player
      */
-    public static void updateLoseCount(String udid, int loseCount) {
+    public static void updateLoseCount(Player player) {
         DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
-        DBObject searchQuery = new BasicDBObject("udid", udid);
-        DBObject incQuery = new BasicDBObject("$inc", new BasicDBObject("lose", loseCount));
+        DBObject searchQuery = new BasicDBObject("udid", player.getUdid());
+        DBObject incQuery = new BasicDBObject("$inc", new BasicDBObject("lose", 1));
         coll.update(searchQuery, incQuery);
+        player.setLoseCount(player.getLoseCount() + 1);
     }
 
     /**
