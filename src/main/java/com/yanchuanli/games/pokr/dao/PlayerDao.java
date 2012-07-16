@@ -46,15 +46,17 @@ public class PlayerDao {
             Player player = new Player(msgs[0], msgs[1]);
             player.setTotalMoney(Integer.parseInt(msgs[2]));
             player.setExp(Integer.parseInt(msgs[3]));
-            player.setWinCount(Integer.parseInt(msgs[4]));
-            player.setLoseCount(Integer.parseInt(msgs[5]));
-            player.setHistoricalBestHandRank(Integer.parseInt(msgs[6]));
-            player.setHistoricalBestHand(msgs[7]);
-            player.setMaxWin(Integer.parseInt(msgs[8]));
-            player.setCustomAvatar(Integer.parseInt(msgs[9]));
-            player.setAvatar(msgs[10]);
-            player.setSex(Integer.parseInt(msgs[11]));
-            player.setAddress(msgs[12]);
+            player.setCurrentLevel(Integer.parseInt(msgs[4]));
+            player.setWinCount(Integer.parseInt(msgs[5]));
+            player.setLoseCount(Integer.parseInt(msgs[6]));
+            player.setHistoricalBestHandRank(Integer.parseInt(msgs[7]));
+            player.setHistoricalBestHand(msgs[8]);
+            player.setMaxWin(Integer.parseInt(msgs[9]));
+            player.setCustomAvatar(Integer.parseInt(msgs[10]));
+            player.setAvatar(msgs[11]);
+            player.setSex(Integer.parseInt(msgs[12]));
+            player.setAddress(msgs[13]);
+            player.setRoomid(Integer.MIN_VALUE);
             players.put(udid, player);
         }
         return players.get(udid);
@@ -63,37 +65,27 @@ public class PlayerDao {
     /**
      * 更新赢的次数
      *
-     * @param udid
-     * @param winCount
+     * @param player
      */
-    public static void updateWinCount(String udid, int winCount) {
-        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME,
-                MongoDB.COLL_USER);
-
-        DBObject query = new BasicDBObject();
-        query.put("udid", udid);
-
-        DBObject doc = new BasicDBObject().append("$set",
-                new BasicDBObject().append("win", winCount).append("update", TimeUtil.unixtime()));
-        coll.update(query, doc);
+    public static void updateWinCount(Player player) {
+        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
+        DBObject searchQuery = new BasicDBObject("udid", player.getUdid());
+        DBObject incQuery = new BasicDBObject("$inc", new BasicDBObject("win", 1));
+        coll.update(searchQuery, incQuery);
+        player.setWinCount(player.getWinCount() + 1);
     }
 
     /**
      * 更新输的次数
      *
-     * @param udid
-     * @param loseCount
+     * @param player
      */
-    public static void updateLoseCount(String udid, int loseCount) {
-        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME,
-                MongoDB.COLL_USER);
-
-        DBObject query = new BasicDBObject();
-        query.put("udid", udid);
-
-        DBObject doc = new BasicDBObject().append("$set",
-                new BasicDBObject().append("lose", loseCount).append("update", TimeUtil.unixtime()));
-        coll.update(query, doc);
+    public static void updateLoseCount(Player player) {
+        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
+        DBObject searchQuery = new BasicDBObject("udid", player.getUdid());
+        DBObject incQuery = new BasicDBObject("$inc", new BasicDBObject("lose", 1));
+        coll.update(searchQuery, incQuery);
+        player.setLoseCount(player.getLoseCount() + 1);
     }
 
     /**
@@ -180,6 +172,7 @@ public class PlayerDao {
             player.setAvatar((String) obj.get("face"));
             player.setSex((Integer) obj.get("sex"));
             player.setAddress((String) obj.get("address"));
+            player.setRoomid(Integer.MIN_VALUE);
         }
 
         return player;
@@ -201,11 +194,9 @@ public class PlayerDao {
 
     public static void cashBack(Player player, int holding) {
         log.debug("cashback:" + player.getUdid() + ":" + holding);
-
         Player persistence = queryByUdid(player.getUdid());
         // plus money
         updateMoney(player.getUdid(), persistence.getTotalMoney() + holding);
-
 
     }
 
