@@ -105,7 +105,7 @@ public class Game implements Runnable {
     }
 
 
-    public void start() {
+    private void start() {
 
         reset();
         // notify every player in game about others
@@ -155,7 +155,7 @@ public class Game implements Runnable {
     }
 
     private void rotateDealer() {
-        dealerPosition = dealerPosition++ % activePlayers.size();
+        dealerPosition = (dealerPosition + 1) % activePlayers.size();
         actorPosition = dealerPosition;
         Player dealer = activePlayers.get(actorPosition);
 
@@ -333,6 +333,7 @@ public class Game implements Runnable {
         allPlayersInGame.clear();
         allWinningUsers.clear();
         pot.clear();
+        bet = 0;
 
         for (Player player : availablePlayers) {
             player.reset();

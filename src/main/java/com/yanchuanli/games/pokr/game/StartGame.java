@@ -34,7 +34,7 @@ public class StartGame {
         game.addPlayer(player1);
         game.addPlayer(player2);
         game.addPlayer(player3);
-        game.start();
+
     }
 
 
