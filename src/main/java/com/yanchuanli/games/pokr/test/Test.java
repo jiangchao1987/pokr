@@ -1,5 +1,9 @@
 package com.yanchuanli.games.pokr.test;
 
+import com.yanchuanli.games.pokr.model.Action;
+import com.yanchuanli.games.pokr.model.Pot;
+import com.yanchuanli.games.pokr.model.Record;
+import com.yanchuanli.games.pokr.util.Config;
 import org.apache.log4j.Logger;
 import sun.misc.BASE64Encoder;
 
@@ -32,7 +36,28 @@ public class Test {
 
     public static void main(String[] args) throws IOException {
 
-        verifyIAP();
+        String a="a";
+        String b="b";
+        String c="c";
+        Pot pot=new Pot();
+        Record record1=new Record(a, Config.ACTION_TYPE_SMALL_BLIND,5);
+        Record record2=new Record(b, Config.ACTION_TYPE_BIG_BLIND,10);
+        Record record3=new Record(c, Config.ACTION_TYPE_CALL,10);
+        Record record4=new Record(a, Config.ACTION_TYPE_CALL,5);
+        pot.addRecord(record1);
+        pot.addRecord(record2);
+        pot.addRecord(record3);
+        pot.addRecord(record4);
+//        pot.buildPotList();
+        Record record5=new Record(a, Config.ACTION_TYPE_ALL_IN,50);
+        Record record6=new Record(b, Config.ACTION_TYPE_ALL_IN,50);
+        Record record7=new Record(c, Config.ACTION_TYPE_ALL_IN,20);
+        pot.addRecord(record5);
+        pot.addRecord(record6);
+        pot.addRecord(record7);
+        pot.buildPotList();
+        pot.finish();
+
     }
 
     public static void verifyIAP() {
