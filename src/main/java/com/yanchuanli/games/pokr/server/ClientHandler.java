@@ -39,7 +39,6 @@ public class ClientHandler extends IoHandlerAdapter {
             IoBuffer buffer = (IoBuffer) message;
 
 
-
             List<Map<Integer, String>> list = Util.ioBufferToString(session.getId(), buffer);
             for (Map<Integer, String> map : list) {
                 for (Integer key : map.keySet()) {
@@ -86,7 +85,7 @@ public class ClientHandler extends IoHandlerAdapter {
 
     @Override
     public void sessionClosed(IoSession session) throws Exception {
-//        log.info("sessionClosed");
+        log.info("sessionClosed");
         super.sessionClosed(session);
         Memory.sessionsOnClient.remove(String.valueOf(session.getId()));
     }

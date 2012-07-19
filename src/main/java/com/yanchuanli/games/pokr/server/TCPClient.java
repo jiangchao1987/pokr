@@ -26,60 +26,49 @@ public class TCPClient {
         connector.setHandler(new ClientHandler());
 
         DefaultIoFilterChainBuilder chain = connector.getFilterChain();
-//        chain.addLast("codec", new ProtocolCodecFilter(new TextLineCodecFactory()));
 
         log.debug("connecing to the server...");
         ConnectFuture connFuture = connector.connect(new InetSocketAddress(Config.serverAddress, Config.port));
         //等待连接成功
         connFuture.awaitUninterruptibly();
-        if (connFuture.isConnected()) {
-            log.debug("connected ...");
-            Scanner scanner = new Scanner(System.in);
-            String input = scanner.nextLine();
-            while (!input.equalsIgnoreCase("quit")) {
-                log.info("INPUT:" + input);
+        log.debug("connected ...");
+        Scanner scanner = new Scanner(System.in);
+        String input = "";
 
-                /*String[] strings = input.split("\\|");
 
-              for (String s : Memory.sessionsOnClient.keySet()) {
-                  log.info("session:" + s);
-//                    Util.sendMessage(Memory.sessionsOnClient.get(s), input);
-                  Util.sendMsg(Memory.sessionsOnClient.get(s), strings[0], Integer.parseInt(strings[1]));
-              }
-              input = scanner.nextLine();*/
 
-                if (input.startsWith("c")) {
-                    sendToServer(input, 5);
-                } else if (input.startsWith("f")) {
-                    sendToServer(input, 5);
-                } else if (input.startsWith("ca")) {
-                    sendToServer(input, 5);
-                } else if (input.startsWith("r")) {
-                    sendToServer(input, 5);
-                } else if (input.startsWith("a")) {
-                    sendToServer(input, 5);
-                } else if (input.startsWith("j")) {
-                    String[] cmds = input.split(":");
-                    sendToServer(cmds[1], 3);
-                } else if (input.startsWith("sb")) {
-                    sendToServer(input.split(":")[1], 4);
-                } else if (input.startsWith("li")) {
-                    sendToServer(String.valueOf(Config.ROOM_LEVEL_BEGINNER), 2);
-                } else if (input.startsWith("l")) {
-//                    sendToServer(String.valueOf((int) (Math.random() * 10000)) + "," + Config.SRC_IPHONE_GUEST, 0);
-                    // eg:   l:jiangchao  [udid, password, souce]
-                    sendToServer(input.split(":")[1] + "," + input.split(":")[1] + "123," + Config.SRC_IPHONE_GUEST, 0);
-                    sendToServer("1001", 3);
-                    sendToServer("1001", 4);
-                } else if (input.startsWith("s")) {
-                    // eg: s:jiangchao
-                    sendToServer("1001," + input.split(":")[1] + ",ban ge tong kuai!", 17);
-                }
+        while (connFuture.isConnected() && connFuture.getSession().isConnected()) {
+            input = scanner.nextLine();
 
-                input = scanner.nextLine();
+            log.info("INPUT:" + input);
+
+            if (input.startsWith("c")) {
+                sendToServer(input, 5);
+            } else if (input.startsWith("f")) {
+                sendToServer(input, 5);
+            } else if (input.startsWith("ca")) {
+                sendToServer(input, 5);
+            } else if (input.startsWith("r")) {
+                sendToServer(input, 5);
+            } else if (input.startsWith("a")) {
+                sendToServer(input, 5);
+            } else if (input.startsWith("j")) {
+                String[] cmds = input.split(":");
+                sendToServer(cmds[1], 3);
+            } else if (input.startsWith("sb")) {
+                sendToServer(input.split(":")[1], 4);
+            } else if (input.startsWith("li")) {
+                sendToServer(String.valueOf(Config.ROOM_LEVEL_BEGINNER), 2);
+            } else if (input.startsWith("l")) {
+                sendToServer(input.split(":")[1] + "," + input.split(":")[1] + "123," + Config.SRC_IPHONE_GUEST, 0);
+                sendToServer("1001", 3);
+                sendToServer("1001", 4);
+            } else if (input.startsWith("s")) {
+                // eg: s:jiangchao
+                sendToServer("1001," + input.split(":")[1] + ",ban ge tong kuai!", 17);
             }
-        } else {
-            log.debug("not connected");
+
+
         }
     }
 
