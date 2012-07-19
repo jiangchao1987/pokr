@@ -61,12 +61,19 @@ public class Pot {
                 }
             }
         }
+
     }
 
     public void buildPotList() {
+        log.debug("buildPotList");
+        log.debug("currentPot:" + currentPot);
+        log.debug("currentAllInPlayers:"+currentAllInPlayers);
         Collections.sort(currentAllInPlayers, comparator);
+        log.debug("currentAllInPlayers:"+currentAllInPlayers);
         for (int i = 0; i < currentAllInPlayers.size(); i++) {
             String minAllInPlayer = currentAllInPlayers.get(i).getUdid();
+            log.debug("minAllInPlayer:" + minAllInPlayer);
+            log.debug(currentPot);
             int minBet = currentPot.get(minAllInPlayer);
             Map<String, Integer> smallPot = new HashMap<>();
             Iterator<String> it = currentPot.keySet().iterator();

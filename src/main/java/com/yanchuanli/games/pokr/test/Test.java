@@ -1,6 +1,5 @@
 package com.yanchuanli.games.pokr.test;
 
-import com.yanchuanli.games.pokr.model.Action;
 import com.yanchuanli.games.pokr.model.Pot;
 import com.yanchuanli.games.pokr.model.Record;
 import com.yanchuanli.games.pokr.util.Config;
@@ -48,9 +47,9 @@ public class Test {
         pot.addRecord(record2);
         pot.addRecord(record3);
         pot.addRecord(record4);
-//        pot.buildPotList();
+        pot.buildPotList();
         Record record5=new Record(a, Config.ACTION_TYPE_ALL_IN,50);
-        Record record6=new Record(b, Config.ACTION_TYPE_ALL_IN,50);
+        Record record6=new Record(b, Config.ACTION_TYPE_ALL_IN,30);
         Record record7=new Record(c, Config.ACTION_TYPE_ALL_IN,20);
         pot.addRecord(record5);
         pot.addRecord(record6);
