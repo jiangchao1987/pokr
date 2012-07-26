@@ -91,12 +91,14 @@ public class Game implements Runnable {
         NotificationCenter.respondToPrepareToEnter(player.getSession(), sb.toString());
     }
 
-    public void addPlayer(Player player) {
-        if (activePlayers.size() + waitingPlayers.size() <= gc.getMaxPlayersCount()) {
+    public boolean buyIn(Player player, int amount) {
+        return PlayerDao.buyIn(player, amount);
+    }
+
+    public synchronized void sitDown(Player player) {
+        if (activePlayers.size() < gc.getMaxPlayersCount()) {
             waitingPlayers.remove(player.getUdid());
             activePlayers.add(player);
-            PlayerDao.buyIn(player, 10000);
-            log.debug("money now:" + player.getMoney());
         } else {
             NotificationCenter.sitDownFailed(player);
         }
@@ -568,9 +570,9 @@ public class Game implements Runnable {
                         log.error(ExceptionUtils.getStackTrace(e));
                     }
                     start();
-                }else{
-                    log.debug("activeplayers:"+activePlayers.size());
-                    log.debug("waitingplayers:"+waitingPlayers.size());
+                } else {
+                    log.debug("activeplayers:" + activePlayers.size());
+                    log.debug("waitingplayers:" + waitingPlayers.size());
                 }
                 try {
                     Thread.sleep(gc.getGameCheckInterval().inMillis());

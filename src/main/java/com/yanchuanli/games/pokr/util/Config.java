@@ -40,6 +40,8 @@ public class Config {
     public static final int TYPE_SITDOWNFAILED = 21;
     public static final int TYPE_BUYIN_INGAME = 22;
 
+    public static final int RESULT_BUYINSUCCESS = 1;
+
     public static final int GAMEINFO_NOTSTARTED = 0;
 
     public static final int SRC_IPHONE_GUEST = 0;
