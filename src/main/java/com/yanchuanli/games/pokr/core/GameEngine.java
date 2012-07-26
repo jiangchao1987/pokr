@@ -43,7 +43,7 @@ public void handle(Signal sig) {
 
         RoomDao.init();
         games = new HashMap<Integer, Game>();
-        List<Room> roomsToPrepare = RoomDao.getRooms(Config.ROOM_LEVEL_BEGINNER);
+        List<Room> roomsToPrepare = RoomDao.getRooms(Config.NORMAL_ROOM_LEVEL_BEGINNER);
         pool = Executors.newFixedThreadPool(roomsToPrepare.size());
 
         for (Room room : roomsToPrepare) {

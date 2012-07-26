@@ -34,10 +34,15 @@ public class RoomDao {
 
     public static void init() {
         delete();
-        insert(Config.ROOM_LEVEL_BEGINNER);
-        insert(Config.ROOM_LEVEL_MASTER);
-        insert(Config.ROOM_LEVEL_PROFESSIONAL);
-        insert(Config.ROOM_LEVEL_VIP);
+        insertNormal(Config.NORMAL_ROOM_LEVEL_BEGINNER);
+        insertNormal(Config.NORMAL_ROOM_LEVEL_MASTER);
+        insertNormal(Config.NORMAL_ROOM_LEVEL_PROFESSIONAL);
+        insertNormal(Config.NORMAL_ROOM_LEVEL_VIP);
+        
+        insertFast(Config.FAST_ROOM_LEVEL_BEGINNER);
+        insertFast(Config.FAST_ROOM_LEVEL_MASTER);
+        insertFast(Config.FAST_ROOM_LEVEL_PROFESSIONAL);
+        insertFast(Config.FAST_ROOM_LEVEL_VIP);
     }
 
     private static void delete() {
@@ -46,7 +51,7 @@ public class RoomDao {
         coll.remove(new BasicDBObject());
     }
 
-    private static void insert(int level) {
+    private static void insertNormal(int level) {
         DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_ROOM);
 
         for (int i = 1; i < 4; i++) {
@@ -74,6 +79,40 @@ public class RoomDao {
             doc.put("currentPlayerCount", 0);
             doc.put("level", level);
             doc.put("bettingDuration", 30000);
+            doc.put("inactivityCheckInterval", 500);
+            doc.put("gameCheckInterval", 3000);
+            coll.insert(doc);
+        }
+    }
+    
+    private static void insertFast(int level) {
+        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_ROOM);
+
+        for (int i = 1; i < 4; i++) {
+            DBObject doc = new BasicDBObject();
+            int roomId = Integer.parseInt(level + "000") + i;
+            doc.put("id", roomId);
+            switch (i) {
+                case 1:
+                    doc.put("name", "锦衣玉食");
+                    break;
+                case 2:
+                    doc.put("name", "点石成金");
+                    break;
+                default:
+                    doc.put("name", "财源滚滚");
+                    break;
+            }
+
+
+            doc.put("smallBlindAmount", 100 * level);
+            doc.put("bigBlindAmount", 200 * level);
+            doc.put("minHolding", 100 * level);
+            doc.put("maxHolding", 10000  * level);
+            doc.put("maxPlayersCount", 9);
+            doc.put("currentPlayerCount", 0);
+            doc.put("level", level);
+            doc.put("bettingDuration", 15000);
             doc.put("inactivityCheckInterval", 500);
             doc.put("gameCheckInterval", 3000);
             coll.insert(doc);

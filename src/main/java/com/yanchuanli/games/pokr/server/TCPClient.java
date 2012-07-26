@@ -58,7 +58,7 @@ public class TCPClient {
             } else if (input.startsWith("sb")) {
                 sendToServer(input.split(":")[1], 4);
             } else if (input.startsWith("li")) {
-                sendToServer(String.valueOf(Config.ROOM_LEVEL_BEGINNER), 2);
+                sendToServer(String.valueOf(Config.NORMAL_ROOM_LEVEL_BEGINNER), 2);
             } else if (input.startsWith("l")) {
                 sendToServer(input.split(":")[1] + "," + input.split(":")[1] + "123," + Config.SRC_IPHONE_GUEST, 0);
                 sendToServer("1001", 3);
@@ -66,6 +66,9 @@ public class TCPClient {
             } else if (input.startsWith("s")) {
                 // eg: s:jiangchao
                 sendToServer("1001," + input.split(":")[1] + ",ban ge tong kuai!", 17);
+            } else if (input.startsWith("b")) {
+            	// eg: b:jiangchao
+            	sendToServer("1001," + input.split(":")[1] + ",10000", 22);
             }
 
 
