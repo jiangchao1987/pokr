@@ -141,7 +141,7 @@ public class ServiceCenter {
     private void join(IoSession session, String info) {
         Game game = GameEngine.getGame(Integer.parseInt(info));
         Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
-        game.prepareToJoin(newplayer);
+        game.enterRoom(newplayer);
 
 
     }
