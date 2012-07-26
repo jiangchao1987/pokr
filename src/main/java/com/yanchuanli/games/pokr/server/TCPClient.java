@@ -42,18 +42,18 @@ public class TCPClient {
             log.info("INPUT:" + input);
 
             if (input.startsWith("c")) {
-                sendToServer(input, 5);
+                sendToServer(input, Config.TYPE_ACTION_INGAME);
             } else if (input.startsWith("f")) {
-                sendToServer(input, 5);
+                sendToServer(input, Config.TYPE_ACTION_INGAME);
             } else if (input.startsWith("ca")) {
-                sendToServer(input, 5);
+                sendToServer(input, Config.TYPE_ACTION_INGAME);
             } else if (input.startsWith("r")) {
-                sendToServer(input, 5);
+                sendToServer(input, Config.TYPE_ACTION_INGAME);
             } else if (input.startsWith("a")) {
-                sendToServer(input, 5);
+                sendToServer(input, Config.TYPE_ACTION_INGAME);
             } else if (input.startsWith("j")) {
                 String[] cmds = input.split(":");
-                sendToServer(cmds[1], 3);
+                sendToServer(cmds[1], Config.TYPE_JOIN_INGAME);
             } else if (input.startsWith("sb")) {
                 sendToServer("1001", Config.TYPE_USERSTANDBY_INGAME);
             } else if (input.startsWith("li")) {
