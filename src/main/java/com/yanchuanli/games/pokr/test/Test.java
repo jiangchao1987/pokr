@@ -51,7 +51,7 @@ public class Test {
         Record record8 = new Record(d, Config.ACTION_TYPE_RAISE, 30);
         Record record9 = new Record(e, Config.ACTION_TYPE_CALL, 30);
         Record record10 = new Record(a, Config.ACTION_TYPE_CALL, 20);
-        Record record11 = new Record(b, Config.ACTION_TYPE_RAISE, 20);
+        Record record11 = new Record(b, Config.ACTION_TYPE_CALL, 20);
 
 
         pot.addRecord(record1);

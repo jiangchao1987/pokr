@@ -36,7 +36,7 @@ public class Game implements Runnable {
     private List<Player> activePlayers;
     //可以进入游戏的用户
     private List<Player> availablePlayers;
-    //进入房间了的用户
+    //进入房间了站着的用户
     private Map<String, Player> waitingPlayers;
     //本次游戏的所有用户
     private Map<String, Player> allPlayersInGame;
@@ -214,7 +214,7 @@ public class Game implements Runnable {
         NotificationCenter.dealRiverCard(activePlayers, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
     }
 
-    private void showdown() {
+    private void  showdown() {
 
         log.debug("showdown ...");
 
@@ -323,6 +323,8 @@ public class Game implements Runnable {
         }
 
 
+
+
         results.clear();
         gaming = false;
     }
@@ -341,7 +343,6 @@ public class Game implements Runnable {
 
         for (Player player : availablePlayers) {
             player.reset();
-
         }
         log.debug("Game has been resetted ...");
     }
@@ -596,6 +597,8 @@ public class Game implements Runnable {
                 availablePlayers.remove(player);
             }
         }
+
+
     }
 
     public void removePlayer(Player player) {

@@ -15,19 +15,19 @@ public class Pot {
 
     private int money;
     private List<Map<String, Integer>> pots;
+    private Map<String, Integer> currentFoldPlayers;
     private Map<String, Integer> currentPot;
     private List<Record> currentAllInPlayers;
-    private int moneyOfFoldPlayers;
     private List<Integer> moneyListOfFoldPlayers;
     private RecordComparator comparator;
     private static Logger log = Logger.getLogger(Pot.class);
 
     public Pot() {
         money = 0;
-        moneyOfFoldPlayers = 0;
         moneyListOfFoldPlayers = new ArrayList<>();
         pots = new ArrayList<>();
         currentPot = new HashMap<>();
+        currentFoldPlayers = new HashMap<>();
         comparator = new RecordComparator();
         currentAllInPlayers = new ArrayList<>();
     }
@@ -47,8 +47,9 @@ public class Pot {
             currentAllInPlayers.add(record);
         } else if (record.getActionType() == Config.ACTION_TYPE_FOLD) {
             int hisBet = currentPot.get(record.getUdid());
-            moneyOfFoldPlayers += hisBet;
             currentPot.remove(record.getUdid());
+            currentFoldPlayers.put(record.getUdid(), hisBet);
+
 
             // he would also "fold" in all previous pots and re-calculate the money there
             for (int i = 0; i < pots.size(); i++) {
@@ -67,13 +68,10 @@ public class Pot {
     public void buildPotList() {
         log.debug("buildPotList");
         log.debug("currentPot:" + currentPot);
-        log.debug("currentAllInPlayers:"+currentAllInPlayers);
         Collections.sort(currentAllInPlayers, comparator);
-        log.debug("currentAllInPlayers:"+currentAllInPlayers);
+        log.debug("currentAllInPlayers:" + currentAllInPlayers);
         for (int i = 0; i < currentAllInPlayers.size(); i++) {
             String minAllInPlayer = currentAllInPlayers.get(i).getUdid();
-            log.debug("minAllInPlayer:" + minAllInPlayer);
-            log.debug(currentPot);
             int minBet = currentPot.get(minAllInPlayer);
             Map<String, Integer> smallPot = new HashMap<>();
             Iterator<String> it = currentPot.keySet().iterator();
@@ -109,9 +107,16 @@ public class Pot {
         currentPot = pots.get(pots.size() - 1);
         pots.remove(pots.size() - 1);
 
+
+        int currentFoldMoney = 0;
+        for (String s : currentFoldPlayers.keySet()) {
+            currentFoldMoney += currentFoldPlayers.get(s);
+        }
+        moneyListOfFoldPlayers.add(currentFoldMoney);
+
+
         currentAllInPlayers.clear();
-        moneyListOfFoldPlayers.add(moneyOfFoldPlayers);
-        moneyOfFoldPlayers = 0;
+        currentFoldPlayers.clear();
 
     }
 
@@ -120,9 +125,15 @@ public class Pot {
         if (!currentPot.isEmpty()) {
             pots.add(currentPot);
         }
-        for (Map<String, Integer> m : pots) {
+
+        for (int i = 0; i < pots.size(); i++) {
+            Map<String, Integer> m = pots.get(i);
             log.debug(m);
+            int moneyInThisPot = getMoneyAtIndex(i);
+            log.debug("money in this pot:" + moneyInThisPot);
         }
+
+        log.debug("total:" + money);
     }
 
     public int getMoney() {
@@ -145,7 +156,7 @@ public class Pot {
     public int getMoneyAtIndex(int index) {
         int result = 0;
         Map<String, Integer> m = getPotAtIndex(index);
-        log.debug(m);
+//        log.debug(m);
         for (String udid : m.keySet()) {
             Integer t = m.get(udid);
             result += t;
@@ -156,11 +167,12 @@ public class Pot {
 
     public void clear() {
         money = 0;
-        moneyOfFoldPlayers = 0;
+
         moneyListOfFoldPlayers.clear();
         pots.clear();
         currentPot.clear();
         currentAllInPlayers.clear();
+        currentFoldPlayers.clear();
     }
 
     public void takeMoneyAway(int amount) {
