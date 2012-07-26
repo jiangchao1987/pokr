@@ -36,7 +36,6 @@ public class TCPClient {
         String input = "";
 
 
-
         while (connFuture.isConnected() && connFuture.getSession().isConnected()) {
             input = scanner.nextLine();
 
@@ -56,19 +55,20 @@ public class TCPClient {
                 String[] cmds = input.split(":");
                 sendToServer(cmds[1], 3);
             } else if (input.startsWith("sb")) {
-                sendToServer(input.split(":")[1], 4);
+                sendToServer("1001", Config.TYPE_USERSTANDBY_INGAME);
             } else if (input.startsWith("li")) {
                 sendToServer(String.valueOf(Config.NORMAL_ROOM_LEVEL_BEGINNER), 2);
             } else if (input.startsWith("l")) {
+                //login
                 sendToServer(input.split(":")[1] + "," + input.split(":")[1] + "123," + Config.SRC_IPHONE_GUEST, 0);
-                sendToServer("1001", 3);
-                sendToServer("1001", 4);
+                //join room 1001
+                sendToServer("1001", Config.TYPE_JOIN_INGAME);
+                //buyin 10000 in room 1001
+                sendToServer("1001," + input.split(":")[1] + ",10000", Config.TYPE_BUYIN_INGAME);
+
             } else if (input.startsWith("s")) {
                 // eg: s:jiangchao
-                sendToServer("1001," + input.split(":")[1] + ",ban ge tong kuai!", 17);
-            } else if (input.startsWith("b")) {
-            	// eg: b:jiangchao
-            	sendToServer("1001," + input.split(":")[1] + ",10000", 22);
+                sendToServer("1001," + input.split(":")[1] + ",ban ge tong kuai!", Config.TYPE_CHAT_INGAME);
             }
 
 

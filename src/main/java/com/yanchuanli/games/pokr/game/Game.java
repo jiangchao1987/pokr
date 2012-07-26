@@ -96,10 +96,19 @@ public class Game implements Runnable {
     }
 
     public synchronized void sitDown(Player player) {
+        boolean sitDownFailed = false;
         if (activePlayers.size() < gc.getMaxPlayersCount()) {
-            waitingPlayers.remove(player.getUdid());
-            activePlayers.add(player);
+            if (player.getMoney() > 0) {
+                waitingPlayers.remove(player.getUdid());
+                activePlayers.add(player);
+            } else {
+                sitDownFailed = true;
+            }
         } else {
+            sitDownFailed = true;
+        }
+
+        if (sitDownFailed) {
             NotificationCenter.sitDownFailed(player);
         }
 
@@ -571,8 +580,8 @@ public class Game implements Runnable {
                     }
                     start();
                 } else {
-                    log.debug("activeplayers:" + activePlayers.size());
-                    log.debug("waitingplayers:" + waitingPlayers.size());
+//                    log.debug("activeplayers:" + activePlayers.size());
+//                    log.debug("waitingplayers:" + waitingPlayers.size());
                 }
                 try {
                     Thread.sleep(gc.getGameCheckInterval().inMillis());
