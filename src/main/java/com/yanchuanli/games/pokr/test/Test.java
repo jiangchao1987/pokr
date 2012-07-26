@@ -1,5 +1,6 @@
 package com.yanchuanli.games.pokr.test;
 
+import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.model.Pot;
 import com.yanchuanli.games.pokr.model.Record;
 import com.yanchuanli.games.pokr.util.Config;
@@ -13,6 +14,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Copyright Candou.com
@@ -34,7 +39,22 @@ public class Test {
             "}";
 
     public static void main(String[] args) throws IOException {
+        Player player = new Player("1", "yanchuan");
+        player.setMoney(10000);
+        Map<String, Player> map = new HashMap<>();
+        map.put("1", player);
+        List<Player> list = new ArrayList<>();
+        list.add(player);
 
+        player.setMoney(8000);
+        Player aplayer = map.get("1");
+        log.debug(aplayer.getMoney());
+
+        Player bplayer=list.get(0);
+        log.debug(bplayer.getMoney());
+    }
+
+    public static void testPot() {
         String a = "a";
         String b = "b";
         String c = "c";
@@ -90,9 +110,7 @@ public class Test {
         pot.buildPotList();
 
 
-
         pot.finish();
-
     }
 
     public static void verifyIAP() {

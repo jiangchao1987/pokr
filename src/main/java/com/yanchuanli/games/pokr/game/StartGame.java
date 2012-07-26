@@ -31,9 +31,9 @@ public class StartGame {
 
         GameConfig gc = new GameConfig(1, "123", 20, 40, 0, 10000, 9, Duration.seconds(3000), Duration.millis(500), Duration.seconds(3));
         Game game = new Game(gc);
-        game.addPlayer(player1);
-        game.addPlayer(player2);
-        game.addPlayer(player3);
+        game.sitDown(player1);
+        game.sitDown(player2);
+        game.sitDown(player3);
 
     }
 

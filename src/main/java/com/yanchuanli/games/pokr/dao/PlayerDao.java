@@ -178,18 +178,15 @@ public class PlayerDao {
         return player;
     }
 
-    public static void buyIn(Player player, int buyIn) {
+    public static boolean buyIn(Player player, int buyIn) {
+        boolean result = false;
         if (player.getTotalMoney() > buyIn) {
             player.setMoney(buyIn);
-            // minus money
-//            updateMoney(player.getUdid(), player.getTotalMoney() - buyIn);
             log.debug("updatemoney:" + player.getUdid() + ":" + player.getTotalMoney() + "-" + buyIn + "=" + (player.getTotalMoney() - buyIn));
-//            player.setTotalMoney(player.getTotalMoney() - buyIn);
             log.debug(player.getName() + " has buyed in " + player.getMoney());
-        } else {
-            log.debug(player.getName() + " total:" + player.getTotalMoney());
-            //TODO 弹出购买IAP的按钮
+            result = true;
         }
+        return result;
     }
 
     public static void cashBack(Player player, int holding) {

@@ -77,23 +77,25 @@ public class ServiceCenter {
                     chat(session, map.get(key));
                     break;
                 case Config.TYPE_BUYIN_INGAME:
-                	buyIn(session, map.get(key));
+                    buyIn(session, map.get(key));
             }
         }
     }
-    
+
     /**
      * 游戏中购买筹码
-     * 
+     *
      * @param session
-     * @param info	房间id,用户id,money
+     * @param info    房间id,用户id,money
      */
     public void buyIn(IoSession session, String info) {
-    	String[] cmds = info.split(",");
-    	// FIXME money++
-    	
-    	
-    	NotificationCenter.buyIn(session, "1");
+        String[] cmds = info.split(",");
+        Game game = GameEngine.getGame(Integer.parseInt(cmds[0]));
+        Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
+        boolean result = game.buyIn(newplayer, Integer.parseInt(cmds[2]));
+        if (result) {
+            NotificationCenter.buyIn(session, String.valueOf(Config.RESULT_BUYINSUCCESS));
+        }
     }
 
     /**
@@ -142,8 +144,6 @@ public class ServiceCenter {
         Game game = GameEngine.getGame(Integer.parseInt(info));
         Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
         game.enterRoom(newplayer);
-
-
     }
 
     /**
@@ -153,11 +153,11 @@ public class ServiceCenter {
      * @param info    当前房间id
      */
     private void userStandBy(IoSession session, String info) {
-        log.debug("user stand by");
+        log.debug("user tries to sit down");
         Game game = GameEngine.getGame(Integer.parseInt(info));
         Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
         log.debug("user" + newplayer.getName() + "stand by");
-        game.addPlayer(newplayer);
+        game.sitDown(newplayer);
     }
 
     /**
