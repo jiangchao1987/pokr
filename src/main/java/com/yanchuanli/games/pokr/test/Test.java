@@ -35,26 +35,62 @@ public class Test {
 
     public static void main(String[] args) throws IOException {
 
-        String a="a";
-        String b="b";
-        String c="c";
-        Pot pot=new Pot();
-        Record record1=new Record(a, Config.ACTION_TYPE_SMALL_BLIND,5);
-        Record record2=new Record(b, Config.ACTION_TYPE_BIG_BLIND,10);
-        Record record3=new Record(c, Config.ACTION_TYPE_CALL,10);
-        Record record4=new Record(a, Config.ACTION_TYPE_CALL,5);
+        String a = "a";
+        String b = "b";
+        String c = "c";
+        String d = "d";
+        String e = "e";
+        Pot pot = new Pot();
+        Record record1 = new Record(a, Config.ACTION_TYPE_SMALL_BLIND, 5);
+        Record record2 = new Record(b, Config.ACTION_TYPE_BIG_BLIND, 10);
+        Record record3 = new Record(c, Config.ACTION_TYPE_ALL_IN, 8);
+        Record record4 = new Record(d, Config.ACTION_TYPE_CALL, 10);
+        Record record5 = new Record(e, Config.ACTION_TYPE_CALL, 10);
+        Record record6 = new Record(a, Config.ACTION_TYPE_RAISE, 15);
+        Record record7 = new Record(b, Config.ACTION_TYPE_CALL, 10);
+        Record record8 = new Record(d, Config.ACTION_TYPE_RAISE, 30);
+        Record record9 = new Record(e, Config.ACTION_TYPE_CALL, 30);
+        Record record10 = new Record(a, Config.ACTION_TYPE_CALL, 20);
+        Record record11 = new Record(b, Config.ACTION_TYPE_RAISE, 20);
+
+
         pot.addRecord(record1);
         pot.addRecord(record2);
         pot.addRecord(record3);
         pot.addRecord(record4);
-        pot.buildPotList();
-        Record record5=new Record(a, Config.ACTION_TYPE_ALL_IN,50);
-        Record record6=new Record(b, Config.ACTION_TYPE_ALL_IN,30);
-        Record record7=new Record(c, Config.ACTION_TYPE_ALL_IN,20);
         pot.addRecord(record5);
         pot.addRecord(record6);
         pot.addRecord(record7);
+        pot.addRecord(record8);
+        pot.addRecord(record9);
+        pot.addRecord(record10);
+        pot.addRecord(record11);
         pot.buildPotList();
+        Record record12 = new Record(a, Config.ACTION_TYPE_RAISE, 20);
+        Record record13 = new Record(b, Config.ACTION_TYPE_ALL_IN, 10);
+        Record record14 = new Record(d, Config.ACTION_TYPE_RAISE, 50);
+        Record record15 = new Record(e, Config.ACTION_TYPE_CALL, 50);
+        Record record16 = new Record(a, Config.ACTION_TYPE_FOLD, 0);
+
+
+        pot.addRecord(record12);
+        pot.addRecord(record13);
+        pot.addRecord(record14);
+        pot.addRecord(record15);
+        pot.addRecord(record16);
+        pot.buildPotList();
+
+        Record record17 = new Record(d, Config.ACTION_TYPE_RAISE, 50);
+        Record record18 = new Record(e, Config.ACTION_TYPE_ALL_IN, 300);
+        Record record19 = new Record(d, Config.ACTION_TYPE_FOLD, 0);
+
+        pot.addRecord(record17);
+        pot.addRecord(record18);
+        pot.addRecord(record19);
+        pot.buildPotList();
+
+
+
         pot.finish();
 
     }

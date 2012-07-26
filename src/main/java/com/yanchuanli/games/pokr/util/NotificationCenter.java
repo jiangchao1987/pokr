@@ -32,25 +32,25 @@ public class NotificationCenter {
     public static void markCurrentDealer(List<Player> players, String info) {
         notifyAllOnTable(players, info, Config.TYPE_DEALER_INGAME);
     }
-    
+
     /**
      * 小盲注
-     * 
+     *
      * @param players 所有玩家
      * @param info
      */
     public static void paySmallBlind(List<Player> players, String info) {
-    	notifyAllOnTable(players, info, Config.TYPE_SMALLBLIND_INGAME);
+        notifyAllOnTable(players, info, Config.TYPE_SMALLBLIND_INGAME);
     }
-    
+
     /**
      * 大盲注
-     * 
+     *
      * @param players 所有玩家
      * @param info
      */
     public static void payBigBlind(List<Player> players, String info) {
-    	notifyAllOnTable(players, info, Config.TYPE_BIGBLIND_INGAME);
+        notifyAllOnTable(players, info, Config.TYPE_BIGBLIND_INGAME);
     }
 
     /**
@@ -72,7 +72,6 @@ public class NotificationCenter {
     public static void markBigBlind(List<Player> players, String info) {
         notifyAllOnTable(players, info, Config.TYPE_MARKBIGBLIND_INGAME);
     }
-
 
 
     /**
@@ -119,13 +118,13 @@ public class NotificationCenter {
 //    public static void winorlose(IoSession session, String info, int money) {
 //        notifySpecificOnTable(session, info, Config.TYPE_WINORLOSE_INGAME);
 //    }
-    
+
     public static void show2cards(List<Player> players, String info) {
-    	notifyAllOnTable(players, info, Config.TYPE_SHOW2CARDS);
+        notifyAllOnTable(players, info, Config.TYPE_SHOW2CARDS);
     }
-    
+
     public static void winorlose(List<Player> players, String info) {
-    	notifyAllOnTable(players, info, Config.TYPE_WINORLOSE_INGAME);
+        notifyAllOnTable(players, info, Config.TYPE_WINORLOSE_INGAME);
     }
 
     public static void gameover(List<Player> players, String info) {
@@ -164,8 +163,12 @@ public class NotificationCenter {
         notifySpecificOnTable(session, info, Config.TYPE_LOGIN_INGAME);
     }
 
-    public static void respondToPrepareToEnter(IoSession session,String info){
+    public static void respondToPrepareToEnter(IoSession session, String info) {
         notifySpecificOnTable(session, info, Config.TYPE_JOIN_INGAME);
+    }
+
+    public static void sitDownFailed(Player player) {
+        notifySpecificOnTable(player.getSession(), "", Config.TYPE_SITDOWNFAILED);
     }
 
     /**

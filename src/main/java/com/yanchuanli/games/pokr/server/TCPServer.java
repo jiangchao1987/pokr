@@ -4,7 +4,7 @@ import com.yanchuanli.games.pokr.core.GameEngine;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.util.Config;
 import com.yanchuanli.games.pokr.util.Memory;
-import com.yanchuanli.games.pokr.util.Util;
+import com.yanchuanli.games.pokr.util.NotificationCenter;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder;
 import org.apache.mina.filter.executor.ExecutorFilter;
@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
 
@@ -52,7 +54,21 @@ public class TCPServer {
 //                Util.sendToAll(input);
             for (String s : Memory.sessionsOnServer.keySet()) {
                 Player player = Memory.sessionsOnServer.get(s);
-                Util.sendMsg(player.getSession(), input, Config.TYPE_JOIN_INGAME);
+                if (player.getSession().isClosing()) {
+                    log.debug("isclosing");
+                } else {
+                    log.debug("not closing");
+                }
+                if (player.getSession().isConnected()) {
+                    log.debug("connected");
+                } else {
+                    log.debug("not connected");
+                }
+
+                List<Player> players = new ArrayList<>();
+                players.add(player);
+                NotificationCenter.chat(players, s);
+
             }
 
 

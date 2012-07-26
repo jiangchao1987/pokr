@@ -94,12 +94,11 @@ public class Game implements Runnable {
     public void addPlayer(Player player) {
         if (activePlayers.size() + availablePlayers.size() <= gc.getMaxPlayersCount()) {
             waitingPlayers.remove(player.getUdid());
-
             availablePlayers.add(player);
             PlayerDao.buyIn(player, 10000);
             log.debug("money now:" + player.getMoney());
         } else {
-            //TODO 告诉他坐下失败
+            NotificationCenter.sitDownFailed(player);
         }
 
     }
@@ -148,7 +147,7 @@ public class Game implements Runnable {
             } else {
                 showdown();
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             showdown();
         }
 
@@ -172,7 +171,7 @@ public class Game implements Runnable {
 
 
         log.debug("[RotateDealer] current markCurrentDealer:" + dealerPosition);
-        log.debug("current deal¢er:" + dealer.getName());
+        log.debug("current dealer:" + dealer.getName());
         log.debug("current smallblind:" + smallBlind.getName());
         log.debug("current bigblind:" + bigBlind.getName());
 
@@ -287,13 +286,6 @@ public class Game implements Runnable {
                         break;
                     }
                 }
-                //每个边池给客户端足够做动画的时间
-                NotificationCenter.winorlose(playersListInThisPot, sb.toString());
-                try {
-                    Thread.sleep(gc.getInactivityCheckInterval().inMillis() * 2);
-                } catch (InterruptedException e) {
-                    log.error(ExceptionUtils.getStackTrace(e));
-                }
 
                 for (String s : allPlayersInGame.keySet()) {
                     Player player = allPlayersInGame.get(s);
@@ -305,6 +297,15 @@ public class Game implements Runnable {
                         }
                     }
                 }
+                //每个边池给客户端足够做动画的时间
+                NotificationCenter.winorlose(playersListInThisPot, sb.toString());
+                try {
+                    Thread.sleep(gc.getInactivityCheckInterval().inMillis() * 4);
+                } catch (InterruptedException e) {
+                    log.error(ExceptionUtils.getStackTrace(e));
+                }
+
+
             }
         } else {
             if (results.size() == 1) {
@@ -312,6 +313,7 @@ public class Game implements Runnable {
                 StringBuilder sb = new StringBuilder();
                 player1.addMoney(pot.getMoney());
                 PlayerDao.cashBack(player1, pot.getMoney());
+                PlayerDao.updateWinCount(player1);
                 PlayerDao.updateWinCount(player1);
                 sb.append(player1.getUdid()).append(",").append("").append(",").append("").append(",").append("").append(",").append(String.valueOf(pot.getMoney())).append(";");
                 List<Player> playersListInThisPot = new ArrayList<>();

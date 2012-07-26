@@ -49,7 +49,7 @@ public class RoomDao {
     private static void insert(int level) {
         DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_ROOM);
 
-        for (int i = 1; i < 3; i++) {
+        for (int i = 1; i < 4; i++) {
             DBObject doc = new BasicDBObject();
             int roomId = Integer.parseInt(level + "000") + i;
             doc.put("id", roomId);
