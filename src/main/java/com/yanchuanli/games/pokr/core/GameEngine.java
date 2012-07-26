@@ -63,7 +63,8 @@ public void handle(Signal sig) {
     public static void stop() {
         for (Integer roomId : games.keySet()) {
             Game game = games.get(roomId);
-            for (Player p : game.getAvailablePlayers()) {
+            for (String s : game.getWaitingPlayers().keySet()) {
+                Player p = game.getWaitingPlayers().get(s);
                 if (p.isAlive()) {
                     p.getSession().close(true);
                 }

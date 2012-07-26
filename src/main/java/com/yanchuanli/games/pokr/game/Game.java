@@ -35,7 +35,7 @@ public class Game implements Runnable {
     //还活在游戏中的用户
     private List<Player> activePlayers;
     //可以进入游戏的用户
-    private List<Player> availablePlayers;
+//    private List<Player> availablePlayers;
     //进入房间了站着的用户
     private Map<String, Player> waitingPlayers;
     //本次游戏的所有用户
@@ -62,7 +62,6 @@ public class Game implements Runnable {
     public Game(GameConfig gc) {
         this.gc = gc;
         activePlayers = new CopyOnWriteArrayList<>();
-        availablePlayers = new CopyOnWriteArrayList<>();
         allPlayersInGame = new HashMap<>();
         allWinningUsers = new HashSet<>();
 
@@ -83,7 +82,8 @@ public class Game implements Runnable {
                 sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoney()).append(",").append(aplayer.getCustomAvatar()).append(",").append(aplayer.getAvatar()).append(",").append(aplayer.getSex()).append(",").append(aplayer.getAddress()).append(";");
             }
         } else {
-            for (Player aplayer : availablePlayers) {
+            for (String s : waitingPlayers.keySet()) {
+                Player aplayer = waitingPlayers.get(s);
                 sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoney()).append(",").append(aplayer.getCustomAvatar()).append(",").append(aplayer.getAvatar()).append(",").append(aplayer.getSex()).append(",").append(aplayer.getAddress()).append(";");
             }
         }
@@ -92,9 +92,9 @@ public class Game implements Runnable {
     }
 
     public void addPlayer(Player player) {
-        if (activePlayers.size() + availablePlayers.size() <= gc.getMaxPlayersCount()) {
+        if (activePlayers.size() + waitingPlayers.size() <= gc.getMaxPlayersCount()) {
             waitingPlayers.remove(player.getUdid());
-            availablePlayers.add(player);
+            activePlayers.add(player);
             PlayerDao.buyIn(player, 10000);
             log.debug("money now:" + player.getMoney());
         } else {
@@ -214,7 +214,7 @@ public class Game implements Runnable {
         NotificationCenter.dealRiverCard(activePlayers, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
     }
 
-    private void  showdown() {
+    private void showdown() {
 
         log.debug("showdown ...");
 
@@ -323,8 +323,6 @@ public class Game implements Runnable {
         }
 
 
-
-
         results.clear();
         gaming = false;
     }
@@ -341,7 +339,7 @@ public class Game implements Runnable {
         pot.clear();
         bet = 0;
 
-        for (Player player : availablePlayers) {
+        for (Player player : activePlayers) {
             player.reset();
         }
         log.debug("Game has been resetted ...");
@@ -520,7 +518,8 @@ public class Game implements Runnable {
     private void sayHello() {
         gaming = true;
 
-        for (Player player : availablePlayers) {
+        for (String s : waitingPlayers.keySet()) {
+            Player player = waitingPlayers.get(s);
             if (player.isAlive()) {
                 if (activePlayers.size() < gc.getMaxPlayersCount()) {
                     activePlayers.add(player);
@@ -528,7 +527,7 @@ public class Game implements Runnable {
                     allPlayersInGame.put(player.getUdid(), player);
                 }
             } else {
-                availablePlayers.remove(player);
+                waitingPlayers.remove(s);
             }
         }
         String info = "";
@@ -557,7 +556,7 @@ public class Game implements Runnable {
             while (!stop) {
 
                 checkAvailablePlayers();
-                if (availablePlayers.size() >= 2) {
+                if (activePlayers.size() + waitingPlayers.size() >= 2) {
                     try {
                         log.debug("game will start in 3 seconds ...");
                         Thread.sleep(Duration.seconds(1).inMillis());
@@ -587,14 +586,15 @@ public class Game implements Runnable {
         stop = true;
     }
 
-    public List<Player> getAvailablePlayers() {
-        return availablePlayers;
+    public Map<String, Player> getWaitingPlayers() {
+        return waitingPlayers;
     }
 
     private void checkAvailablePlayers() {
-        for (Player player : availablePlayers) {
+        for (String s : waitingPlayers.keySet()) {
+            Player player = waitingPlayers.get(s);
             if (!player.isAlive()) {
-                availablePlayers.remove(player);
+                waitingPlayers.remove(s);
             }
         }
 
@@ -612,12 +612,12 @@ public class Game implements Runnable {
             }
         }
 
-        for (Player aplayer : availablePlayers) {
+        for (String s : waitingPlayers.keySet()) {
+            Player aplayer = waitingPlayers.get(s);
             if (aplayer.getUdid().equals(player.getUdid())) {
-                availablePlayers.remove(aplayer);
+                waitingPlayers.remove(s);
                 player.setRoomid(Integer.MIN_VALUE);
                 log.debug(player.getName() + " has left the room " + gc.getName());
-                RoomDao.updateCurrentPlayerCount(gc.getId(), availablePlayers.size());
                 break;
             }
         }
