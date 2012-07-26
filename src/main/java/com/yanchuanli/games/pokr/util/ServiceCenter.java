@@ -76,8 +76,24 @@ public class ServiceCenter {
                 case Config.TYPE_CHAT_INGAME:
                     chat(session, map.get(key));
                     break;
+                case Config.TYPE_BUYIN_INGAME:
+                	buyIn(session, map.get(key));
             }
         }
+    }
+    
+    /**
+     * 游戏中购买筹码
+     * 
+     * @param session
+     * @param info	房间id,用户id,money
+     */
+    public void buyIn(IoSession session, String info) {
+    	String[] cmds = info.split(",");
+    	// FIXME money++
+    	
+    	
+    	NotificationCenter.buyIn(session, "1");
     }
 
     /**
