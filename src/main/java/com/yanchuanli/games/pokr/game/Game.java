@@ -74,7 +74,7 @@ public class Game implements Runnable {
         pot = new Pot();
     }
 
-    public void prepareToJoin(Player player) {
+    public void enterRoom(Player player) {
         waitingPlayers.put(player.getUdid(), player);
         StringBuilder sb = new StringBuilder();
         if (gaming) {
@@ -568,6 +568,9 @@ public class Game implements Runnable {
                         log.error(ExceptionUtils.getStackTrace(e));
                     }
                     start();
+                }else{
+                    log.debug("activeplayers:"+activePlayers.size());
+                    log.debug("waitingplayers:"+waitingPlayers.size());
                 }
                 try {
                     Thread.sleep(gc.getGameCheckInterval().inMillis());
