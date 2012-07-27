@@ -1,6 +1,6 @@
 package com.yanchuanli.games.pokr.server.netty;
 
-import com.yanchuanli.games.pokr.util.Config;
+import com.yanchuanli.games.pokr.util.ServerConfig;
 import org.apache.log4j.Logger;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.*;
@@ -34,7 +34,7 @@ public class Server {
         });
         bootstrap.setOption("child.tcpNoDelay", true);
         bootstrap.setOption("child.keepAlive", true);
-        bootstrap.bind(new InetSocketAddress(Config.port));
+        bootstrap.bind(new InetSocketAddress(ServerConfig.gameServerPort));
 
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();

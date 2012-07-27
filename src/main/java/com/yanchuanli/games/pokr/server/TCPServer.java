@@ -2,9 +2,9 @@ package com.yanchuanli.games.pokr.server;
 
 import com.yanchuanli.games.pokr.core.GameEngine;
 import com.yanchuanli.games.pokr.model.Player;
-import com.yanchuanli.games.pokr.util.Config;
 import com.yanchuanli.games.pokr.util.Memory;
 import com.yanchuanli.games.pokr.util.NotificationCenter;
+import com.yanchuanli.games.pokr.util.ServerConfig;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder;
 import org.apache.mina.filter.executor.ExecutorFilter;
@@ -38,10 +38,10 @@ public class TCPServer {
         chain.addLast("threadPool", new ExecutorFilter(Executors.newCachedThreadPool()));
         SocketSessionConfig dcfg = acceptor.getSessionConfig();
         dcfg.setReuseAddress(true);
-        acceptor.bind(new InetSocketAddress(Config.port));
+        acceptor.bind(new InetSocketAddress(ServerConfig.gameServerPort));
 
 
-        log.info("TCPServer is listening on " + getIPAddress() + ":" + Config.port);
+        log.info("TCPServer is listening on " + getIPAddress() + ":" + ServerConfig.gameServerPort);
 
 
         GameEngine.start();

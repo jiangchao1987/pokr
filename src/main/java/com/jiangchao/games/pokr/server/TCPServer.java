@@ -1,12 +1,11 @@
 package com.jiangchao.games.pokr.server;
 
+import com.jiangchao.games.pokr.util.Memory;
 import com.jiangchao.games.pokr.util.NotificationCenter;
 import com.jiangchao.games.pokr.util.ServiceCenter;
-import com.jiangchao.games.pokr.util.Util;
 import com.yanchuanli.games.pokr.model.MiniPlayerProtos.MiniPlayer;
 import com.yanchuanli.games.pokr.model.MiniRoomProtos.MiniRoom;
-import com.yanchuanli.games.pokr.util.Config;
-import com.jiangchao.games.pokr.util.Memory;
+import com.yanchuanli.games.pokr.util.ServerConfig;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder;
 import org.apache.mina.filter.executor.ExecutorFilter;
@@ -38,8 +37,8 @@ public class TCPServer {
 		SocketSessionConfig dcfg = acceptor.getSessionConfig();
 		dcfg.setReuseAddress(true);
 
-		acceptor.bind(new InetSocketAddress(Config.port));
-		log.info("TCPServer listening on port " + Config.port);
+		acceptor.bind(new InetSocketAddress(ServerConfig.gameServerPort));
+		log.info("TCPServer listening on port " + ServerConfig.gameServerPort);
 		Scanner scanner = new Scanner(System.in);
 		String input = scanner.nextLine();
 		while (!input.equalsIgnoreCase("quit")) {

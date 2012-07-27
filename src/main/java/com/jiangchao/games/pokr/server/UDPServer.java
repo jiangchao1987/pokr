@@ -1,7 +1,7 @@
 package com.jiangchao.games.pokr.server;
 
-import com.yanchuanli.games.pokr.util.Config;
 import com.yanchuanli.games.pokr.util.Memory;
+import com.yanchuanli.games.pokr.util.ServerConfig;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder;
 import org.apache.mina.filter.executor.ExecutorFilter;
@@ -35,8 +35,8 @@ public class UDPServer {
         dcfg.setReuseAddress(true);
 
 
-        acceptor.bind(new InetSocketAddress(Config.port));
-        log.info("UDPServer listening on port " + Config.port);
+        acceptor.bind(new InetSocketAddress(ServerConfig.gameServerPort));
+        log.info("UDPServer listening on port " + ServerConfig.gameServerPort);
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
         while (!input.equalsIgnoreCase("quit")) {

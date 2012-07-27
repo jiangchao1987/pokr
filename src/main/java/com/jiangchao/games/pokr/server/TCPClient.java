@@ -1,8 +1,8 @@
 package com.jiangchao.games.pokr.server;
 
-import com.yanchuanli.games.pokr.util.Config;
-import com.yanchuanli.games.pokr.util.Memory;
 import com.jiangchao.games.pokr.util.Util;
+import com.yanchuanli.games.pokr.util.Memory;
+import com.yanchuanli.games.pokr.util.ServerConfig;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder;
 import org.apache.mina.core.future.ConnectFuture;
@@ -29,7 +29,7 @@ public class TCPClient {
 //        chain.addLast("codec", new ProtocolCodecFilter(new TextLineCodecFactory()));
 
         log.debug("connecing to the server...");
-        ConnectFuture connFuture = connector.connect(new InetSocketAddress(Config.serverAddress, Config.port));
+        ConnectFuture connFuture = connector.connect(new InetSocketAddress(ServerConfig.gameServerAddress, ServerConfig.gameServerPort));
         //等待连接成功
         connFuture.awaitUninterruptibly();
         if (connFuture.isConnected()) {

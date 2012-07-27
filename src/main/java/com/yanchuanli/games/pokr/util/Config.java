@@ -7,9 +7,6 @@ package com.yanchuanli.games.pokr.util;
  */
 public class Config {
 
-    public static final int port = 9999;
-    public static final String serverAddress = "localhost";
-    public static final String webServerBase = "http://192.168.1.177:8080/restpokr/";
 
     public static final byte START = '$' & 0xFF;
     public static final byte SPLIT = '|' & 0xFF;

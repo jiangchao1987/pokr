@@ -1,6 +1,6 @@
 package com.jiangchao.games.pokr.server;
 
-import com.yanchuanli.games.pokr.util.Config;
+import com.yanchuanli.games.pokr.util.ServerConfig;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder;
 import org.apache.mina.core.future.ConnectFuture;
@@ -30,7 +30,7 @@ public class UDPClient extends IoHandlerAdapter {
         DefaultIoFilterChainBuilder chain = connector.getFilterChain();
 
         log.debug("connecing to the server...");
-        connFuture = connector.connect(new InetSocketAddress(Config.serverAddress, Config.port));
+        connFuture = connector.connect(new InetSocketAddress(ServerConfig.gameServerAddress, ServerConfig.gameServerPort));
 //        connFuture.awaitUninterruptibly();
 //        connFuture.await();
 

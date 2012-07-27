@@ -17,9 +17,9 @@ import java.util.Map;
  * Email: mail@yanchuanli.com
  * Date: 12-6-22
  */
+
 /**
  * @author ASUS
- *
  */
 public class PlayerDao {
 
@@ -40,7 +40,7 @@ public class PlayerDao {
      */
     public static Player getPlayer(String udid, String password,
                                    int source) {
-        String htmlContent = URLFetchUtil.fetch(Config.webServerBase
+        String htmlContent = URLFetchUtil.fetch(ServerConfig.webServerBase
                 + "login?udid=" + udid + "&password=" + password + "&source="
                 + source);
 //        log.debug(htmlContent);
@@ -200,16 +200,16 @@ public class PlayerDao {
         updateMoney(player.getUdid(), persistence.getTotalMoney() + holding);
 
     }
-    
+
     /**
      * 增加经验值
-     * 
+     *
      * @param player
      * @param exp
      * @return 增加exp后的player
      */
     public static void updateExp(Player player, int exp) {
-    	DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
+        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
         DBObject searchQuery = new BasicDBObject("udid", player.getUdid());
         DBObject incQuery = new BasicDBObject("$inc", new BasicDBObject("exp", exp));
         coll.update(searchQuery, incQuery);

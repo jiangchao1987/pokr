@@ -1,6 +1,6 @@
 package com.yanchuanli.games.pokr.server;
 
-import com.yanchuanli.games.pokr.util.Config;
+import com.yanchuanli.games.pokr.util.ServerConfig;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder;
 import org.apache.mina.core.session.IdleStatus;
@@ -51,12 +51,12 @@ public class Server {
 
         // 绑定端口,启动服务器
         try {
-            acceptor.bind(new InetSocketAddress(Config.port));
+            acceptor.bind(new InetSocketAddress(ServerConfig.gameServerPort));
             acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE,1000000);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        log.info("Mina Server is Listing on: " + Config.port);
+        log.info("Mina Server is Listing on: " + ServerConfig.gameServerPort);
     }
 
     public static void main(String[] args) {
