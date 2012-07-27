@@ -105,10 +105,10 @@ public class RoomDao {
             }
 
 
-            doc.put("smallBlindAmount", 100 * level);
-            doc.put("bigBlindAmount", 200 * level);
-            doc.put("minHolding", 100 * level);
-            doc.put("maxHolding", 10000  * level);
+            doc.put("smallBlindAmount", 100 * (level - 4));
+            doc.put("bigBlindAmount", 200 * (level - 4));
+            doc.put("minHolding", 100 * (level - 4));
+            doc.put("maxHolding", 10000  * (level - 4));
             doc.put("maxPlayersCount", 9);
             doc.put("currentPlayerCount", 0);
             doc.put("level", level);
