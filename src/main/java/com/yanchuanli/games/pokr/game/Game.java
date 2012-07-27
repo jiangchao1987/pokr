@@ -34,8 +34,6 @@ public class Game implements Runnable {
 
     //还活在游戏中的用户
     private List<Player> activePlayers;
-    //可以进入游戏的用户
-//    private List<Player> availablePlayers;
     //进入房间了站着的用户
     private Map<String, Player> waitingPlayers;
     //本次游戏的所有用户

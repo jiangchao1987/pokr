@@ -3,6 +3,7 @@ package com.yanchuanli.games.pokr.test;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.model.Pot;
 import com.yanchuanli.games.pokr.model.Record;
+import com.yanchuanli.games.pokr.model.Table;
 import com.yanchuanli.games.pokr.util.Config;
 import org.apache.log4j.Logger;
 import sun.misc.BASE64Encoder;
@@ -39,6 +40,11 @@ public class Test {
             "}";
 
     public static void main(String[] args) throws IOException {
+//        testTable();
+        testPot();
+    }
+
+    public static void testSharedPlayer() {
         Player player = new Player("1", "yanchuan");
         player.setMoney(10000);
         Map<String, Player> map = new HashMap<>();
@@ -50,8 +56,21 @@ public class Test {
         Player aplayer = map.get("1");
         log.debug(aplayer.getMoney());
 
-        Player bplayer=list.get(0);
+        Player bplayer = list.get(0);
         log.debug(bplayer.getMoney());
+    }
+
+    public static void testTable() {
+        Table table = new Table();
+        Player playera = new Player("1", "yanchuan");
+        Player playerb = new Player("2", "jiangchao");
+        table.joinTable(playera);
+        table.joinTable(playerb);
+        table.printTableInfo();
+
+        for (int i = 0; i < 5; i++) {
+            log.debug(table.nextPlayer().getName());
+        }
     }
 
     public static void testPot() {
