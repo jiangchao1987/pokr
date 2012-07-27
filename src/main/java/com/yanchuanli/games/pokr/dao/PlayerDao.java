@@ -17,6 +17,10 @@ import java.util.Map;
  * Email: mail@yanchuanli.com
  * Date: 12-6-22
  */
+/**
+ * @author ASUS
+ *
+ */
 public class PlayerDao {
 
     private static Map<String, Player> players;
@@ -195,6 +199,22 @@ public class PlayerDao {
         // plus money
         updateMoney(player.getUdid(), persistence.getTotalMoney() + holding);
 
+    }
+    
+    /**
+     * 增加经验值
+     * 
+     * @param player
+     * @param exp
+     * @return 增加exp后的player
+     */
+    public static Player updateExp(Player player, int exp) {
+    	DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
+        DBObject searchQuery = new BasicDBObject("udid", player.getUdid());
+        DBObject incQuery = new BasicDBObject("$inc", new BasicDBObject("exp", exp));
+        coll.update(searchQuery, incQuery);
+        player.setExp(player.getExp() + exp);
+        return player;
     }
 
 }
