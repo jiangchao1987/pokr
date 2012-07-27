@@ -20,12 +20,17 @@ public class Table {
     private Random ran;
     private int counter;
     private static Logger log = Logger.getLogger(Table.class);
+    public int dealerPosition = 0;
 
     public Table() {
         playerCount = 9;
         players = new Player[playerCount];
         ran = new Random();
         counter = 0;
+    }
+
+    public void rotateDealer() {
+        dealerPosition = (dealerPosition + 1) % size();
     }
 
     public boolean addPlayer(Player player) {
@@ -105,12 +110,18 @@ public class Table {
         int size = size();
         if (size > 0) {
             while (player == null) {
-                log.debug("loading player " + String.valueOf(counter));
                 player = players[counter];
                 counter = (counter + 1) % playerCount;
-                log.debug("counter:" + counter + " " + String.valueOf(counter % playerCount));
             }
         }
         return player;
+    }
+
+    public void printTableInfo() {
+        for (int i = 0; i < playerCount; i++) {
+            if (players[i] != null) {
+                log.debug(i + ":" + players[i].getName());
+            }
+        }
     }
 }
