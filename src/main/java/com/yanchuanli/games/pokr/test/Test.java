@@ -41,7 +41,8 @@ public class Test {
 
     public static void main(String[] args) throws IOException {
 //        testTable();
-        testPot();
+//        testPot();
+        testSharedPlayer();
     }
 
     public static void testSharedPlayer() {

@@ -208,13 +208,12 @@ public class PlayerDao {
      * @param exp
      * @return 增加exp后的player
      */
-    public static Player updateExp(Player player, int exp) {
+    public static void updateExp(Player player, int exp) {
     	DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
         DBObject searchQuery = new BasicDBObject("udid", player.getUdid());
         DBObject incQuery = new BasicDBObject("$inc", new BasicDBObject("exp", exp));
         coll.update(searchQuery, incQuery);
         player.setExp(player.getExp() + exp);
-        return player;
     }
 
 }
