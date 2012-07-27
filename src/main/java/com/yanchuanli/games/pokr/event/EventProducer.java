@@ -8,7 +8,5 @@ package com.yanchuanli.games.pokr.event;
  */
 public class EventProducer {
 
-    public static void produceEvent(Event e) {
 
-    }
 }

@@ -9,8 +9,6 @@ public class App {
     private static Logger log = Logger.getLogger(App.class);
 
     public static void main(String[] args) {
-        log.debug("Hello World!");
-        log.debug("Hello World!");
-        //test
+
     }
 }

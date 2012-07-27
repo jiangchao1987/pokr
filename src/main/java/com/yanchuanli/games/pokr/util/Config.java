@@ -7,7 +7,7 @@ package com.yanchuanli.games.pokr.util;
  */
 public class Config {
 
-
+    public static final String MQ_EXCHANGE = "texas";
     public static final byte START = '$' & 0xFF;
     public static final byte SPLIT = '|' & 0xFF;
     public static final byte END = '#' & 0xFF;
@@ -48,7 +48,7 @@ public class Config {
     public static final int NORMAL_ROOM_LEVEL_PROFESSIONAL = 2;
     public static final int NORMAL_ROOM_LEVEL_MASTER = 3;
     public static final int NORMAL_ROOM_LEVEL_VIP = 4;
-    
+
     public static final int FAST_ROOM_LEVEL_BEGINNER = 5;
     public static final int FAST_ROOM_LEVEL_PROFESSIONAL = 6;
     public static final int FAST_ROOM_LEVEL_MASTER = 7;
@@ -63,4 +63,7 @@ public class Config {
     public static final int ACTION_TYPE_RAISE = 7;
     public static final int ACTION_TYPE_FOLD = 8;
     public static final int ACTION_TYPE_CONTINUE = 9;
+
+    public static final int EVENT_LOGIN = 0;
+    public static final int EVENT_DISCONNECTED = 1;
 }

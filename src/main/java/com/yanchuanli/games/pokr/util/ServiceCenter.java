@@ -7,6 +7,7 @@ import com.yanchuanli.games.pokr.dao.RoomDao;
 import com.yanchuanli.games.pokr.game.Game;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.model.Room;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.session.IoSession;
 
@@ -198,22 +199,42 @@ public class ServiceCenter {
      * @param info    udid,password,source[0|1|...]
      */
     private void login(IoSession session, String info) {
+        try {
+            String[] msgs = info.split(",");
+            String udid = String.valueOf(msgs[0]);
 
-        String[] msgs = info.split(",");
-        Player player = PlayerDao.getPlayer(msgs[0], msgs[1], Integer.parseInt(msgs[2]));
-        log.debug(player.getName() + " has logged in ...");
-        player.setSession(session);
-        Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);
+            Player player;
+            if (Memory.playersOnServer.containsKey(udid)) {
+                player = Memory.playersOnServer.get(udid);
+            } else {
+                player = PlayerDao.getPlayer(udid, msgs[1], Integer.parseInt(msgs[2]));
+                Memory.playersOnServer.put(udid, player);
+            }
 
-        StringBuffer sb = new StringBuffer();
-        sb.append(player.getUdid()).append(",").append(player.getName()).append(",").append(
-                player.getTotalMoney()).append(",").append(player.getExp() + ","
-                + player.getWinCount() + "," + player.getLoseCount() + ","
-                + player.getHistoricalBestHandRank() + ","
-                + player.getHistoricalBestHand() + "," + player.getMaxWin()
-                + "," + player.getCustomAvatar() + "," + player.getAvatar()
-                + "," + player.getSex() + "," + player.getAddress() + "," + player.getCurrentLevel());
-        NotificationCenter.login(session, sb.toString());
+            if (player != null) {
+                log.debug(player.getName() + " has logged in ...");
+                player.setSession(session);
+                Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);
+
+                StringBuffer sb = new StringBuffer();
+                sb.append(player.getUdid()).append(",").append(player.getName()).append(",").append(
+                        player.getTotalMoney()).append(",").append(player.getExp() + ","
+                        + player.getWinCount() + "," + player.getLoseCount() + ","
+                        + player.getHistoricalBestHandRank() + ","
+                        + player.getHistoricalBestHand() + "," + player.getMaxWin()
+                        + "," + player.getCustomAvatar() + "," + player.getAvatar()
+                        + "," + player.getSex() + "," + player.getAddress() + "," + player.getCurrentLevel());
+                NotificationCenter.login(session, sb.toString());
+            } else {
+                session.close(true);
+            }
+
+        } catch (Exception e) {
+            //对于非法连接，立刻断掉。
+            session.close(true);
+            log.error(ExceptionUtils.getStackTrace(e));
+        }
+
 
     }
 
