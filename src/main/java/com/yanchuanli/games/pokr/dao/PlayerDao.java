@@ -209,7 +209,7 @@ public class PlayerDao {
      * @param exp
      * @return 增加exp后的player
      */
-    public static void updateExp(Player player, int exp) {
+    public static void updateExpAndLastTime(Player player, int exp) {
         DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
         DBObject searchQuery = new BasicDBObject("udid", player.getUdid());
         DBObject incQuery = new BasicDBObject("$inc", new BasicDBObject("exp", exp));
@@ -217,6 +217,23 @@ public class PlayerDao {
         coll.update(searchQuery, incQuery);
         coll.update(searchQuery, updateOnlineTime);
         player.setExp(player.getExp() + exp);
+    }
+
+    public static void updateExp(Player player, int exp) {
+        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
+        DBObject searchQuery = new BasicDBObject("udid", player.getUdid());
+        DBObject incQuery = new BasicDBObject("$inc", new BasicDBObject("exp", exp));
+        coll.update(searchQuery, incQuery);
+        player.setExp(player.getExp() + exp);
+    }
+
+    public static void updateLastTime(Player player) {
+        int now = TimeUtil.unixtime();
+        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
+        DBObject searchQuery = new BasicDBObject("udid", player.getUdid());
+        DBObject updateOnlineTime = new BasicDBObject("$set", new BasicDBObject("update", now));
+        coll.update(searchQuery, updateOnlineTime);
+        player.setLastTime(now);
     }
 
 }

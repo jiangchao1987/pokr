@@ -36,7 +36,7 @@ public class LiveExpChecker implements Runnable {
                     player.addExp(ExpConfig.expLiveTimeIncrement);
                 }
                 player.setLastTime(now);
-                PlayerDao.updateExp(player, ExpConfig.expLiveTimeIncrement);
+                PlayerDao.updateExpAndLastTime(player, ExpConfig.expLiveTimeIncrement);
             }
             try {
                 Thread.sleep(ExpConfig.expCheckInterval.inMillis());

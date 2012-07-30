@@ -4,6 +4,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
+import com.yanchuanli.games.pokr.dao.PlayerDao;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.util.Memory;
 import com.yanchuanli.games.pokr.util.ServiceCenter;
@@ -42,6 +43,7 @@ public class ServerHandler extends IoHandlerAdapter {
 
         player.setAlive(false);
         player.setSession(null);
+        PlayerDao.updateLastTime(player);
         Memory.sessionsOnServer.remove(String.valueOf(session.getId()));
         Memory.playersOnServer.remove(player.getUdid());
         log.debug(player.getName() + " is leaving room " + player.getRoomid());
