@@ -51,6 +51,7 @@ public class Player {
     private String address;
     private int currentLevel;
     private int lastTime;
+    private int firstLoginToday;
 
     public Player(String id, String name) {
         this.udid = id;
@@ -464,5 +465,13 @@ public class Player {
 
     public void addExp(int amount) {
         this.exp += amount;
+    }
+
+    public int getFirstLoginToday() {
+        return firstLoginToday;
+    }
+
+    public void setFirstLoginToday(int firstLoginToday) {
+        this.firstLoginToday = firstLoginToday;
     }
 }
