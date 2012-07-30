@@ -75,6 +75,9 @@ public class ClientHandler extends IoHandlerAdapter {
                             }
                             log.debug("ontable" + ":" + debuginfo);
                             break;
+                        case Config.TYPE_CHAT_INGAME:
+                            log.debug(info);
+                            break;
                     }
                 }
             }
@@ -88,5 +91,6 @@ public class ClientHandler extends IoHandlerAdapter {
         log.info("sessionClosed");
         super.sessionClosed(session);
         Memory.sessionsOnClient.remove(String.valueOf(session.getId()));
+        System.exit(1);
     }
 }

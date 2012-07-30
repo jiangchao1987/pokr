@@ -87,15 +87,19 @@ public class ServiceCenter {
      * 游戏中购买筹码
      *
      * @param session
-     * @param info    房间id,用户id,money
+     * @param info    用户id,money,房间id
      */
     public void buyIn(IoSession session, String info) {
+        log.debug("buyin:" + info);
         String[] cmds = info.split(",");
-        Game game = GameEngine.getGame(Integer.parseInt(cmds[0]));
+        Game game = GameEngine.getGame(Integer.parseInt(cmds[2]));
         Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
-        boolean result = game.buyIn(newplayer, Integer.parseInt(cmds[2]));
+        boolean result = game.buyIn(newplayer, Integer.parseInt(cmds[1]));
         if (result) {
+            log.debug("buyin success");
             NotificationCenter.buyIn(session, String.valueOf(Config.RESULT_BUYINSUCCESS));
+        } else {
+            log.debug("buyin failed");
         }
     }
 
@@ -208,7 +212,9 @@ public class ServiceCenter {
                 player = Memory.playersOnServer.get(udid);
             } else {
                 player = PlayerDao.getPlayer(udid, msgs[1], Integer.parseInt(msgs[2]));
-                Memory.playersOnServer.put(udid, player);
+                if (player != null) {
+                    Memory.playersOnServer.put(udid, player);
+                }
             }
 
             if (player != null) {

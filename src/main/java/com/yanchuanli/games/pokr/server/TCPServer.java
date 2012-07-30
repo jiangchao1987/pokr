@@ -54,16 +54,7 @@ public class TCPServer {
 //                Util.sendToAll(input);
             for (String s : Memory.sessionsOnServer.keySet()) {
                 Player player = Memory.sessionsOnServer.get(s);
-                if (player.getSession().isClosing()) {
-                    log.debug("isclosing");
-                } else {
-                    log.debug("not closing");
-                }
-                if (player.getSession().isConnected()) {
-                    log.debug("connected");
-                } else {
-                    log.debug("not connected");
-                }
+
 
                 List<Player> players = new ArrayList<>();
                 players.add(player);

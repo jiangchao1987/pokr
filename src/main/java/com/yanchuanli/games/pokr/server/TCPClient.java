@@ -65,7 +65,7 @@ public class TCPClient {
                 //join room 1001
                 sendToServer("1001", Config.TYPE_JOIN_INGAME);
                 //buyin 10000 in room 1001
-                sendToServer("1001," + input.split(":")[1] + ",10000", Config.TYPE_BUYIN_INGAME);
+                sendToServer(input.split(":")[1] + ",10000,1001", Config.TYPE_BUYIN_INGAME);
 
             } else if (input.startsWith("s")) {
                 // eg: s:jiangchao

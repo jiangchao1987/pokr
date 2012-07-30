@@ -17,6 +17,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -60,10 +61,10 @@ public class Game implements Runnable {
     public Game(GameConfig gc) {
         this.gc = gc;
         activePlayers = new CopyOnWriteArrayList<>();
-        allPlayersInGame = new HashMap<>();
+        allPlayersInGame = new ConcurrentHashMap<>();
         allWinningUsers = new HashSet<>();
 
-        waitingPlayers = new HashMap<>();
+        waitingPlayers = new ConcurrentHashMap<>();
         cardsOnTable = new ArrayList<>();
         pot = new Pot();
         deck = new Deck();
@@ -73,34 +74,43 @@ public class Game implements Runnable {
     }
 
     public void enterRoom(Player player) {
+        player.setRoomid(gc.getId());
         waitingPlayers.put(player.getUdid(), player);
         StringBuilder sb = new StringBuilder();
         if (gaming) {
             for (Player aplayer : activePlayers) {
                 sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoney()).append(",").append(aplayer.getCustomAvatar()).append(",").append(aplayer.getAvatar()).append(",").append(aplayer.getSex()).append(",").append(aplayer.getAddress()).append(";");
             }
-        } else {
-            for (String s : waitingPlayers.keySet()) {
-                Player aplayer = waitingPlayers.get(s);
-                sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoney()).append(",").append(aplayer.getCustomAvatar()).append(",").append(aplayer.getAvatar()).append(",").append(aplayer.getSex()).append(",").append(aplayer.getAddress()).append(";");
-            }
+            NotificationCenter.respondToPrepareToEnter(player.getSession(), sb.toString());
         }
 
-        NotificationCenter.respondToPrepareToEnter(player.getSession(), sb.toString());
     }
 
     public boolean buyIn(Player player, int amount) {
-        return PlayerDao.buyIn(player, amount);
+        boolean result = PlayerDao.buyIn(player, amount);
+        return result;
     }
 
     public synchronized void sitDown(Player player) {
+        log.debug(player.getName() + ":" + player.getMoney() + " is sitting down ...");
         boolean sitDownFailed = false;
         if (activePlayers.size() < gc.getMaxPlayersCount()) {
-            if (player.getMoney() > 0) {
-                waitingPlayers.remove(player.getUdid());
-                activePlayers.add(player);
-            } else {
-                sitDownFailed = true;
+            //防止同一个人因黑客多次坐下
+            for (Player aplayer : activePlayers) {
+                if (aplayer.getUdid().equals(player.getUdid())) {
+                    log.debug(player.getName() + " has already sitted down ...");
+                    sitDownFailed = true;
+                    break;
+                }
+            }
+            if (!sitDownFailed) {
+                if (player.getMoney() > 0) {
+                    waitingPlayers.remove(player.getUdid());
+                    activePlayers.add(player);
+                } else {
+                    log.debug(player.getName() + " sitdown failed because of empty pocket ...");
+                    sitDownFailed = true;
+                }
             }
         } else {
             sitDownFailed = true;
@@ -108,7 +118,15 @@ public class Game implements Runnable {
 
         if (sitDownFailed) {
             NotificationCenter.sitDownFailed(player);
+        } else {
+            StringBuilder sb = new StringBuilder();
+            for (Player aplayer : activePlayers) {
+                sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoney()).append(",").append(aplayer.getCustomAvatar()).append(",").append(aplayer.getAvatar()).append(",").append(aplayer.getSex()).append(",").append(aplayer.getAddress()).append(";");
+            }
+            NotificationCenter.respondToPrepareToEnter(player.getSession(), sb.toString());
+            log.debug(activePlayers.size() + " players sitted down");
         }
+
 
     }
 
@@ -342,7 +360,7 @@ public class Game implements Runnable {
 
         moneyOnTable = 0;
         cardsOnTable.clear();
-        activePlayers.clear();
+//        activePlayers.clear();
         allPlayersInGame.clear();
         allWinningUsers.clear();
         pot.clear();
@@ -565,7 +583,7 @@ public class Game implements Runnable {
             while (!stop) {
 
                 checkAvailablePlayers();
-                if (activePlayers.size() + waitingPlayers.size() >= 2) {
+                if (activePlayers.size() >= 2) {
                     try {
                         log.debug("game will start in 3 seconds ...");
                         Thread.sleep(Duration.seconds(1).inMillis());
@@ -602,7 +620,7 @@ public class Game implements Runnable {
         return waitingPlayers;
     }
 
-    private void checkAvailablePlayers() {
+    private synchronized void checkAvailablePlayers() {
         for (String s : waitingPlayers.keySet()) {
             Player player = waitingPlayers.get(s);
             if (!player.isAlive()) {
