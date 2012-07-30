@@ -212,7 +212,9 @@ public class PlayerDao {
         DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
         DBObject searchQuery = new BasicDBObject("udid", player.getUdid());
         DBObject incQuery = new BasicDBObject("$inc", new BasicDBObject("exp", exp));
+        DBObject updateOnlineTime = new BasicDBObject("$set", new BasicDBObject("update", TimeUtil.unixtime()));
         coll.update(searchQuery, incQuery);
+        coll.update(searchQuery, updateOnlineTime);
         player.setExp(player.getExp() + exp);
     }
 

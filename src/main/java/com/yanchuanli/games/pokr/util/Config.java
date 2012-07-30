@@ -1,5 +1,8 @@
 package com.yanchuanli.games.pokr.util;
 
+
+import com.google.code.tempusfugit.temporal.Duration;
+
 /**
  * Author: Yanchuan Li
  * Date: 5/18/12
@@ -66,4 +69,6 @@ public class Config {
 
     public static final int EVENT_LOGIN = 0;
     public static final int EVENT_DISCONNECTED = 1;
+
+
 }

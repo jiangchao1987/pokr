@@ -91,8 +91,8 @@ public class Game implements Runnable {
         return result;
     }
 
-    public synchronized void sitDown(Player player) {
-        log.debug(player.getName() + ":" + player.getMoney() + " is sitting down ...");
+    public synchronized void sitDown(Player player, int index) {
+        log.debug(player.getName() + ":" + player.getMoney() + " is sitting down at " + index + "...");
         boolean sitDownFailed = false;
         if (activePlayers.size() < gc.getMaxPlayersCount()) {
             //防止同一个人因黑客多次坐下
@@ -544,7 +544,7 @@ public class Game implements Runnable {
 
     private void sayHello() {
         gaming = true;
-
+     /*
         for (String s : waitingPlayers.keySet()) {
             Player player = waitingPlayers.get(s);
             if (player.isAlive()) {
@@ -557,6 +557,7 @@ public class Game implements Runnable {
                 waitingPlayers.remove(s);
             }
         }
+        */
         String info = "";
         for (Player player : activePlayers) {
             info = info + player.getUdid() + "," + player.getName() + "," + player.getMoney() + "," + player.getCustomAvatar() + "," + player.getAvatar() + "," + player.getSex() + "," + player.getAddress() + ";";

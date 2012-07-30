@@ -43,6 +43,7 @@ public class ServerHandler extends IoHandlerAdapter {
         player.setAlive(false);
         player.setSession(null);
         Memory.sessionsOnServer.remove(String.valueOf(session.getId()));
+        Memory.playersOnServer.remove(player.getUdid());
         log.debug(player.getName() + " is leaving room " + player.getRoomid());
         if (player.getRoomid() != Integer.MIN_VALUE) {
             String info = player.getRoomid() + "," + player.getUdid() + "," + player.getName();

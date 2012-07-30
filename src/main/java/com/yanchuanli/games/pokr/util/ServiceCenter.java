@@ -155,14 +155,15 @@ public class ServiceCenter {
      * 某个用户的头像下载完毕
      *
      * @param session 当前用户session
-     * @param info    当前房间id
+     * @param info    当前房间id,座位id （座位id=0时，由系统分配座位）
      */
     private void userStandBy(IoSession session, String info) {
         log.debug("user tries to sit down");
-        Game game = GameEngine.getGame(Integer.parseInt(info));
+        String[] cmds = info.split(",");
+        Game game = GameEngine.getGame(Integer.parseInt(cmds[0]));
         Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
         log.debug("user" + newplayer.getName() + "stand by");
-        game.sitDown(newplayer);
+        game.sitDown(newplayer, Integer.parseInt(cmds[1]));
     }
 
     /**

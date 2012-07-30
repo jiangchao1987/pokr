@@ -21,7 +21,7 @@ import java.util.Set;
 public class Player {
 
     private static Logger log = Logger.getLogger(Player.class);
-    private int globalId;
+
     private String udid;
     private String name;
     private IoSession session;
@@ -50,6 +50,7 @@ public class Player {
     private int sex;
     private String address;
     private int currentLevel;
+    private int lastTime;
 
     public Player(String id, String name) {
         this.udid = id;
@@ -318,13 +319,6 @@ public class Player {
         this.nameOfBestHand = nameOfBestHand;
     }
 
-    public int getGlobalId() {
-        return globalId;
-    }
-
-    public void setGlobalId(int globalId) {
-        this.globalId = globalId;
-    }
 
     public int getCustomAvatar() {
         return customAvatar;
@@ -344,7 +338,7 @@ public class Player {
 
     @Override
 	public String toString() {
-		return "Player [globalId=" + globalId + ", udid=" + udid + ", name="
+		return "Player [udid=" + udid + ", name="
 				+ name + ", session=" + session + ", hand=" + hand
 				+ ", bestHand=" + bestHand + ", bestHandRank=" + bestHandRank
 				+ ", alive=" + alive + ", money=" + money + ", betThisTime="
@@ -458,5 +452,13 @@ public class Player {
             }
         }
         return result;
+    }
+
+    public int getLastTime() {
+        return lastTime;
+    }
+
+    public void setLastTime(int lastTime) {
+        this.lastTime = lastTime;
     }
 }
