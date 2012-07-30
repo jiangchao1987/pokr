@@ -83,6 +83,7 @@ public class Game implements Runnable {
             }
             NotificationCenter.respondToPrepareToEnter(player.getSession(), sb.toString());
         }
+        allPlayersInGame.put(player.getUdid(), player);
 
     }
 
@@ -553,7 +554,7 @@ public class Game implements Runnable {
             if (player.isOnline() && player.inRoom(gc.getId())) {
                 if (activePlayers.size() < gc.getMaxPlayersCount()) {
                     activePlayers.add(player);
-                    allPlayersInGame.put(player.getUdid(), player);
+
                 }
             } else {
                 waitingPlayers.remove(s);
@@ -655,6 +656,7 @@ public class Game implements Runnable {
             }
         }
 
+        allPlayersInGame.remove(player.getUdid());
 
     }
 
