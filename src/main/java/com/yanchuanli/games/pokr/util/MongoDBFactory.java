@@ -38,7 +38,7 @@ public class MongoDBFactory {
 	}
 
 	public static DBCollection getCollection(String dbname, String collection) {
-		logger.debug("Retrieving collection: " + collection);
+//		logger.debug("Retrieving collection: " + collection);
 		return getDB(dbname).getCollection(collection);
 	}
 }

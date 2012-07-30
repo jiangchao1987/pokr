@@ -61,6 +61,7 @@ public class PlayerDao {
             player.setSex(Integer.parseInt(msgs[12]));
             player.setAddress(msgs[13]);
             player.setRoomid(Integer.MIN_VALUE);
+            player.setLastTime(TimeUtil.unixtime());
             players.put(udid, player);
         }
         return players.get(udid);
@@ -106,7 +107,7 @@ public class PlayerDao {
         query.put("udid", udid);
 
         DBObject doc = new BasicDBObject().append("$set",
-                new BasicDBObject().append("money", money).append("update", TimeUtil.unixtime()));
+                new BasicDBObject().append("money", money));
         coll.update(query, doc);
     }
 
@@ -126,7 +127,7 @@ public class PlayerDao {
                 query.put("udid", targetPlayer.getUdid());
 
                 DBObject doc = new BasicDBObject().append("$set", new BasicDBObject()
-                        .append("best", targetPlayer.getBestHand().getGIndexes()).append("br", targetPlayer.getBestHandRank()).append("update", TimeUtil.unixtime()));
+                        .append("best", targetPlayer.getBestHand().getGIndexes()).append("br", targetPlayer.getBestHandRank()));
                 coll.update(query, doc);
             }
         }
@@ -148,7 +149,7 @@ public class PlayerDao {
             query.put("udid", udid);
 
             DBObject doc = new BasicDBObject().append("$set",
-                    new BasicDBObject().append("max", maxWin).append("update", TimeUtil.unixtime()));
+                    new BasicDBObject().append("max", maxWin));
             coll.update(query, doc);
         }
     }

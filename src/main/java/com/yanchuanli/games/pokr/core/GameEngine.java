@@ -44,7 +44,7 @@ public void handle(Signal sig) {
         RoomDao.init();
         games = new HashMap<Integer, Game>();
         List<Room> roomsToPrepare = RoomDao.getRooms(Config.NORMAL_ROOM_LEVEL_BEGINNER);
-        pool = Executors.newFixedThreadPool(roomsToPrepare.size());
+        pool = Executors.newFixedThreadPool(roomsToPrepare.size() + 1);
 
         for (Room room : roomsToPrepare) {
             GameConfig gc = new GameConfig(room.getId(), room.getName(), room.getSmallBlindAmount(), room.getBigBlindAmount(), room.getMinHolding(), room.getMaxHolding(), room.getMaxPlayersCount(), Duration.millis(room.getBettingDuration()), Duration.millis(room.getInactivityCheckInterval()), Duration.millis(room.getGameCheckInterval()));
@@ -53,6 +53,8 @@ public void handle(Signal sig) {
             pool.execute(game);
         }
 
+        LiveExpChecker lec = new LiveExpChecker();
+        pool.execute(lec);
 
     }
 

@@ -327,35 +327,35 @@ public class Player {
     public void setCustomAvatar(int customAvatar) {
         this.customAvatar = customAvatar;
     }
-    
-    public int getCurrentLevel() {
-		return currentLevel;
-	}
 
-	public void setCurrentLevel(int currentLevel) {
-		this.currentLevel = currentLevel;
-	}
+    public int getCurrentLevel() {
+        return currentLevel;
+    }
+
+    public void setCurrentLevel(int currentLevel) {
+        this.currentLevel = currentLevel;
+    }
 
     @Override
-	public String toString() {
-		return "Player [udid=" + udid + ", name="
-				+ name + ", session=" + session + ", hand=" + hand
-				+ ", bestHand=" + bestHand + ", bestHandRank=" + bestHandRank
-				+ ", alive=" + alive + ", money=" + money + ", betThisTime="
-				+ betThisTime + ", betThisRound=" + betThisRound
-				+ ", TotalMoney=" + TotalMoney + ", input=" + input
-				+ ", nameOfBestHand=" + nameOfBestHand + ", exp=" + exp
-				+ ", winCount=" + winCount + ", loseCount=" + loseCount
-				+ ", historicalBestHandRank=" + historicalBestHandRank
-				+ ", historicalBestHand=" + historicalBestHand + ", maxWin="
-				+ maxWin + ", avatar=" + avatar + ", customAvatar="
-				+ customAvatar + ", smallBlind=" + smallBlind + ", bigBlind="
-				+ bigBlind + ", roomid=" + roomid + ", sex=" + sex
-				+ ", address=" + address + ", currentLevel=" + currentLevel
-				+ "]";
-	}
+    public String toString() {
+        return "Player [udid=" + udid + ", name="
+                + name + ", session=" + session + ", hand=" + hand
+                + ", bestHand=" + bestHand + ", bestHandRank=" + bestHandRank
+                + ", alive=" + alive + ", money=" + money + ", betThisTime="
+                + betThisTime + ", betThisRound=" + betThisRound
+                + ", TotalMoney=" + TotalMoney + ", input=" + input
+                + ", nameOfBestHand=" + nameOfBestHand + ", exp=" + exp
+                + ", winCount=" + winCount + ", loseCount=" + loseCount
+                + ", historicalBestHandRank=" + historicalBestHandRank
+                + ", historicalBestHand=" + historicalBestHand + ", maxWin="
+                + maxWin + ", avatar=" + avatar + ", customAvatar="
+                + customAvatar + ", smallBlind=" + smallBlind + ", bigBlind="
+                + bigBlind + ", roomid=" + roomid + ", sex=" + sex
+                + ", address=" + address + ", currentLevel=" + currentLevel
+                + "]";
+    }
 
-	public void reset() {
+    public void reset() {
         hand.makeEmpty();
         bestHand = null;
         bestHandRank = Integer.MIN_VALUE;
@@ -460,5 +460,9 @@ public class Player {
 
     public void setLastTime(int lastTime) {
         this.lastTime = lastTime;
+    }
+
+    public void addExp(int amount) {
+        this.exp += amount;
     }
 }
