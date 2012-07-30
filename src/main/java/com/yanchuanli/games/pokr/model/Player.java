@@ -28,7 +28,7 @@ public class Player {
     private Hand hand;
     private Hand bestHand;
     private int bestHandRank;
-    private boolean alive;
+    private boolean online;
     //进这个房间buy in的筹码
     private int money;
     private int betThisTime;
@@ -50,15 +50,15 @@ public class Player {
     private int sex;
     private String address;
     private int currentLevel;
-    private int lastTime;
-    private int firstLoginToday;
+    private int lastLoginTime;
+    private int elapsedTimeToday;    //当日游戏时间
 
     public Player(String id, String name) {
         this.udid = id;
         this.name = name;
         hand = new Hand();
         this.bestHandRank = Integer.MIN_VALUE;
-        this.alive = true;
+        this.online = true;
     }
 
     public String getUdid() {
@@ -109,12 +109,12 @@ public class Player {
         this.bestHandRank = bestHandRank;
     }
 
-    public boolean isAlive() {
-        return alive;
+    public boolean isOnline() {
+        return online;
     }
 
-    public void setAlive(boolean alive) {
-        this.alive = alive;
+    public void setOnline(boolean online) {
+        this.online = online;
     }
 
     public int getMoney() {
@@ -223,7 +223,7 @@ public class Player {
                 Scanner scanner = new Scanner(System.in);
                 input = scanner.nextLine();
             } else {
-                while (getInput() == null && counter < sleepCount && isAlive()) {
+                while (getInput() == null && counter < sleepCount && isOnline()) {
                     try {
                         Thread.sleep(inactivityCheckInterval.inMillis());
                         counter++;
@@ -342,7 +342,7 @@ public class Player {
         return "Player [udid=" + udid + ", name="
                 + name + ", session=" + session + ", hand=" + hand
                 + ", bestHand=" + bestHand + ", bestHandRank=" + bestHandRank
-                + ", alive=" + alive + ", money=" + money + ", betThisTime="
+                + ", online=" + online + ", money=" + money + ", betThisTime="
                 + betThisTime + ", betThisRound=" + betThisRound
                 + ", TotalMoney=" + TotalMoney + ", input=" + input
                 + ", nameOfBestHand=" + nameOfBestHand + ", exp=" + exp
@@ -455,23 +455,17 @@ public class Player {
         return result;
     }
 
-    public int getLastTime() {
-        return lastTime;
+    public int getLastLoginTime() {
+        return lastLoginTime;
     }
 
-    public void setLastTime(int lastTime) {
-        this.lastTime = lastTime;
+    public void setLastLoginTime(int lastLoginTime) {
+        this.lastLoginTime = lastLoginTime;
     }
 
     public void addExp(int amount) {
         this.exp += amount;
     }
 
-    public int getFirstLoginToday() {
-        return firstLoginToday;
-    }
 
-    public void setFirstLoginToday(int firstLoginToday) {
-        this.firstLoginToday = firstLoginToday;
-    }
 }

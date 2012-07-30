@@ -1,6 +1,5 @@
 package com.yanchuanli.games.pokr.core;
 
-import com.yanchuanli.games.pokr.dao.PlayerDao;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.util.ExpConfig;
 import com.yanchuanli.games.pokr.util.Memory;
@@ -14,29 +13,26 @@ import org.apache.log4j.Logger;
  * Email: mail@yanchuanli.com
  * Date: 12-7-30
  */
-public class LiveExpChecker implements Runnable {
+public class LiveTimeChecker implements Runnable {
 
-    private static Logger log = Logger.getLogger(LiveExpChecker.class);
+    private static Logger log = Logger.getLogger(LiveTimeChecker.class);
     private boolean stop = false;
 
 
-    public LiveExpChecker() {
+    public LiveTimeChecker() {
 
     }
 
 
     @Override
     public void run() {
-        log.debug("LiveExpChecker started ...");
+        log.debug("LiveTimeChecker started ...");
         while (!stop) {
             int now = TimeUtil.unixtime();
             for (String s : Memory.playersOnServer.keySet()) {
                 Player player = Memory.playersOnServer.get(s);
-                if (now >= player.getLastTime() + 1) {
-                    player.addExp(ExpConfig.expLiveTimeIncrement);
-                }
-                player.setLastTime(now);
-                PlayerDao.updateExpAndLastTime(player, ExpConfig.expLiveTimeIncrement);
+//                if(now-player.getLastLoginTime())
+
             }
             try {
                 Thread.sleep(ExpConfig.expCheckInterval.inMillis());

@@ -94,37 +94,41 @@ public class Game implements Runnable {
     public synchronized void sitDown(Player player, int index) {
         log.debug(player.getName() + ":" + player.getMoney() + " is sitting down at " + index + "...");
         boolean sitDownFailed = false;
-        if (activePlayers.size() < gc.getMaxPlayersCount()) {
-            //防止同一个人因黑客多次坐下
-            for (Player aplayer : activePlayers) {
-                if (aplayer.getUdid().equals(player.getUdid())) {
-                    log.debug(player.getName() + " has already sitted down ...");
-                    sitDownFailed = true;
-                    break;
+        if (gaming) {
+            if (activePlayers.size() < gc.getMaxPlayersCount()) {
+                //防止同一个人因黑客多次坐下
+                for (Player aplayer : activePlayers) {
+                    if (aplayer.getUdid().equals(player.getUdid())) {
+                        log.debug(player.getName() + " has already sitted down ...");
+                        sitDownFailed = true;
+                        break;
+                    }
                 }
-            }
-            if (!sitDownFailed) {
-                if (player.getMoney() > 0) {
-                    waitingPlayers.remove(player.getUdid());
-                    activePlayers.add(player);
-                } else {
-                    log.debug(player.getName() + " sitdown failed because of empty pocket ...");
-                    sitDownFailed = true;
+                if (!sitDownFailed) {
+                    if (player.getMoney() > 0) {
+                        waitingPlayers.remove(player.getUdid());
+                        activePlayers.add(player);
+                    } else {
+                        log.debug(player.getName() + " sitdown failed because of empty pocket ...");
+                        sitDownFailed = true;
+                    }
                 }
+            } else {
+                sitDownFailed = true;
             }
-        } else {
-            sitDownFailed = true;
-        }
 
-        if (sitDownFailed) {
-            NotificationCenter.sitDownFailed(player);
-        } else {
-            StringBuilder sb = new StringBuilder();
-            for (Player aplayer : activePlayers) {
-                sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoney()).append(",").append(aplayer.getCustomAvatar()).append(",").append(aplayer.getAvatar()).append(",").append(aplayer.getSex()).append(",").append(aplayer.getAddress()).append(";");
+            if (sitDownFailed) {
+                NotificationCenter.sitDownFailed(player);
+            } else {
+                StringBuilder sb = new StringBuilder();
+                for (Player aplayer : activePlayers) {
+                    sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoney()).append(",").append(aplayer.getCustomAvatar()).append(",").append(aplayer.getAvatar()).append(",").append(aplayer.getSex()).append(",").append(aplayer.getAddress()).append(";");
+                }
+                NotificationCenter.respondToPrepareToEnter(player.getSession(), sb.toString());
+                log.debug(activePlayers.size() + " players sitted down");
             }
-            NotificationCenter.respondToPrepareToEnter(player.getSession(), sb.toString());
-            log.debug(activePlayers.size() + " players sitted down");
+        } else {
+            waitingPlayers.put(player.getUdid(), player);
         }
 
 
@@ -254,7 +258,7 @@ public class Game implements Runnable {
         StringBuilder cardsInfo = new StringBuilder();
 
         for (Player player : activePlayers) {
-            if (player.isAlive()) {
+            if (player.isOnline()) {
                 cardsInfo.append(player.getUdid()).append(",").append(player.getHand().getGIndexes()).append(";");
                 for (Card card : cardsOnTable) {
                     player.getHand().addCard(card);
@@ -319,7 +323,7 @@ public class Game implements Runnable {
                     if (allPlayersInGame.containsKey(s)) {
                         PlayerDao.updateWinCount(player);
                     } else {
-                        if (player.inRoom(gc.getId()) && player.isAlive()) {
+                        if (player.inRoom(gc.getId()) && player.isOnline()) {
                             PlayerDao.updateLoseCount(player);
                         }
                     }
@@ -544,20 +548,18 @@ public class Game implements Runnable {
 
     private void sayHello() {
         gaming = true;
-     /*
         for (String s : waitingPlayers.keySet()) {
             Player player = waitingPlayers.get(s);
-            if (player.isAlive()) {
+            if (player.isOnline() && player.inRoom(gc.getId())) {
                 if (activePlayers.size() < gc.getMaxPlayersCount()) {
                     activePlayers.add(player);
-                    player.setRoomid(gc.getId());
                     allPlayersInGame.put(player.getUdid(), player);
                 }
             } else {
                 waitingPlayers.remove(s);
             }
         }
-        */
+
         String info = "";
         for (Player player : activePlayers) {
             info = info + player.getUdid() + "," + player.getName() + "," + player.getMoney() + "," + player.getCustomAvatar() + "," + player.getAvatar() + "," + player.getSex() + "," + player.getAddress() + ";";
@@ -624,7 +626,7 @@ public class Game implements Runnable {
     private synchronized void checkAvailablePlayers() {
         for (String s : waitingPlayers.keySet()) {
             Player player = waitingPlayers.get(s);
-            if (!player.isAlive()) {
+            if (!player.isOnline()) {
                 waitingPlayers.remove(s);
             }
         }
@@ -654,5 +656,15 @@ public class Game implements Runnable {
         }
 
 
+    }
+
+    public void standUp(Player player) {
+        for (Player aplayer : activePlayers) {
+            if (aplayer.getUdid().equals(player.getUdid())) {
+                if (gaming) {
+
+                }
+            }
+        }
     }
 }

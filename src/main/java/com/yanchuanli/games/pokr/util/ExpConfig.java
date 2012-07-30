@@ -9,6 +9,6 @@ import com.google.code.tempusfugit.temporal.Duration;
  * Date: 12-7-30
  */
 public class ExpConfig {
-    public static final Duration expCheckInterval = Duration.seconds(1);
+    public static final Duration expCheckInterval = Duration.minutes(5);
     public static final int expLiveTimeIncrement = 1;
 }

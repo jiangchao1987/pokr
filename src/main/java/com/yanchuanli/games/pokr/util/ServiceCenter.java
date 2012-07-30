@@ -221,7 +221,10 @@ public class ServiceCenter {
             if (player != null) {
                 log.debug(player.getName() + " has logged in ...");
                 player.setSession(session);
+                player.setOnline(true);
                 Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);
+                PlayerDao.updateLastLoginTime(player);
+                PlayerDao.updateOnlineStatus(player);
 
                 StringBuffer sb = new StringBuffer();
                 sb.append(player.getUdid()).append(",").append(player.getName()).append(",").append(

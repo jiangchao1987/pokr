@@ -260,7 +260,7 @@ public class Game {
     private List<Player> getLivePlayers() {
         List<Player> activePlayers = new ArrayList<>();
         for (Player player : players) {
-            if (player.isAlive()) {
+            if (player.isOnline()) {
                 activePlayers.add(player);
             }
         }

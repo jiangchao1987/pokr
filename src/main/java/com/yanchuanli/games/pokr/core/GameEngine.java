@@ -53,7 +53,7 @@ public void handle(Signal sig) {
             pool.execute(game);
         }
 
-        LiveExpChecker lec = new LiveExpChecker();
+        LiveTimeChecker lec = new LiveTimeChecker();
         pool.execute(lec);
 
     }
@@ -67,7 +67,7 @@ public void handle(Signal sig) {
             Game game = games.get(roomId);
             for (String s : game.getWaitingPlayers().keySet()) {
                 Player p = game.getWaitingPlayers().get(s);
-                if (p.isAlive()) {
+                if (p.isOnline()) {
                     p.getSession().close(true);
                 }
             }

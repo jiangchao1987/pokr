@@ -41,11 +41,13 @@ public class ServerHandler extends IoHandlerAdapter {
     public void sessionClosed(IoSession session) {
         Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
 
-        player.setAlive(false);
+        player.setOnline(false);
         player.setSession(null);
-        PlayerDao.updateLastTime(player);
+
         Memory.sessionsOnServer.remove(String.valueOf(session.getId()));
         Memory.playersOnServer.remove(player.getUdid());
+        PlayerDao.updateOnlineStatus(player);
+
         log.debug(player.getName() + " is leaving room " + player.getRoomid());
         if (player.getRoomid() != Integer.MIN_VALUE) {
             String info = player.getRoomid() + "," + player.getUdid() + "," + player.getName();
