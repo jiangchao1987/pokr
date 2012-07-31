@@ -50,7 +50,7 @@ public class Player {
     private int sex;
     private String address;
     private int currentLevel;
-    private int lastLoginTime;
+    private int lastOnlineTime;
     private int elapsedTimeToday;    //当日游戏时间
 
     public Player(String id, String name) {
@@ -455,17 +455,23 @@ public class Player {
         return result;
     }
 
-    public int getLastLoginTime() {
-        return lastLoginTime;
+    public int getLastOnlineTime() {
+        return lastOnlineTime;
     }
 
-    public void setLastLoginTime(int lastLoginTime) {
-        this.lastLoginTime = lastLoginTime;
+    public void setLastOnlineTime(int lastOnlineTime) {
+        this.lastOnlineTime = lastOnlineTime;
     }
 
     public void addExp(int amount) {
         this.exp += amount;
     }
 
+    public int getElapsedTimeToday() {
+        return elapsedTimeToday;
+    }
 
+    public void setElapsedTimeToday(int elapsedTimeToday) {
+        this.elapsedTimeToday = elapsedTimeToday;
+    }
 }

@@ -223,7 +223,7 @@ public class ServiceCenter {
                 player.setSession(session);
                 player.setOnline(true);
                 Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);
-                PlayerDao.updateLastLoginTime(player);
+
                 PlayerDao.updateOnlineStatus(player);
 
                 StringBuffer sb = new StringBuffer();

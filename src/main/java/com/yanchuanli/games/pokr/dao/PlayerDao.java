@@ -61,7 +61,7 @@ public class PlayerDao {
             player.setSex(Integer.parseInt(msgs[12]));
             player.setAddress(msgs[13]);
             player.setRoomid(Integer.MIN_VALUE);
-            player.setLastLoginTime(TimeUtil.unixtime());
+            player.setLastOnlineTime(TimeUtil.unixtime());
             players.put(udid, player);
         }
         return players.get(udid);
@@ -233,15 +233,26 @@ public class PlayerDao {
         DBObject searchQuery = new BasicDBObject("udid", player.getUdid());
         DBObject updateOnlineTime = new BasicDBObject("$set", new BasicDBObject("update", now));
         coll.update(searchQuery, updateOnlineTime);
-        player.setLastLoginTime(now);
+        player.setLastOnlineTime(now);
     }
 
     public static void updateOnlineStatus(Player player) {
+        int now = TimeUtil.unixtime();
+        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
+        DBObject searchQuery = new BasicDBObject("udid", player.getUdid());
+        DBObject updateOnlineTime;
+        DBObject updateOnlineStatus;
         if (player.isOnline()) {
-
+            updateOnlineStatus = new BasicDBObject("$set", new BasicDBObject("online", Config.STATUS_ONLINE));
+            updateOnlineTime = new BasicDBObject("$set", new BasicDBObject("update", now));
         } else {
-
+            updateOnlineStatus = new BasicDBObject("$set", new BasicDBObject("offline", Config.STATUS_OFFLINE));
+            updateOnlineTime = new BasicDBObject("$set", new BasicDBObject("update", 0));
         }
+        coll.update(searchQuery, updateOnlineTime);
+        coll.update(searchQuery, updateOnlineStatus);
+        player.setLastOnlineTime(now);
+
     }
 
 }

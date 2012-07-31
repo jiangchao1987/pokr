@@ -31,8 +31,10 @@ public class LiveTimeChecker implements Runnable {
             int now = TimeUtil.unixtime();
             for (String s : Memory.playersOnServer.keySet()) {
                 Player player = Memory.playersOnServer.get(s);
-//                if(now-player.getLastLoginTime())
-
+                if (player.isOnline()) {
+                    int timediff = now - player.getLastOnlineTime();
+                    player.setLastOnlineTime(now);
+                }
             }
             try {
                 Thread.sleep(ExpConfig.expCheckInterval.inMillis());
