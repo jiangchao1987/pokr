@@ -84,7 +84,6 @@ public class Game implements Runnable {
             NotificationCenter.respondToPrepareToEnter(player.getSession(), sb.toString());
         }
         allPlayersInGame.put(player.getUdid(), player);
-
     }
 
     public boolean buyIn(Player player, int amount) {
