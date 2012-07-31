@@ -65,8 +65,8 @@ public void handle(Signal sig) {
     public static void stop() {
         for (Integer roomId : games.keySet()) {
             Game game = games.get(roomId);
-            for (String s : game.getWaitingPlayers().keySet()) {
-                Player p = game.getWaitingPlayers().get(s);
+            for (String s : game.getStandingPlayers().keySet()) {
+                Player p = game.getStandingPlayers().get(s);
                 if (p.isOnline()) {
                     p.getSession().close(true);
                 }

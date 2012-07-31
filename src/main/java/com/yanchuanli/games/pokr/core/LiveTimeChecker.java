@@ -1,5 +1,6 @@
 package com.yanchuanli.games.pokr.core;
 
+import com.yanchuanli.games.pokr.dao.PlayerDao;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.util.ExpConfig;
 import com.yanchuanli.games.pokr.util.Memory;
@@ -34,6 +35,8 @@ public class LiveTimeChecker implements Runnable {
                 if (player.isOnline()) {
                     int timediff = now - player.getLastOnlineTime();
                     player.setLastOnlineTime(now);
+                    PlayerDao.addElapsedTime(player, timediff);
+                    LiveTimeExpEvaluator.checkExp(player);
                 }
             }
             try {

@@ -36,7 +36,10 @@ public class Game implements Runnable {
     //还活在游戏中的用户
     private List<Player> activePlayers;
     //进入房间了站着的用户
+    private Map<String, Player> standingPlayers;
+    //坐下但是等下局的用户
     private Map<String, Player> waitingPlayers;
+
     //本次游戏的所有用户
     private Map<String, Player> allPlayersInGame;
     //本次游戏的所有赢钱用户
@@ -63,8 +66,8 @@ public class Game implements Runnable {
         activePlayers = new CopyOnWriteArrayList<>();
         allPlayersInGame = new ConcurrentHashMap<>();
         allWinningUsers = new HashSet<>();
-
         waitingPlayers = new ConcurrentHashMap<>();
+        standingPlayers = new ConcurrentHashMap<>();
         cardsOnTable = new ArrayList<>();
         pot = new Pot();
         deck = new Deck();
@@ -75,7 +78,7 @@ public class Game implements Runnable {
 
     public void enterRoom(Player player) {
         player.setRoomid(gc.getId());
-        waitingPlayers.put(player.getUdid(), player);
+        standingPlayers.put(player.getUdid(), player);
         StringBuilder sb = new StringBuilder();
         if (gaming) {
             for (Player aplayer : activePlayers) {
@@ -95,6 +98,7 @@ public class Game implements Runnable {
         log.debug(player.getName() + ":" + player.getMoney() + " is sitting down at " + index + "...");
         boolean sitDownFailed = false;
         if (gaming) {
+            log.debug("gaming ...");
             if (activePlayers.size() < gc.getMaxPlayersCount()) {
                 //防止同一个人因黑客多次坐下
                 for (Player aplayer : activePlayers) {
@@ -106,8 +110,8 @@ public class Game implements Runnable {
                 }
                 if (!sitDownFailed) {
                     if (player.getMoney() > 0) {
-                        waitingPlayers.remove(player.getUdid());
-                        activePlayers.add(player);
+                        standingPlayers.remove(player.getUdid());
+                        waitingPlayers.put(player.getUdid(), player);
                     } else {
                         log.debug(player.getName() + " sitdown failed because of empty pocket ...");
                         sitDownFailed = true;
@@ -117,20 +121,39 @@ public class Game implements Runnable {
                 sitDownFailed = true;
             }
 
-            if (sitDownFailed) {
-                NotificationCenter.sitDownFailed(player);
+
+        } else {
+            log.debug(player.getName() + " is sitting and waiting ...");
+            int freeSitsCount = gc.getMaxPlayersCount() - activePlayers.size();
+            if (freeSitsCount > 0) {
+                standingPlayers.remove(player.getUdid());
+                waitingPlayers.put(player.getUdid(), player);
             } else {
-                StringBuilder sb = new StringBuilder();
+                log.debug(player.getName() + " sitdown failed because of no seats available ...");
+                sitDownFailed = true;
+            }
+
+        }
+
+        if (!sitDownFailed) {
+            StringBuilder sb = new StringBuilder();
+            if (gaming) {
                 for (Player aplayer : activePlayers) {
                     sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoney()).append(",").append(aplayer.getCustomAvatar()).append(",").append(aplayer.getAvatar()).append(",").append(aplayer.getSex()).append(",").append(aplayer.getAddress()).append(";");
                 }
-                NotificationCenter.respondToPrepareToEnter(player.getSession(), sb.toString());
                 log.debug(activePlayers.size() + " players sitted down");
+            } else {
+                for (String s : waitingPlayers.keySet()) {
+                    Player aplayer = waitingPlayers.get(s);
+                    sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoney()).append(",").append(aplayer.getCustomAvatar()).append(",").append(aplayer.getAvatar()).append(",").append(aplayer.getSex()).append(",").append(aplayer.getAddress()).append(";");
+                }
+                log.debug(waitingPlayers.size() + " players sitted down and are waiting for gamestart");
             }
+            RoomDao.updateCurrentPlayerCount(gc.getId(), activePlayers.size()+waitingPlayers.size());
+            NotificationCenter.respondToPrepareToEnter(player.getSession(), sb.toString());
         } else {
-            waitingPlayers.put(player.getUdid(), player);
+            NotificationCenter.sitDownFailed(player);
         }
-
 
     }
 
@@ -553,12 +576,11 @@ public class Game implements Runnable {
             if (player.isOnline() && player.inRoom(gc.getId())) {
                 if (activePlayers.size() < gc.getMaxPlayersCount()) {
                     activePlayers.add(player);
-
                 }
-            } else {
-                waitingPlayers.remove(s);
             }
         }
+
+        waitingPlayers.clear();
 
         String info = "";
         for (Player player : activePlayers) {
@@ -566,7 +588,7 @@ public class Game implements Runnable {
         }
 
 
-        RoomDao.updateCurrentPlayerCount(gc.getId(), activePlayers.size());
+
         NotificationCenter.sayHello(activePlayers, info);
 
     }
@@ -586,7 +608,7 @@ public class Game implements Runnable {
             while (!stop) {
 
                 checkAvailablePlayers();
-                if (activePlayers.size() >= 2) {
+                if (activePlayers.size() + waitingPlayers.size() >= 2) {
                     try {
                         log.debug("game will start in 3 seconds ...");
                         Thread.sleep(Duration.seconds(1).inMillis());
@@ -600,7 +622,7 @@ public class Game implements Runnable {
                     start();
                 } else {
 //                    log.debug("activeplayers:" + activePlayers.size());
-//                    log.debug("waitingplayers:" + waitingPlayers.size());
+//                    log.debug("waitingplayers:" + standingPlayers.size());
                 }
                 try {
                     Thread.sleep(gc.getGameCheckInterval().inMillis());
@@ -619,15 +641,15 @@ public class Game implements Runnable {
         stop = true;
     }
 
-    public Map<String, Player> getWaitingPlayers() {
-        return waitingPlayers;
+    public Map<String, Player> getStandingPlayers() {
+        return standingPlayers;
     }
 
     private synchronized void checkAvailablePlayers() {
-        for (String s : waitingPlayers.keySet()) {
-            Player player = waitingPlayers.get(s);
+        for (String s : standingPlayers.keySet()) {
+            Player player = standingPlayers.get(s);
             if (!player.isOnline()) {
-                waitingPlayers.remove(s);
+                standingPlayers.remove(s);
             }
         }
 
@@ -635,26 +657,48 @@ public class Game implements Runnable {
     }
 
     public void removePlayer(Player player) {
+
+        boolean playerRemoved = false;
+
+
         for (Player aplayer : activePlayers) {
             if (aplayer.getUdid().equals(player.getUdid())) {
                 player.setRoomid(Integer.MIN_VALUE);
                 activePlayers.remove(aplayer);
                 log.debug(player.getName() + " has left the room " + gc.getName());
-                RoomDao.updateCurrentPlayerCount(gc.getId(), activePlayers.size());
+                playerRemoved = true;
                 break;
             }
         }
 
-        for (String s : waitingPlayers.keySet()) {
-            Player aplayer = waitingPlayers.get(s);
-            if (aplayer.getUdid().equals(player.getUdid())) {
-                waitingPlayers.remove(s);
-                player.setRoomid(Integer.MIN_VALUE);
-                log.debug(player.getName() + " has left the room " + gc.getName());
-                break;
+
+        if (!playerRemoved) {
+            for (String s : standingPlayers.keySet()) {
+                Player aplayer = standingPlayers.get(s);
+                if (aplayer.getUdid().equals(player.getUdid())) {
+                    standingPlayers.remove(s);
+                    player.setRoomid(Integer.MIN_VALUE);
+                    log.debug(player.getName() + " has left the room " + gc.getName());
+                    break;
+                }
             }
         }
 
+        if (!playerRemoved) {
+            for (String s : waitingPlayers.keySet()) {
+                Player aplayer = waitingPlayers.get(s);
+                if (aplayer.getUdid().equals(player.getUdid())) {
+                    waitingPlayers.remove(s);
+                    player.setRoomid(Integer.MIN_VALUE);
+                    log.debug(player.getName() + " has left the room " + gc.getName());
+                    break;
+                }
+            }
+        }
+
+        if (playerRemoved) {
+            RoomDao.updateCurrentPlayerCount(gc.getId(), activePlayers.size() + waitingPlayers.size());
+        }
         allPlayersInGame.remove(player.getUdid());
 
     }
