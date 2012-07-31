@@ -254,31 +254,37 @@ public class PlayerDao {
         player.setLastOnlineTime(now);
 
     }
-   
+
     /**
      * 累加用户在线时间
-     * 
+     *
      * @param player
      * @param seconds
      */
     public static void addElapsedTime(Player player, int seconds) {
-    	DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
+        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
         DBObject searchQuery = new BasicDBObject("udid", player.getUdid());
         DBObject incQuery = new BasicDBObject("$inc", new BasicDBObject("elapsedTimeToday", seconds));
         coll.update(searchQuery, incQuery);
         player.setElapsedTimeToday(player.getElapsedTimeToday() + seconds);
     }
-    
+
     /**
      * 清0所有用户的当天在线时间
      */
     public static void resetElapsedTime() {
-    	DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
-    	DBObject searchQuery = new BasicDBObject();
+        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
+        DBObject searchQuery = new BasicDBObject();
         DBObject setQuery = new BasicDBObject("$set", new BasicDBObject("elapsedTimeToday", 0));
         coll.update(searchQuery, setQuery);
     }
 
+    /**
+     * 标记用户当天已经得到过的经验值
+     * @param player
+     */
+    public static void updateTimeLevelToday(Player player) {
 
+    }
 
 }

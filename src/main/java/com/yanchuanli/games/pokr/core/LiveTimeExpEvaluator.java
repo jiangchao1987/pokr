@@ -51,11 +51,13 @@ public class LiveTimeExpEvaluator {
     public static void checkExp(Player player) {
         if (player.getElapsedTimeToday() > 0) {
             int time = player.getElapsedTimeToday();
-            int startLevel = player.getTimeLevelToday() + 1;
+            int startLevel = player.getTimeLevelToday();
             for (int i = startLevel; i < levels.size(); i++) {
                 EXPTimeLevel exp = levels.get(i);
                 if (time > exp.getMinTimeInSeconds() && time <= exp.getMaxTimeInSeconds()) {
+                    player.setTimeLevelToday(exp.getLevel());
                     PlayerDao.addExp(player, exp.getExp());
+                    PlayerDao.updateTimeLevelToday(player);
                     break;
                 }
             }
