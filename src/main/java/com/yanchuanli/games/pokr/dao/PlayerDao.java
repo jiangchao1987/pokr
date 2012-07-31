@@ -254,5 +254,13 @@ public class PlayerDao {
         player.setLastOnlineTime(now);
 
     }
+   
+    public static void addElapsedTime(Player player, int seconds) {
+    	
+    }
+    
+    public static void resetElapsedTime() {
+    	
+    }
 
 }
