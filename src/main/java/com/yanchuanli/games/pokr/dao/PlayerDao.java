@@ -219,7 +219,7 @@ public class PlayerDao {
         player.setExp(player.getExp() + exp);
     }
 
-    public static void updateExp(Player player, int exp) {
+    public static void addExp(Player player, int exp) {
         DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
         DBObject searchQuery = new BasicDBObject("udid", player.getUdid());
         DBObject incQuery = new BasicDBObject("$inc", new BasicDBObject("exp", exp));
@@ -275,8 +275,10 @@ public class PlayerDao {
     public static void resetElapsedTime() {
     	DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
     	DBObject searchQuery = new BasicDBObject();
-        DBObject incQuery = new BasicDBObject("$set", new BasicDBObject("elapsedTimeToday", 0));
-        coll.update(searchQuery, incQuery);
+        DBObject setQuery = new BasicDBObject("$set", new BasicDBObject("elapsedTimeToday", 0));
+        coll.update(searchQuery, setQuery);
     }
+
+
 
 }

@@ -34,12 +34,26 @@ public class LiveTimeExpEvaluator {
         levels.add(EXPTimeLevel.LEVEL14);
         levels.add(EXPTimeLevel.LEVEL15);
         levels.add(EXPTimeLevel.LEVEL16);
+        levels.add(EXPTimeLevel.LEVEL17);
+        levels.add(EXPTimeLevel.LEVEL18);
+        levels.add(EXPTimeLevel.LEVEL19);
+        levels.add(EXPTimeLevel.LEVEL20);
+        levels.add(EXPTimeLevel.LEVEL21);
+        levels.add(EXPTimeLevel.LEVEL22);
+        levels.add(EXPTimeLevel.LEVEL23);
+        levels.add(EXPTimeLevel.LEVEL24);
+        levels.add(EXPTimeLevel.LEVEL25);
+        levels.add(EXPTimeLevel.LEVEL26);
+        levels.add(EXPTimeLevel.LEVEL27);
+        levels.add(EXPTimeLevel.LEVEL28);
     }
 
     public static void checkExp(Player player) {
         if (player.getElapsedTimeToday() > 0) {
             int time = player.getElapsedTimeToday();
-            for (EXPTimeLevel exp : levels) {
+            int startLevel = player.getTimeLevelToday() + 1;
+            for (int i = startLevel; i < levels.size(); i++) {
+                EXPTimeLevel exp = levels.get(i);
                 if (time > exp.getMinTimeInSeconds() && time <= exp.getMaxTimeInSeconds()) {
                     PlayerDao.addExp(player, exp.getExp());
                     break;

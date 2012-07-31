@@ -52,6 +52,7 @@ public class Player {
     private int currentLevel;
     private int lastOnlineTime;
     private int elapsedTimeToday;    //当日游戏时间
+    private int timeLevelToday;      //当日已经加过经验值的level
 
     public Player(String id, String name) {
         this.udid = id;
@@ -473,5 +474,13 @@ public class Player {
 
     public void setElapsedTimeToday(int elapsedTimeToday) {
         this.elapsedTimeToday = elapsedTimeToday;
+    }
+
+    public int getTimeLevelToday() {
+        return timeLevelToday;
+    }
+
+    public void setTimeLevelToday(int timeLevelToday) {
+        this.timeLevelToday = timeLevelToday;
     }
 }
