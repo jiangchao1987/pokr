@@ -8,6 +8,7 @@ import com.yanchuanli.games.pokr.util.NotificationCenter;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.session.IoSession;
 
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -482,5 +483,23 @@ public class Player {
 
     public void setTimeLevelToday(int timeLevelToday) {
         this.timeLevelToday = timeLevelToday;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(udid);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (obj == this)
+            return true;
+        if (obj.getClass() != getClass())
+            return false;
+
+        Player player = (Player) obj;
+        return this.getUdid().equals(player.getUdid());
     }
 }

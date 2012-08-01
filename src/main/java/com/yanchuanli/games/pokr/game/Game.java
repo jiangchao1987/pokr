@@ -41,7 +41,7 @@ public class Game implements Runnable {
     private Map<String, Player> waitingPlayers;
 
     //本次游戏的所有用户
-    private Map<String, Player> allPlayersInGame;
+    private List<Player> allPlayersInGame;
     //本次游戏的所有赢钱用户
     private Set<String> allWinningUsers;
 
@@ -64,7 +64,7 @@ public class Game implements Runnable {
     public Game(GameConfig gc) {
         this.gc = gc;
         activePlayers = new CopyOnWriteArrayList<>();
-        allPlayersInGame = new ConcurrentHashMap<>();
+        allPlayersInGame = new CopyOnWriteArrayList<>();
         allWinningUsers = new HashSet<>();
         waitingPlayers = new ConcurrentHashMap<>();
         standingPlayers = new ConcurrentHashMap<>();
@@ -86,7 +86,7 @@ public class Game implements Runnable {
             }
             NotificationCenter.respondToPrepareToEnter(player.getSession(), sb.toString());
         }
-        allPlayersInGame.put(player.getUdid(), player);
+        allPlayersInGame.add(player);
     }
 
     public boolean buyIn(Player player, int amount) {
@@ -149,7 +149,7 @@ public class Game implements Runnable {
                 }
                 log.debug(waitingPlayers.size() + " players sitted down and are waiting for gamestart");
             }
-            RoomDao.updateCurrentPlayerCount(gc.getId(), activePlayers.size()+waitingPlayers.size());
+            RoomDao.updateCurrentPlayerCount(gc.getId(), activePlayers.size() + waitingPlayers.size());
             NotificationCenter.respondToPrepareToEnter(player.getSession(), sb.toString());
         } else {
             NotificationCenter.sitDownFailed(player);
@@ -213,15 +213,15 @@ public class Game implements Runnable {
         actorPosition = dealerPosition;
         Player dealer = activePlayers.get(actorPosition);
 
-        NotificationCenter.markCurrentDealer(activePlayers, dealer.getUdid());
+        NotificationCenter.markCurrentDealer(allPlayersInGame, dealer.getUdid());
         int smallBlindIndex = (actorPosition + 1) % activePlayers.size();
         int bigBlindIndex = (actorPosition + 2) % activePlayers.size();
         Player smallBlind = activePlayers.get(smallBlindIndex);
         smallBlind.setSmallBlind(true);
         Player bigBlind = activePlayers.get(bigBlindIndex);
         bigBlind.setBigBlind(true);
-        NotificationCenter.markSmallBlind(activePlayers, smallBlind.getUdid());
-        NotificationCenter.markBigBlind(activePlayers, bigBlind.getUdid());
+        NotificationCenter.markSmallBlind(allPlayersInGame, smallBlind.getUdid());
+        NotificationCenter.markBigBlind(allPlayersInGame, bigBlind.getUdid());
 
 
         log.debug("[RotateDealer] current markCurrentDealer:" + dealerPosition);
@@ -322,6 +322,7 @@ public class Game implements Runnable {
                             player.addMoney(moneyForEveryOne);
                             PlayerDao.cashBack(player, moneyForEveryOne);
                             PlayerDao.updateMaxWin(player.getUdid(), moneyForEveryOne);
+                            PlayerDao.updateWinCount(player);
                             allWinningUsers.add(player.getUdid());
                             sb.append(player.getUdid()).append(",").append(player.getNameOfBestHand()).append(",").append(String.valueOf(player.getGIndexesForOwnCardsUsedInBestFive())).append(",").append(player.getIndexesForUsedCommunityCardsInBestFive(cardsArray)).append(",").append(String.valueOf(moneyForEveryOne)).append(";");
                             playersInThisPot.remove(player.getUdid());
@@ -341,16 +342,14 @@ public class Game implements Runnable {
                     }
                 }
 
-                for (String s : allPlayersInGame.keySet()) {
-                    Player player = allPlayersInGame.get(s);
-                    if (allPlayersInGame.containsKey(s)) {
-                        PlayerDao.updateWinCount(player);
+                for (Player p : activePlayers) {
+                    if (allWinningUsers.contains(p.getUdid())) {
+
                     } else {
-                        if (player.inRoom(gc.getId()) && player.isOnline()) {
-                            PlayerDao.updateLoseCount(player);
-                        }
+                        PlayerDao.updateLoseCount(p);
                     }
                 }
+
                 //每个边池给客户端足够做动画的时间
                 NotificationCenter.winorlose(playersListInThisPot, sb.toString());
                 try {
@@ -388,7 +387,6 @@ public class Game implements Runnable {
         moneyOnTable = 0;
         cardsOnTable.clear();
 //        activePlayers.clear();
-        allPlayersInGame.clear();
         allWinningUsers.clear();
         pot.clear();
         bet = 0;
@@ -420,7 +418,7 @@ public class Game implements Runnable {
             Set<Action> allowedActions = getAllowedActions(actor);
 
             List<Player> playersToForward = new ArrayList<>();
-            for (Player player : this.activePlayers) {
+            for (Player player : allPlayersInGame) {
                 if (player != actor) {
                     playersToForward.add(player);
                 }
@@ -479,11 +477,13 @@ public class Game implements Runnable {
                 case FOLD:
                     actor.getHand().makeEmpty();
                     this.activePlayers.remove(actor);
+                    this.waitingPlayers.put(actor.getUdid(), actor);
                     actorPosition--;
                     if (this.activePlayers.size() == 1) {
                         log.debug(this.activePlayers.get(0).getName() + " win ...");
                         playersToAct = 0;
                     }
+                    PlayerDao.updateLoseCount(actor);
                     break;
                 case SMALL_BLIND:
                     bet = actor.getBetThisTime();
@@ -510,9 +510,9 @@ public class Game implements Runnable {
             String info = actor.getUdid() + "," + action.getVerb() + ":" + actor.getBetThisTime() + "," + moneyOnTable;
 
             if (action.getName().equals(Action.SMALL_BLIND.getName())) {
-                NotificationCenter.paySmallBlind(activePlayers, info);
+                NotificationCenter.paySmallBlind(allPlayersInGame, info);
             } else if (action.getName().equals(Action.BIG_BLIND.getName())) {
-                NotificationCenter.payBigBlind(activePlayers, info);
+                NotificationCenter.payBigBlind(allPlayersInGame, info);
             } else {
                 NotificationCenter.forwardAction(playersToForward, info);
                 playersToForward.clear();
@@ -580,6 +580,14 @@ public class Game implements Runnable {
             }
         }
 
+        for (Player player : activePlayers) {
+            if (player.getMoney() <= 0) {
+                activePlayers.remove(player);
+                standingPlayers.put(player.getUdid(), player);
+            }
+        }
+
+
         waitingPlayers.clear();
 
         String info = "";
@@ -588,8 +596,8 @@ public class Game implements Runnable {
         }
 
 
-
-        NotificationCenter.sayHello(activePlayers, info);
+        NotificationCenter.sayHello(allPlayersInGame, info);
+        log.debug(info);
 
     }
 
@@ -645,11 +653,26 @@ public class Game implements Runnable {
         return standingPlayers;
     }
 
-    private synchronized void checkAvailablePlayers() {
+    private void checkAvailablePlayers() {
         for (String s : standingPlayers.keySet()) {
             Player player = standingPlayers.get(s);
             if (!player.isOnline()) {
                 standingPlayers.remove(s);
+            }
+        }
+
+        for (Player player : activePlayers) {
+            if (player.getMoney() <= 0) {
+                activePlayers.remove(player);
+                standingPlayers.put(player.getUdid(), player);
+            }
+        }
+
+        for (String udid : waitingPlayers.keySet()) {
+            Player player = waitingPlayers.get(udid);
+            if (player.getMoney() <= 0) {
+                waitingPlayers.remove(udid);
+                standingPlayers.put(udid, player);
             }
         }
 
@@ -699,17 +722,10 @@ public class Game implements Runnable {
         if (playerRemoved) {
             RoomDao.updateCurrentPlayerCount(gc.getId(), activePlayers.size() + waitingPlayers.size());
         }
-        allPlayersInGame.remove(player.getUdid());
+
+        allPlayersInGame.remove(player);
 
     }
 
-    public void standUp(Player player) {
-        for (Player aplayer : activePlayers) {
-            if (aplayer.getUdid().equals(player.getUdid())) {
-                if (gaming) {
 
-                }
-            }
-        }
-    }
 }
