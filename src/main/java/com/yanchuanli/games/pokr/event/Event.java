@@ -11,6 +11,10 @@ public class Event {
     private int timestamp;
     private int type;
     private String info;
+    private int processed;
+    
+    public Event() {
+    }
 
     public Event(String udid, int timestamp, int type, String info) {
         this.udid = udid;
@@ -50,4 +54,13 @@ public class Event {
     public void setInfo(String info) {
         this.info = info;
     }
+
+	public int getProcessed() {
+		return processed;
+	}
+
+	public void setProcessed(int processed) {
+		this.processed = processed;
+	}
+    
 }

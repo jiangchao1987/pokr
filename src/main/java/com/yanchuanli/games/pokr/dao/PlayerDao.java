@@ -1,25 +1,27 @@
 package com.yanchuanli.games.pokr.dao;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.yanchuanli.games.pokr.model.Player;
-import com.yanchuanli.games.pokr.util.*;
-import org.apache.log4j.Logger;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.yanchuanli.games.pokr.util.Config;
+import com.yanchuanli.games.pokr.util.MongoDB;
+import com.yanchuanli.games.pokr.util.MongoDBFactory;
+import com.yanchuanli.games.pokr.util.ServerConfig;
+import com.yanchuanli.games.pokr.util.TimeUtil;
+import com.yanchuanli.games.pokr.util.URLFetchUtil;
 
 /**
  * Copyright Candou.com
  * Author: Yanchuan Li
  * Email: mail@yanchuanli.com
  * Date: 12-6-22
- */
-
-/**
- * @author ASUS
  */
 public class PlayerDao {
 
@@ -62,6 +64,7 @@ public class PlayerDao {
             player.setAddress(msgs[13]);
             player.setRoomid(Integer.MIN_VALUE);
             player.setLastOnlineTime(TimeUtil.unixtime());
+//            player.setTimeLevelToday(Integer.parseInt(msgs[14]));
             players.put(udid, player);
         }
         return players.get(udid);
@@ -280,11 +283,25 @@ public class PlayerDao {
     }
 
     /**
-     * 标记用户当天已经得到过的经验值
+     * 标记用户当天已经得到过的经验值等级
+     * 
      * @param player
      */
     public static void updateTimeLevelToday(Player player) {
-
+    	DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
+        DBObject searchQuery = new BasicDBObject("udid", player.getUdid());
+        DBObject incQuery = new BasicDBObject("$set", new BasicDBObject("timeLevelToday", player.getTimeLevelToday()));
+        coll.update(searchQuery, incQuery);
     }
-
+    
+    /**
+     * 清0所有用户的当天已经得到过的经验值等级
+     */
+    public static void resetTimeLevelToday() {
+    	DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
+        DBObject searchQuery = new BasicDBObject();
+        DBObject setQuery = new BasicDBObject("$set", new BasicDBObject("timeLevelToday", 0));
+        coll.update(searchQuery, setQuery);
+	}
+	
 }
