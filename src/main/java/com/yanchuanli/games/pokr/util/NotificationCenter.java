@@ -2,7 +2,6 @@ package com.yanchuanli.games.pokr.util;
 
 import com.yanchuanli.games.pokr.model.Player;
 import org.apache.mina.core.session.IoSession;
-import org.apache.mina.filter.util.SessionAttributeInitializingFilter;
 
 import java.util.List;
 
@@ -19,7 +18,7 @@ public class NotificationCenter {
 	 * 从总资产中扣去相应钱数用于继续游戏
 	 * 
 	 * @param session 当前玩家
-	 * @param result  是否成功的标志, 1 success
+	 * @param info  是否成功的标志, 1 success
 	 */
 	public static void buyIn(IoSession session, String info) {
 		notifySpecificOnTable(session, info, Config.TYPE_BUYIN_INGAME);
@@ -201,5 +200,10 @@ public class NotificationCenter {
             Util.sendMsg(session, info, type);
         }
     }
+
+
+    public static void youAreBroke(List<Player> players) {
+         notifyAllOnTable(players, "", Config.TYPE_JOIN_INGAME);
+     }
 
 }
