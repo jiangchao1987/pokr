@@ -7,11 +7,14 @@ import com.yanchuanli.games.pokr.basic.HandEvaluator;
 import com.yanchuanli.games.pokr.basic.PlayerRankComparator;
 import com.yanchuanli.games.pokr.dao.PlayerDao;
 import com.yanchuanli.games.pokr.dao.RoomDao;
+import com.yanchuanli.games.pokr.dto.PlayerDTO;
 import com.yanchuanli.games.pokr.model.Action;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.model.Pot;
 import com.yanchuanli.games.pokr.model.Record;
+import com.yanchuanli.games.pokr.util.DTO2JSON;
 import com.yanchuanli.games.pokr.util.NotificationCenter;
+import com.yanchuanli.games.pokr.util.PO2DTO;
 import com.yanchuanli.games.pokr.util.Util;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
@@ -82,13 +85,19 @@ public class Game implements Runnable {
     public void enterRoom(Player player) {
         player.setRoomid(gc.getId());
         standingPlayers.put(player.getUdid(), player);
-        StringBuilder sb = new StringBuilder();
-        if (gaming) {
-            for (Player aplayer : activePlayers) {
+//        StringBuilder sb = new StringBuilder();
+//        if (gaming) {
+            /*for (Player aplayer : activePlayers) {
                 sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoneyInGame()).append(",").append(aplayer.getCustomAvatar()).append(",").append(aplayer.getAvatar()).append(",").append(aplayer.getSex()).append(",").append(aplayer.getAddress()).append(";");
             }
-            NotificationCenter.respondToPrepareToEnter(player.getSession(), sb.toString());
-        }
+            NotificationCenter.respondToPrepareToEnter(player.getSession(), sb.toString());*/
+        	List<PlayerDTO> playerDTOs = new ArrayList<>();
+        	for (Player aplayer : activePlayers) {
+        		playerDTOs.add(PO2DTO.parsePlayer(aplayer));
+        	}
+        	NotificationCenter.respondToPrepareToEnter(player.getSession(), DTO2JSON.writeValue(playerDTOs));
+        	log.debug("dto to json: " + DTO2JSON.writeValue(playerDTOs));
+//        }
         allPlayersInGame.add(player);
     }
 
@@ -593,14 +602,21 @@ public class Game implements Runnable {
 
         waitingPlayers.clear();
 
-        String info = "";
+        /*String info = "";
         for (Player player : activePlayers) {
             info = info + player.getUdid() + "," + player.getName() + "," + player.getMoneyInGame() + "," + player.getCustomAvatar() + "," + player.getAvatar() + "," + player.getSex() + "," + player.getAddress() + ";";
-        }
+        }*/
+        
+        List<PlayerDTO> playerDTOs = new ArrayList<>();
+    	for (Player aplayer : activePlayers) {
+    		playerDTOs.add(PO2DTO.parsePlayer(aplayer));
+    	}
+    	NotificationCenter.sayHello(allPlayersInGame, DTO2JSON.writeValue(playerDTOs));
+    	log.debug("dto to json: " + DTO2JSON.writeValue(playerDTOs));
 
 
-        NotificationCenter.sayHello(allPlayersInGame, info);
-        log.debug(info);
+//        NotificationCenter.sayHello(allPlayersInGame, info);
+//        log.debug(info);
 
     }
 
