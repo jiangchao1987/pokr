@@ -203,7 +203,7 @@ public class NotificationCenter {
 
 
     public static void youAreBroke(List<Player> players) {
-         notifyAllOnTable(players, "", Config.TYPE_JOIN_INGAME);
+         notifyAllOnTable(players, "", Config.TYPE_YOUAREBROKE_INGAME);
      }
 
 }
