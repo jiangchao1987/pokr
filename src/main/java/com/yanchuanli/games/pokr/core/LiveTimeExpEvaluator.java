@@ -55,10 +55,15 @@ public class LiveTimeExpEvaluator {
             for (int i = startLevel; i < levels.size(); i++) {
                 EXPTimeLevel exp = levels.get(i);
                 if (time > exp.getMinTimeInSeconds() && time <= exp.getMaxTimeInSeconds()) {
-                    player.setTimeLevelToday(exp.getLevel());
-                    PlayerDao.addExp(player, exp.getExp());
-                    PlayerDao.updateTimeLevelToday(player);
-                    break;
+                    if (exp.getLevel() == player.getTimeLevelToday()) {
+
+                    } else {
+                        player.setTimeLevelToday(exp.getLevel());
+                        PlayerDao.addExp(player, exp.getExp());
+                        PlayerDao.updateTimeLevelToday(player);
+                        break;
+                    }
+
                 }
             }
         }

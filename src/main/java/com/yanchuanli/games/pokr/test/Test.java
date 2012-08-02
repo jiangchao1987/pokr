@@ -43,8 +43,7 @@ public class Test {
 //        testTable();
 //        testPot();
 //        testSharedPlayer();
-         int a=7/2;
-        log.info(a);
+
 
     }
 

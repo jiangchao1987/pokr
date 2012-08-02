@@ -40,6 +40,8 @@ public class Game implements Runnable {
     //坐下但是等下局的用户
     private Map<String, Player> waitingPlayers;
 
+    private Map<Integer, String> table;
+
     //本次游戏的所有用户
     private List<Player> allPlayersInGame;
     //本次游戏的所有赢钱用户
@@ -68,6 +70,7 @@ public class Game implements Runnable {
         allWinningUsers = new HashSet<>();
         waitingPlayers = new ConcurrentHashMap<>();
         standingPlayers = new ConcurrentHashMap<>();
+        table = new ConcurrentHashMap<>();
         cardsOnTable = new ArrayList<>();
         pot = new Pot();
         deck = new Deck();
@@ -242,7 +245,7 @@ public class Game implements Runnable {
 //            log.debug(player.getName() + " got " + player.getHand().toChineseString());
             NotificationCenter.deal2Cards(player.getSession(), player.getUdid() + "," + player.getName() + "," + player.getHand().getGIndexes());
         }
-        NotificationCenter.deal2CardsOnAllDevices(activePlayers, actor.getUdid());
+        NotificationCenter.deal2CardsOnAllDevices(allPlayersInGame, actor.getUdid());
     }
 
     private void deal3FlipCards() {
@@ -251,21 +254,21 @@ public class Game implements Runnable {
             cardsOnTable.add(card);
         }
         log.debug("OnTable:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
-        NotificationCenter.deal3FlipCards(activePlayers, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
+        NotificationCenter.deal3FlipCards(allPlayersInGame, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
     }
 
     private void dealTurnCard() {
         Card card = deck.dealCard();
         cardsOnTable.add(card);
         log.debug("OnTable-Turn:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
-        NotificationCenter.dealTurnCard(activePlayers, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
+        NotificationCenter.dealTurnCard(allPlayersInGame, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
     }
 
     private void dealRiverCard() {
         Card card = deck.dealCard();
         cardsOnTable.add(card);
         log.debug("OnTable-River:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
-        NotificationCenter.dealRiverCard(activePlayers, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
+        NotificationCenter.dealRiverCard(allPlayersInGame, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
     }
 
     private void showdown() {
