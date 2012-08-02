@@ -221,12 +221,12 @@ public class Game {
             /*
             if (actorBet < bet) {
                 actions.add(Action.CALL);
-                if (player.getMoney() < MAX_RAISES) {
+                if (player.getMoneyInGame() < MAX_RAISES) {
                     actions.add(Action.RAISE);
                 }
             } else {
                 actions.add(Action.CHECK);
-                if (player.getMoney() < MAX_RAISES) {
+                if (player.getMoneyInGame() < MAX_RAISES) {
                     actions.add(Action.RAISE);
                 }
             }
@@ -235,7 +235,7 @@ public class Game {
 
             actions.add(Action.CALL);
 
-            if (player.getMoney() > bet) {
+            if (player.getMoneyInGame() > bet) {
                 actions.add(Action.RAISE);
             }
 

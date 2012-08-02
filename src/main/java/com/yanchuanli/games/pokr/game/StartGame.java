@@ -23,11 +23,11 @@ public class StartGame {
     public static void main(String[] args) {
 
         Player player1 = new Player("0", "0");
-        player1.setMoney(1000);
+        player1.setMoneyInGame(1000);
         Player player2 = new Player("1", "1");
-        player2.setMoney(1000);
+        player2.setMoneyInGame(1000);
         Player player3 = new Player("2", "2");
-        player3.setMoney(1000);
+        player3.setMoneyInGame(1000);
 
         GameConfig gc = new GameConfig(1, "123", 20, 40, 0, 10000, 9, Duration.seconds(3000), Duration.millis(500), Duration.seconds(3));
         Game game = new Game(gc);

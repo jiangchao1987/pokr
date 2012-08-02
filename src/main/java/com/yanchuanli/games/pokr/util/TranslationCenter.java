@@ -18,7 +18,7 @@ public class TranslationCenter {
 
 	/*public MiniPlayer getMiniPlayer(Player player) {
 		MiniPlayer miniPlayer = MiniPlayer.newBuilder().setId(player.getUdid())
-				.setName(player.getName()).setMoney(player.getMoney())
+				.setName(player.getName()).setMoneyInGame(player.getMoneyInGame())
 				.setBetThisTime(player.getBetThisTime()).setInput(player.getInput()).build();
 		return miniPlayer;
 	}
