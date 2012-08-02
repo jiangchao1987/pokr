@@ -147,21 +147,16 @@ public class Game implements Runnable {
         }
 
         if (!sitDownFailed) {
-            StringBuilder sb = new StringBuilder();
-            if (gaming) {
-                for (Player aplayer : activePlayers) {
-                    sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoneyInGame()).append(",").append(aplayer.getCustomAvatar()).append(",").append(aplayer.getAvatar()).append(",").append(aplayer.getSex()).append(",").append(aplayer.getAddress()).append(";");
-                }
-                log.debug(activePlayers.size() + " players sitted down");
-            } else {
-                for (String s : waitingPlayers.keySet()) {
-                    Player aplayer = waitingPlayers.get(s);
-                    sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoneyInGame()).append(",").append(aplayer.getCustomAvatar()).append(",").append(aplayer.getAvatar()).append(",").append(aplayer.getSex()).append(",").append(aplayer.getAddress()).append(";");
-                }
-                log.debug(waitingPlayers.size() + " players sitted down and are waiting for gamestart");
+            List<PlayerDTO> playerDTOs = new ArrayList<>();
+            for (Player aplayer : activePlayers) {
+                playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_ACTIVE));
+            }
+            for (String s : waitingPlayers.keySet()) {
+                Player aplayer = waitingPlayers.get(s);
+                playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_WAITING));
             }
             RoomDao.updateCurrentPlayerCount(gc.getId(), activePlayers.size() + waitingPlayers.size());
-            NotificationCenter.respondToPrepareToEnter(player.getSession(), sb.toString());
+            NotificationCenter.respondToPrepareToEnter(player.getSession(), DTOUtil.writeValue(playerDTOs));
         } else {
             NotificationCenter.sitDownFailed(player);
         }
