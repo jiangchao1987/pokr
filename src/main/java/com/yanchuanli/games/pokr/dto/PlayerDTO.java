@@ -11,6 +11,7 @@ public class PlayerDTO {
 	private String address;
 	private int seatIndex;
 
+
 	public String getUdid() {
 		return udid;
 	}
