@@ -50,18 +50,18 @@ public class Test {
 
     public static void testSharedPlayer() {
         Player player = new Player("1", "yanchuan");
-        player.setMoney(10000);
+        player.setMoneyInGame(10000);
         Map<String, Player> map = new HashMap<>();
         map.put("1", player);
         List<Player> list = new ArrayList<>();
         list.add(player);
 
-        player.setMoney(8000);
+        player.setMoneyInGame(8000);
         Player aplayer = map.get("1");
-        log.debug(aplayer.getMoney());
+        log.debug(aplayer.getMoneyInGame());
 
         Player bplayer = list.get(0);
-        log.debug(bplayer.getMoney());
+        log.debug(bplayer.getMoneyInGame());
     }
 
     public static void testTable() {

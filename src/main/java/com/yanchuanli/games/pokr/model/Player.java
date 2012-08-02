@@ -31,10 +31,10 @@ public class Player {
     private int bestHandRank;
     private boolean online;
     //进这个房间buy in的筹码
-    private int money;
+    private int moneyInGame;
     private int betThisTime;
     private int betThisRound;
-    private int TotalMoney;
+    private int money;
     private String input;
     private String nameOfBestHand;
     private int exp;
@@ -123,12 +123,12 @@ public class Player {
         this.online = online;
     }
 
-    public int getMoney() {
-        return money;
+    public int getMoneyInGame() {
+        return moneyInGame;
     }
 
-    public void setMoney(int money) {
-        this.money = money;
+    public void setMoneyInGame(int moneyInGame) {
+        this.moneyInGame = moneyInGame;
     }
 
     public int getExp() {
@@ -277,7 +277,7 @@ public class Player {
                 betThisRound += betThisTime;
                 result = Action.BIG_BLIND;
             } else if (input.startsWith("a")) {
-                setBetThisTime(money);
+                setBetThisTime(moneyInGame);
                 betThisRound += betThisTime;
                 result = Action.ALLIN;
             } else {
@@ -286,7 +286,7 @@ public class Player {
                 betThisRound += betThisTime;
                 result = Action.BET;
             }
-            money -= betThisTime;
+            moneyInGame -= betThisTime;
             PlayerDao.cashBack(this, -betThisTime);
         }
 
@@ -307,7 +307,7 @@ public class Player {
     }
 
     public void win(int bet) {
-        this.money += bet;
+        this.moneyInGame += bet;
     }
 
     public String getInput() {
@@ -348,9 +348,9 @@ public class Player {
         return "Player [udid=" + udid + ", name="
                 + name + ", session=" + session + ", hand=" + hand
                 + ", bestHand=" + bestHand + ", bestHandRank=" + bestHandRank
-                + ", online=" + online + ", money=" + money + ", betThisTime="
+                + ", online=" + online + ", moneyInGame=" + moneyInGame + ", betThisTime="
                 + betThisTime + ", betThisRound=" + betThisRound
-                + ", TotalMoney=" + TotalMoney + ", input=" + input
+                + ", money=" + money + ", input=" + input
                 + ", nameOfBestHand=" + nameOfBestHand + ", exp=" + exp
                 + ", winCount=" + winCount + ", loseCount=" + loseCount
                 + ", historicalBestHandRank=" + historicalBestHandRank
@@ -398,12 +398,12 @@ public class Player {
         return roomid == roomID;
     }
 
-    public int getTotalMoney() {
-        return TotalMoney;
+    public int getMoney() {
+        return money;
     }
 
-    public void setTotalMoney(int totalMoney) {
-        TotalMoney = totalMoney;
+    public void setMoney(int money) {
+        this.money = money;
     }
 
     public int getBetThisRound() {
@@ -415,7 +415,7 @@ public class Player {
     }
 
     public void addMoney(int reward) {
-        this.money += reward;
+        this.moneyInGame += reward;
     }
 
     public int getGIndexesForOwnCardsUsedInBestFive() {

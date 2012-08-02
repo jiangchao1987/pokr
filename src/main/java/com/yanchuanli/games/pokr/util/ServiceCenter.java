@@ -228,7 +228,7 @@ public class ServiceCenter {
 
                 StringBuffer sb = new StringBuffer();
                 sb.append(player.getUdid()).append(",").append(player.getName()).append(",").append(
-                        player.getTotalMoney()).append(",").append(player.getExp() + ","
+                        player.getMoney()).append(",").append(player.getExp() + ","
                         + player.getWinCount() + "," + player.getLoseCount() + ","
                         + player.getHistoricalBestHandRank() + ","
                         + player.getHistoricalBestHand() + "," + player.getMaxWin()

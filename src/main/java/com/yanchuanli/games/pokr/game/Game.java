@@ -82,7 +82,7 @@ public class Game implements Runnable {
         StringBuilder sb = new StringBuilder();
         if (gaming) {
             for (Player aplayer : activePlayers) {
-                sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoney()).append(",").append(aplayer.getCustomAvatar()).append(",").append(aplayer.getAvatar()).append(",").append(aplayer.getSex()).append(",").append(aplayer.getAddress()).append(";");
+                sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoneyInGame()).append(",").append(aplayer.getCustomAvatar()).append(",").append(aplayer.getAvatar()).append(",").append(aplayer.getSex()).append(",").append(aplayer.getAddress()).append(";");
             }
             NotificationCenter.respondToPrepareToEnter(player.getSession(), sb.toString());
         }
@@ -95,7 +95,7 @@ public class Game implements Runnable {
     }
 
     public synchronized void sitDown(Player player, int index) {
-        log.debug(player.getName() + ":" + player.getMoney() + " is sitting down at " + index + "...");
+        log.debug(player.getName() + ":" + player.getMoneyInGame() + " is sitting down at " + index + "...");
         boolean sitDownFailed = false;
         if (gaming) {
             log.debug("gaming ...");
@@ -109,7 +109,7 @@ public class Game implements Runnable {
                     }
                 }
                 if (!sitDownFailed) {
-                    if (player.getMoney() > 0) {
+                    if (player.getMoneyInGame() > 0) {
                         standingPlayers.remove(player.getUdid());
                         waitingPlayers.put(player.getUdid(), player);
                     } else {
@@ -139,13 +139,13 @@ public class Game implements Runnable {
             StringBuilder sb = new StringBuilder();
             if (gaming) {
                 for (Player aplayer : activePlayers) {
-                    sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoney()).append(",").append(aplayer.getCustomAvatar()).append(",").append(aplayer.getAvatar()).append(",").append(aplayer.getSex()).append(",").append(aplayer.getAddress()).append(";");
+                    sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoneyInGame()).append(",").append(aplayer.getCustomAvatar()).append(",").append(aplayer.getAvatar()).append(",").append(aplayer.getSex()).append(",").append(aplayer.getAddress()).append(";");
                 }
                 log.debug(activePlayers.size() + " players sitted down");
             } else {
                 for (String s : waitingPlayers.keySet()) {
                     Player aplayer = waitingPlayers.get(s);
-                    sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoney()).append(",").append(aplayer.getCustomAvatar()).append(",").append(aplayer.getAvatar()).append(",").append(aplayer.getSex()).append(",").append(aplayer.getAddress()).append(";");
+                    sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoneyInGame()).append(",").append(aplayer.getCustomAvatar()).append(",").append(aplayer.getAvatar()).append(",").append(aplayer.getSex()).append(",").append(aplayer.getAddress()).append(";");
                 }
                 log.debug(waitingPlayers.size() + " players sitted down and are waiting for gamestart");
             }
@@ -531,19 +531,19 @@ public class Game implements Runnable {
 
     public Set<Action> getAllowedActions(Player player) {
         Set<Action> actions = new HashSet<Action>();
-        if (player.getMoney() != 0) {
+        if (player.getMoneyInGame() != 0) {
             if (bet == 0) {
                 actions.add(Action.CHECK);
                 actions.add(Action.RAISE);
             } else {
-                if (player.getMoney() >= bet) {
+                if (player.getMoneyInGame() >= bet) {
                     actions.add(Action.CALL);
                 }
-                if (player.getMoney() >= bet * 2) {
+                if (player.getMoneyInGame() >= bet * 2) {
                     actions.add(Action.RAISE);
                 }
 
-                if (player.getMoney() > 0) {
+                if (player.getMoneyInGame() > 0) {
                     actions.add(Action.ALLIN);
                 }
             }
@@ -581,7 +581,7 @@ public class Game implements Runnable {
         }
 
         for (Player player : activePlayers) {
-            if (player.getMoney() <= 0) {
+            if (player.getMoneyInGame() <= 0) {
                 activePlayers.remove(player);
                 standingPlayers.put(player.getUdid(), player);
             }
@@ -592,7 +592,7 @@ public class Game implements Runnable {
 
         String info = "";
         for (Player player : activePlayers) {
-            info = info + player.getUdid() + "," + player.getName() + "," + player.getMoney() + "," + player.getCustomAvatar() + "," + player.getAvatar() + "," + player.getSex() + "," + player.getAddress() + ";";
+            info = info + player.getUdid() + "," + player.getName() + "," + player.getMoneyInGame() + "," + player.getCustomAvatar() + "," + player.getAvatar() + "," + player.getSex() + "," + player.getAddress() + ";";
         }
 
 
@@ -664,7 +664,7 @@ public class Game implements Runnable {
         List<Player> brokePlayers = new ArrayList<>();
 
         for (Player player : activePlayers) {
-            if (player.getMoney() <= 0) {
+            if (player.getMoneyInGame() <= 0) {
                 activePlayers.remove(player);
                 standingPlayers.put(player.getUdid(), player);
                 brokePlayers.add(player);
@@ -673,15 +673,15 @@ public class Game implements Runnable {
 
         for (String udid : waitingPlayers.keySet()) {
             Player player = waitingPlayers.get(udid);
-            if (player.getMoney() <= 0) {
+            if (player.getMoneyInGame() <= 0) {
                 waitingPlayers.remove(udid);
                 standingPlayers.put(udid, player);
                 brokePlayers.add(player);
             }
         }
-
-
-
+        //破产玩家弹窗要求买筹码
+        NotificationCenter.youAreBroke(brokePlayers);
+        brokePlayers.clear();
     }
 
     public void removePlayer(Player player) {

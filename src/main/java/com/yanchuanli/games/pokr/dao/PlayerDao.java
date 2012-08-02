@@ -1,25 +1,19 @@
 package com.yanchuanli.games.pokr.dao;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.yanchuanli.games.pokr.model.Player;
-import com.yanchuanli.games.pokr.util.Config;
-import com.yanchuanli.games.pokr.util.MongoDB;
-import com.yanchuanli.games.pokr.util.MongoDBFactory;
-import com.yanchuanli.games.pokr.util.ServerConfig;
-import com.yanchuanli.games.pokr.util.TimeUtil;
-import com.yanchuanli.games.pokr.util.URLFetchUtil;
+import com.yanchuanli.games.pokr.util.*;
+import org.apache.log4j.Logger;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Copyright Candou.com
@@ -54,7 +48,7 @@ public class PlayerDao {
             String[] msgs = htmlContent.split(",");
 
             Player player = new Player(msgs[0], msgs[1]);
-            player.setTotalMoney(Integer.parseInt(msgs[2]));
+            player.setMoney(Integer.parseInt(msgs[2]));
             player.setExp(Integer.parseInt(msgs[3]));
             player.setCurrentLevel(Integer.parseInt(msgs[4]));
             player.setWinCount(Integer.parseInt(msgs[5]));
@@ -72,38 +66,38 @@ public class PlayerDao {
             players.put(udid, player);
         }
         return players.get(udid);*/
-    	
-    	String json = URLFetchUtil.fetch(ServerConfig.webServerBase
+
+        String json = URLFetchUtil.fetch(ServerConfig.webServerBase
                 + "login?udid=" + udid + "&password=" + password + "&source="
                 + source);
-    	if (json != null && json.contains("user")) {
-			if (json.contains("{\"user\":null}")) {
-				return null;
-			} else {
-				json = json.replace("{\"user\":{", "{").replace("}}", "}");
-				Player player = parsePlayer(json);
-				if (player == null) {
-					return null;
-				}
-				players.put(udid, player);
-			}
-		}
-    	return players.get(udid);
+        if (json != null && json.contains("user")) {
+            if (json.contains("{\"user\":null}")) {
+                return null;
+            } else {
+                json = json.replace("{\"user\":{", "{").replace("}}", "}");
+                Player player = parsePlayer(json);
+                if (player == null) {
+                    return null;
+                }
+                players.put(udid, player);
+            }
+        }
+        return players.get(udid);
     }
-    
+
     public static Player parsePlayer(String json) {
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			return mapper.readValue(json, Player.class);
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.readValue(json, Player.class);
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     /**
      * 更新赢的次数
@@ -204,7 +198,7 @@ public class PlayerDao {
         while (cur.hasNext()) {
             DBObject obj = cur.next();
             player = new Player((String) obj.get("udid"), (String) obj.get("name"));
-            player.setTotalMoney((Integer) obj.get("money"));
+            player.setMoney((Integer) obj.get("money"));
             player.setExp((Integer) obj.get("exp"));
             player.setWinCount((Integer) obj.get("win"));
             player.setLoseCount((Integer) obj.get("lose"));
@@ -223,11 +217,13 @@ public class PlayerDao {
 
     public static boolean buyIn(Player player, int buyIn) {
         boolean result = false;
-        if (player.getTotalMoney() > buyIn) {
-            player.setMoney(buyIn);
-            log.debug("updatemoney:" + player.getUdid() + ":" + player.getTotalMoney() + "-" + buyIn + "=" + (player.getTotalMoney() - buyIn));
-            log.debug(player.getName() + " has buyed in " + player.getMoney());
+        if (player.getMoney() > buyIn) {
+            player.setMoneyInGame(buyIn);
+            log.debug("updatemoney:" + player.getUdid() + ":" + player.getMoney() + "-" + buyIn + "=" + (player.getMoney() - buyIn));
+            log.debug(player.getName() + " has buyed in " + player.getMoneyInGame());
             result = true;
+        } else {
+            log.debug(player.getName() + " hasnot enough money:" + player.getMoney() + " to buyin:" + buyIn);
         }
         return result;
     }
@@ -236,7 +232,7 @@ public class PlayerDao {
         log.debug("cashback:" + player.getUdid() + ":" + holding);
         Player persistence = queryByUdid(player.getUdid());
         // plus money
-        updateMoney(player.getUdid(), persistence.getTotalMoney() + holding);
+        updateMoney(player.getUdid(), persistence.getMoney() + holding);
 
     }
 
@@ -319,24 +315,24 @@ public class PlayerDao {
 
     /**
      * 标记用户当天已经得到过的经验值等级
-     * 
+     *
      * @param player
      */
     public static void updateTimeLevelToday(Player player) {
-    	DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
+        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
         DBObject searchQuery = new BasicDBObject("udid", player.getUdid());
         DBObject incQuery = new BasicDBObject("$set", new BasicDBObject("timeLevelToday", player.getTimeLevelToday()));
         coll.update(searchQuery, incQuery);
     }
-    
+
     /**
      * 清0所有用户的当天已经得到过的经验值等级
      */
     public static void resetTimeLevelToday() {
-    	DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
+        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
         DBObject searchQuery = new BasicDBObject();
         DBObject setQuery = new BasicDBObject("$set", new BasicDBObject("timeLevelToday", 0));
         coll.update(searchQuery, setQuery);
-	}
-	
+    }
+
 }
