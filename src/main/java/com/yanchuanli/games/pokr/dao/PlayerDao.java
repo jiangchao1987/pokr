@@ -1,9 +1,13 @@
 package com.yanchuanli.games.pokr.dao;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
@@ -42,7 +46,7 @@ public class PlayerDao {
      */
     public static Player getPlayer(String udid, String password,
                                    int source) {
-        String htmlContent = URLFetchUtil.fetch(ServerConfig.webServerBase
+        /*String htmlContent = URLFetchUtil.fetch(ServerConfig.webServerBase
                 + "login?udid=" + udid + "&password=" + password + "&source="
                 + source);
 //        log.debug(htmlContent);
@@ -67,8 +71,39 @@ public class PlayerDao {
 //            player.setTimeLevelToday(Integer.parseInt(msgs[14]));
             players.put(udid, player);
         }
-        return players.get(udid);
+        return players.get(udid);*/
+    	
+    	String json = URLFetchUtil.fetch(ServerConfig.webServerBase
+                + "login?udid=" + udid + "&password=" + password + "&source="
+                + source);
+    	if (json != null && json.contains("user")) {
+			if (json.contains("{\"user\":null}")) {
+				return null;
+			} else {
+				json = json.replace("{\"user\":{", "{").replace("}}", "}");
+				Player player = parsePlayer(json);
+				if (player == null) {
+					return null;
+				}
+				players.put(udid, player);
+			}
+		}
+    	return players.get(udid);
     }
+    
+    public static Player parsePlayer(String json) {
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			return mapper.readValue(json, Player.class);
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
     /**
      * 更新赢的次数

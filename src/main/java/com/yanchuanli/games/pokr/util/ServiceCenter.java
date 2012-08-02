@@ -233,7 +233,7 @@ public class ServiceCenter {
                         + player.getHistoricalBestHandRank() + ","
                         + player.getHistoricalBestHand() + "," + player.getMaxWin()
                         + "," + player.getCustomAvatar() + "," + player.getAvatar()
-                        + "," + player.getSex() + "," + player.getAddress() + "," + player.getCurrentLevel());
+                        + "," + player.getSex() + "," + player.getAddress() + "," + player.getLevel());
                 NotificationCenter.login(session, sb.toString());
             } else {
                 session.close(true);

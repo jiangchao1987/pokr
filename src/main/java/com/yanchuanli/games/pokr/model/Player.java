@@ -50,12 +50,15 @@ public class Player {
     private int roomid;
     private int sex;
     private String address;
-    private int currentLevel;
+    private int level;
     private int lastOnlineTime;
     private int elapsedTimeToday;    //当日游戏时间
     private int timeLevelToday;      //当日已经加过经验值的level
+    
+	public Player() {
+	}
 
-    public Player(String id, String name) {
+	public Player(String id, String name) {
         this.udid = id;
         this.name = name;
         hand = new Hand();
@@ -331,13 +334,13 @@ public class Player {
         this.customAvatar = customAvatar;
     }
 
-    public int getCurrentLevel() {
-        return currentLevel;
-    }
+    public int getLevel() {
+		return level;
+	}
 
-    public void setCurrentLevel(int currentLevel) {
-        this.currentLevel = currentLevel;
-    }
+	public void setLevel(int level) {
+		this.level = level;
+	}
 
     @Override
     public String toString() {
@@ -354,7 +357,7 @@ public class Player {
                 + maxWin + ", avatar=" + avatar + ", customAvatar="
                 + customAvatar + ", smallBlind=" + smallBlind + ", bigBlind="
                 + bigBlind + ", roomid=" + roomid + ", sex=" + sex
-                + ", address=" + address + ", currentLevel=" + currentLevel
+                + ", address=" + address + ", level=" + level
                 + "]";
     }
 
