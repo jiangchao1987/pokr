@@ -55,7 +55,7 @@ public class SegmentedHttpDownloader implements Runnable {
                 contentLength = Long.valueOf(headers[0].getValue());
             }
             httpget.abort();
-
+            log.info("contentlength:"+contentLength);
 
             httpget = new HttpGet(url);
             httpget.addHeader("Range", "bytes=0-" + (contentLength - 1));
