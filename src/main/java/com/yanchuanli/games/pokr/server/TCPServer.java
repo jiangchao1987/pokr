@@ -60,6 +60,7 @@ public class TCPServer {
         log.info("quitting now ...");
         GameEngine.stop();
         shutdown();
+        System.exit(1);
 //        ServiceCenter.getInstance().stopService();
     }
 
