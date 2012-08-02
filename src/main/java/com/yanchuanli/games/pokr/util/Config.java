@@ -73,5 +73,8 @@ public class Config {
     public static final int STATUS_ONLINE = 1;
     public static final int STATUS_OFFLINE = 0;
 
+    public static final int GAMESTATUS_ACTIVE = 1;
+    public static final int GAMESTATUS_WAITING = 0;
+
 
 }

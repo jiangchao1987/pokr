@@ -12,12 +12,13 @@ public class PlayerDTO {
     private int sex;
     private String address;
     private int seatIndex;
+    private int gamestatus;
 
     public PlayerDTO() {
 
     }
 
-    public PlayerDTO(Player player) {
+    public PlayerDTO(Player player, int gamestatus) {
         this.udid = player.getUdid();
         this.name = player.getName();
         this.moneyInGame = player.getMoneyInGame();
@@ -26,6 +27,7 @@ public class PlayerDTO {
         this.sex = player.getSex();
         this.address = player.getAddress();
         this.seatIndex = player.getSeatIndex();
+        this.gamestatus = gamestatus;
     }
 
     public String getUdid() {
@@ -92,4 +94,11 @@ public class PlayerDTO {
         this.seatIndex = seatIndex;
     }
 
+    public int getGamestatus() {
+        return gamestatus;
+    }
+
+    public void setGamestatus(int gamestatus) {
+        this.gamestatus = gamestatus;
+    }
 }

@@ -10,10 +10,10 @@ import java.util.List;
 
 public class DTOUtil {
 
-    public static List<PlayerDTO> getPlayerDTOList(List<Player> players) {
+    public static List<PlayerDTO> getPlayerDTOList(List<Player> players, int gamestatus) {
         List<PlayerDTO> playerDTOs = new ArrayList<>();
         for (Player aplayer : players) {
-            playerDTOs.add(new PlayerDTO(aplayer));
+            playerDTOs.add(new PlayerDTO(aplayer, gamestatus));
         }
         return playerDTOs;
     }

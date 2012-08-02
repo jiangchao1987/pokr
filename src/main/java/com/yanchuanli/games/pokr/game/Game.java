@@ -12,8 +12,8 @@ import com.yanchuanli.games.pokr.model.Action;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.model.Pot;
 import com.yanchuanli.games.pokr.model.Record;
+import com.yanchuanli.games.pokr.util.Config;
 import com.yanchuanli.games.pokr.util.DTOUtil;
-
 import com.yanchuanli.games.pokr.util.NotificationCenter;
 import com.yanchuanli.games.pokr.util.Util;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -88,11 +88,11 @@ public class Game implements Runnable {
 
         List<PlayerDTO> playerDTOs = new ArrayList<>();
         for (Player aplayer : activePlayers) {
-            playerDTOs.add(new PlayerDTO(aplayer));
+            playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_ACTIVE));
         }
         for (String s : waitingPlayers.keySet()) {
             Player aplayer = waitingPlayers.get(s);
-            playerDTOs.add(new PlayerDTO(aplayer));
+            playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_WAITING));
         }
         NotificationCenter.respondToPrepareToEnter(player.getSession(), DTOUtil.writeValue(playerDTOs));
         log.debug("dto to json: " + DTOUtil.writeValue(playerDTOs));
@@ -607,8 +607,8 @@ public class Game implements Runnable {
         }*/
 
 
-        NotificationCenter.sayHello(allPlayersInGame, DTOUtil.writeValue(DTOUtil.getPlayerDTOList(activePlayers)));
-        log.debug("dto to json: " + DTOUtil.writeValue(DTOUtil.getPlayerDTOList(activePlayers)));
+        NotificationCenter.sayHello(allPlayersInGame, DTOUtil.writeValue(DTOUtil.getPlayerDTOList(activePlayers, Config.GAMESTATUS_ACTIVE)));
+        log.debug("dto to json: " + DTOUtil.writeValue(DTOUtil.getPlayerDTOList(activePlayers, Config.GAMESTATUS_ACTIVE)));
 
 
 //        NotificationCenter.sayHello(allPlayersInGame, info);
