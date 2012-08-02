@@ -59,7 +59,7 @@ public class Player {
     public Player() {
         hand = new Hand();
         this.bestHandRank = Integer.MIN_VALUE;
-        this.online = true;
+        this.online = false;
     }
 
     public Player(String id, String name) {
@@ -67,7 +67,7 @@ public class Player {
         this.name = name;
         hand = new Hand();
         this.bestHandRank = Integer.MIN_VALUE;
-        this.online = true;
+        this.online = false;
     }
 
     public String getUdid() {
