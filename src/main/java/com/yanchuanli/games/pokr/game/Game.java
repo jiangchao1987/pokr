@@ -661,10 +661,13 @@ public class Game implements Runnable {
             }
         }
 
+        List<Player> brokePlayers = new ArrayList<>();
+
         for (Player player : activePlayers) {
             if (player.getMoney() <= 0) {
                 activePlayers.remove(player);
                 standingPlayers.put(player.getUdid(), player);
+                brokePlayers.add(player);
             }
         }
 
@@ -673,6 +676,7 @@ public class Game implements Runnable {
             if (player.getMoney() <= 0) {
                 waitingPlayers.remove(udid);
                 standingPlayers.put(udid, player);
+                brokePlayers.add(player);
             }
         }
 
