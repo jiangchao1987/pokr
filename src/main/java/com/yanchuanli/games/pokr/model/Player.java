@@ -54,12 +54,15 @@ public class Player {
     private int lastOnlineTime;
     private int elapsedTimeToday;    //当日游戏时间
     private int timeLevelToday;      //当日已经加过经验值的level
-    private int seatIndex;	//座位下班, 不持久化
-    
-	public Player() {
-	}
+    private int seatIndex;    //座位下标, 不持久化
 
-	public Player(String id, String name) {
+    public Player() {
+        hand = new Hand();
+        this.bestHandRank = Integer.MIN_VALUE;
+        this.online = true;
+    }
+
+    public Player(String id, String name) {
         this.udid = id;
         this.name = name;
         hand = new Hand();
@@ -336,12 +339,12 @@ public class Player {
     }
 
     public int getLevel() {
-		return level;
-	}
+        return level;
+    }
 
-	public void setLevel(int level) {
-		this.level = level;
-	}
+    public void setLevel(int level) {
+        this.level = level;
+    }
 
     @Override
     public String toString() {
@@ -488,16 +491,16 @@ public class Player {
     public void setTimeLevelToday(int timeLevelToday) {
         this.timeLevelToday = timeLevelToday;
     }
-    
+
     public int getSeatIndex() {
-		return seatIndex;
-	}
+        return seatIndex;
+    }
 
-	public void setSeatIndex(int seatIndex) {
-		this.seatIndex = seatIndex;
-	}
+    public void setSeatIndex(int seatIndex) {
+        this.seatIndex = seatIndex;
+    }
 
-	@Override
+    @Override
     public int hashCode() {
         return Objects.hashCode(udid);
     }
