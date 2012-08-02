@@ -1,5 +1,6 @@
 package com.yanchuanli.games.pokr.test;
 
+import com.google.common.collect.HashBiMap;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.model.Pot;
 import com.yanchuanli.games.pokr.model.Record;
@@ -43,6 +44,25 @@ public class Test {
 //        testTable();
 //        testPot();
 //        testSharedPlayer();
+
+        Map<Integer, String> table = new HashMap<>();
+        for (int i = 0; i < 5; i++) {
+            if (i == 4) {
+                table.put(i, "");
+            } else {
+                table.put(i, String.valueOf(i));
+            }
+        }
+
+        for (Integer i : table.keySet()) {
+
+        }
+
+
+        HashBiMap<Integer, String> bi = HashBiMap.create();
+
+
+        log.debug(table.size());
 
 
     }

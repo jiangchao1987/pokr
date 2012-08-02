@@ -1,6 +1,7 @@
 package com.yanchuanli.games.pokr.game;
 
 import com.google.code.tempusfugit.temporal.Duration;
+import com.google.common.collect.HashBiMap;
 import com.yanchuanli.games.pokr.basic.Card;
 import com.yanchuanli.games.pokr.basic.Deck;
 import com.yanchuanli.games.pokr.basic.HandEvaluator;
@@ -43,7 +44,8 @@ public class Game implements Runnable {
     //坐下但是等下局的用户
     private Map<String, Player> waitingPlayers;
 
-    private Map<Integer, String> table;
+    private HashBiMap<Integer, String> table;
+
 
     //本次游戏的所有用户
     private List<Player> allPlayersInGame;
@@ -64,6 +66,7 @@ public class Game implements Runnable {
     private boolean stop = false;
     private HandEvaluator handEval;
     private Pot pot;
+    private Random random;
 
 
     public Game(GameConfig gc) {
@@ -73,13 +76,17 @@ public class Game implements Runnable {
         allWinningUsers = new HashSet<>();
         waitingPlayers = new ConcurrentHashMap<>();
         standingPlayers = new ConcurrentHashMap<>();
-        table = new ConcurrentHashMap<>();
+        table = HashBiMap.create();
+        for (int i = 0; i < gc.getMaxPlayersCount(); i++) {
+            table.put(i, Config.EMPTY_SEAT);
+        }
         cardsOnTable = new ArrayList<>();
         pot = new Pot();
         deck = new Deck();
         comparator = new PlayerRankComparator();
         handEval = new HandEvaluator();
         pot = new Pot();
+        random = new Random();
     }
 
     public void enterRoom(Player player) {
@@ -108,6 +115,17 @@ public class Game implements Runnable {
     public synchronized void sitDown(Player player, int index) {
         log.debug(player.getName() + ":" + player.getMoneyInGame() + " is sitting down at " + index + "...");
         boolean sitDownFailed = false;
+
+
+        if (index >= 0 && index <= gc.getMaxPlayersCount()) {
+            if (index != 0 && !table.get(index).equals(Config.EMPTY_SEAT)) {
+                sitDownFailed = true;
+            }
+        } else {
+            sitDownFailed = true;
+        }
+
+
         if (gaming) {
             log.debug("gaming ...");
             if (activePlayers.size() < gc.getMaxPlayersCount()) {
@@ -121,8 +139,7 @@ public class Game implements Runnable {
                 }
                 if (!sitDownFailed) {
                     if (player.getMoneyInGame() > 0) {
-                        standingPlayers.remove(player.getUdid());
-                        waitingPlayers.put(player.getUdid(), player);
+
                     } else {
                         log.debug(player.getName() + " sitdown failed because of empty pocket ...");
                         sitDownFailed = true;
@@ -137,8 +154,7 @@ public class Game implements Runnable {
             log.debug(player.getName() + " is sitting and waiting ...");
             int freeSitsCount = gc.getMaxPlayersCount() - activePlayers.size();
             if (freeSitsCount > 0) {
-                standingPlayers.remove(player.getUdid());
-                waitingPlayers.put(player.getUdid(), player);
+
             } else {
                 log.debug(player.getName() + " sitdown failed because of no seats available ...");
                 sitDownFailed = true;
@@ -147,6 +163,15 @@ public class Game implements Runnable {
         }
 
         if (!sitDownFailed) {
+            standingPlayers.remove(player.getUdid());
+            waitingPlayers.put(player.getUdid(), player);
+
+            if (index == 0) {
+                int randomSeat = getNextRandomSeat();
+                player.setSeatIndex(randomSeat);
+                table.put(randomSeat, player.getUdid());
+            }
+
             List<PlayerDTO> playerDTOs = new ArrayList<>();
             for (Player aplayer : activePlayers) {
                 playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_ACTIVE));
@@ -702,6 +727,7 @@ public class Game implements Runnable {
         for (Player aplayer : activePlayers) {
             if (aplayer.getUdid().equals(player.getUdid())) {
                 player.setRoomid(Integer.MIN_VALUE);
+                player.setSeatIndex(0);
                 activePlayers.remove(aplayer);
                 log.debug(player.getName() + " has left the room " + gc.getName());
                 playerRemoved = true;
@@ -716,6 +742,7 @@ public class Game implements Runnable {
                 if (aplayer.getUdid().equals(player.getUdid())) {
                     standingPlayers.remove(s);
                     player.setRoomid(Integer.MIN_VALUE);
+                    player.setSeatIndex(0);
                     log.debug(player.getName() + " has left the room " + gc.getName());
                     break;
                 }
@@ -728,6 +755,7 @@ public class Game implements Runnable {
                 if (aplayer.getUdid().equals(player.getUdid())) {
                     waitingPlayers.remove(s);
                     player.setRoomid(Integer.MIN_VALUE);
+                    player.setSeatIndex(0);
                     log.debug(player.getName() + " has left the room " + gc.getName());
                     break;
                 }
@@ -740,6 +768,19 @@ public class Game implements Runnable {
 
         allPlayersInGame.remove(player);
 
+    }
+
+
+    private int getNextRandomSeat() {
+        int randomChairIndex = 0;
+        List<Integer> availableChairs = new ArrayList<>();
+        for (Integer i : table.keySet()) {
+            if (table.get(i).equals(Config.EMPTY_SEAT)) {
+                availableChairs.add(i);
+            }
+        }
+        randomChairIndex = availableChairs.get(random.nextInt(availableChairs.size()));
+        return randomChairIndex;
     }
 
 

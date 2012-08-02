@@ -76,5 +76,7 @@ public class Config {
     public static final int GAMESTATUS_ACTIVE = 1;
     public static final int GAMESTATUS_WAITING = 0;
 
+    public static final String EMPTY_SEAT = "empty";
+
 
 }
