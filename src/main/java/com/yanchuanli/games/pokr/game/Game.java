@@ -12,9 +12,8 @@ import com.yanchuanli.games.pokr.model.Action;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.model.Pot;
 import com.yanchuanli.games.pokr.model.Record;
-import com.yanchuanli.games.pokr.util.DTO2JSON;
+import com.yanchuanli.games.pokr.util.DTOUtil;
 import com.yanchuanli.games.pokr.util.NotificationCenter;
-import com.yanchuanli.games.pokr.util.PO2DTO;
 import com.yanchuanli.games.pokr.util.Util;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
@@ -94,8 +93,8 @@ public class Game implements Runnable {
             Player aplayer = waitingPlayers.get(s);
             playerDTOs.add(new PlayerDTO(aplayer));
         }
-        NotificationCenter.respondToPrepareToEnter(player.getSession(), DTO2JSON.writeValue(playerDTOs));
-        log.debug("dto to json: " + DTO2JSON.writeValue(playerDTOs));
+        NotificationCenter.respondToPrepareToEnter(player.getSession(), DTOUtil.writeValue(playerDTOs));
+        log.debug("dto to json: " + DTOUtil.writeValue(playerDTOs));
 
         allPlayersInGame.add(player);
     }
@@ -608,10 +607,10 @@ public class Game implements Runnable {
 
         List<PlayerDTO> playerDTOs = new ArrayList<>();
         for (Player aplayer : activePlayers) {
-            playerDTOs.add(PO2DTO.parsePlayer(aplayer));
+            playerDTOs.add(new PlayerDTO(aplayer));
         }
-        NotificationCenter.sayHello(allPlayersInGame, DTO2JSON.writeValue(playerDTOs));
-        log.debug("dto to json: " + DTO2JSON.writeValue(playerDTOs));
+        NotificationCenter.sayHello(allPlayersInGame, DTOUtil.writeValue(playerDTOs));
+        log.debug("dto to json: " + DTOUtil.writeValue(playerDTOs));
 
 
 //        NotificationCenter.sayHello(allPlayersInGame, info);
