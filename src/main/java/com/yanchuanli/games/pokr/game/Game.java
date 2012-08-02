@@ -12,10 +12,8 @@ import com.yanchuanli.games.pokr.model.Action;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.model.Pot;
 import com.yanchuanli.games.pokr.model.Record;
-<<<<<<< HEAD
 import com.yanchuanli.games.pokr.util.DTOUtil;
-=======
->>>>>>> 78b863e99203c189649426dcabc239d5e56a84ea
+
 import com.yanchuanli.games.pokr.util.NotificationCenter;
 import com.yanchuanli.games.pokr.util.Util;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -608,12 +606,9 @@ public class Game implements Runnable {
             info = info + player.getUdid() + "," + player.getName() + "," + player.getMoneyInGame() + "," + player.getCustomAvatar() + "," + player.getAvatar() + "," + player.getSex() + "," + player.getAddress() + ";";
         }*/
 
-        List<PlayerDTO> playerDTOs = new ArrayList<>();
-        for (Player aplayer : activePlayers) {
-            playerDTOs.add(new PlayerDTO(aplayer));
-        }
-        NotificationCenter.sayHello(allPlayersInGame, DTOUtil.writeValue(playerDTOs));
-        log.debug("dto to json: " + DTOUtil.writeValue(playerDTOs));
+
+        NotificationCenter.sayHello(allPlayersInGame, DTOUtil.writeValue(DTOUtil.getPlayerDTOList(activePlayers)));
+        log.debug("dto to json: " + DTOUtil.writeValue(DTOUtil.getPlayerDTOList(activePlayers)));
 
 
 //        NotificationCenter.sayHello(allPlayersInGame, info);
