@@ -54,6 +54,7 @@ public class Player {
     private int lastOnlineTime;
     private int elapsedTimeToday;    //当日游戏时间
     private int timeLevelToday;      //当日已经加过经验值的level
+    private int seatIndex;	//座位下班, 不持久化
     
 	public Player() {
 	}
@@ -487,8 +488,16 @@ public class Player {
     public void setTimeLevelToday(int timeLevelToday) {
         this.timeLevelToday = timeLevelToday;
     }
+    
+    public int getSeatIndex() {
+		return seatIndex;
+	}
 
-    @Override
+	public void setSeatIndex(int seatIndex) {
+		this.seatIndex = seatIndex;
+	}
+
+	@Override
     public int hashCode() {
         return Objects.hashCode(udid);
     }
