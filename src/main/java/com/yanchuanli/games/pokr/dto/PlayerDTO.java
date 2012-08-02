@@ -1,79 +1,95 @@
 package com.yanchuanli.games.pokr.dto;
 
+import com.yanchuanli.games.pokr.model.Player;
+
 public class PlayerDTO {
 
-	private String udid;
-	private String name;
-	private int moneyInGame;
-	private int customAvatar;
-	private String avatar;
-	private int sex;
-	private String address;
-	private int seatIndex;
+    private String udid;
+    private String name;
+    private int moneyInGame;
+    private int customAvatar;
+    private String avatar;
+    private int sex;
+    private String address;
+    private int seatIndex;
 
+    public PlayerDTO() {
 
-	public String getUdid() {
-		return udid;
-	}
+    }
 
-	public void setUdid(String udid) {
-		this.udid = udid;
-	}
+    public PlayerDTO(Player player) {
+        this.udid = player.getUdid();
+        this.name = player.getName();
+        this.moneyInGame = player.getMoneyInGame();
+        this.customAvatar = player.getCustomAvatar();
+        this.avatar = player.getAvatar();
+        this.sex = player.getSex();
+        this.address = player.getAddress();
+        this.seatIndex = player.getSeatIndex();
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getUdid() {
+        return udid;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setUdid(String udid) {
+        this.udid = udid;
+    }
 
-	public int getMoneyInGame() {
-		return moneyInGame;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setMoneyInGame(int moneyInGame) {
-		this.moneyInGame = moneyInGame;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public int getCustomAvatar() {
-		return customAvatar;
-	}
+    public int getMoneyInGame() {
+        return moneyInGame;
+    }
 
-	public void setCustomAvatar(int customAvatar) {
-		this.customAvatar = customAvatar;
-	}
+    public void setMoneyInGame(int moneyInGame) {
+        this.moneyInGame = moneyInGame;
+    }
 
-	public String getAvatar() {
-		return avatar;
-	}
+    public int getCustomAvatar() {
+        return customAvatar;
+    }
 
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
-	}
+    public void setCustomAvatar(int customAvatar) {
+        this.customAvatar = customAvatar;
+    }
 
-	public int getSex() {
-		return sex;
-	}
+    public String getAvatar() {
+        return avatar;
+    }
 
-	public void setSex(int sex) {
-		this.sex = sex;
-	}
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 
-	public String getAddress() {
-		return address;
-	}
+    public int getSex() {
+        return sex;
+    }
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+    public void setSex(int sex) {
+        this.sex = sex;
+    }
 
-	public int getSeatIndex() {
-		return seatIndex;
-	}
+    public String getAddress() {
+        return address;
+    }
 
-	public void setSeatIndex(int seatIndex) {
-		this.seatIndex = seatIndex;
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public int getSeatIndex() {
+        return seatIndex;
+    }
+
+    public void setSeatIndex(int seatIndex) {
+        this.seatIndex = seatIndex;
+    }
 
 }

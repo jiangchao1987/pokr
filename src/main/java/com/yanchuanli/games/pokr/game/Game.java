@@ -85,23 +85,18 @@ public class Game implements Runnable {
     public void enterRoom(Player player) {
         player.setRoomid(gc.getId());
         standingPlayers.put(player.getUdid(), player);
-//        StringBuilder sb = new StringBuilder();
-//        if (gaming) {
-        /*for (Player aplayer : activePlayers) {
-           sb.append(aplayer.getUdid()).append(",").append(aplayer.getName()).append(",").append(aplayer.getMoneyInGame()).append(",").append(aplayer.getCustomAvatar()).append(",").append(aplayer.getAvatar()).append(",").append(aplayer.getSex()).append(",").append(aplayer.getAddress()).append(";");
-       }
-       NotificationCenter.respondToPrepareToEnter(player.getSession(), sb.toString());*/
+
         List<PlayerDTO> playerDTOs = new ArrayList<>();
         for (Player aplayer : activePlayers) {
-            playerDTOs.add(PO2DTO.parsePlayer(aplayer));
+            playerDTOs.add(new PlayerDTO(aplayer));
         }
         for (String s : waitingPlayers.keySet()) {
             Player aplayer = waitingPlayers.get(s);
-            playerDTOs.add(PO2DTO.parsePlayer(aplayer));
+            playerDTOs.add(new PlayerDTO(aplayer));
         }
         NotificationCenter.respondToPrepareToEnter(player.getSession(), DTO2JSON.writeValue(playerDTOs));
         log.debug("dto to json: " + DTO2JSON.writeValue(playerDTOs));
-//        }
+
         allPlayersInGame.add(player);
     }
 
