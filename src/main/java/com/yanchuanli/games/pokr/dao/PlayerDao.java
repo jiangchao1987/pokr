@@ -40,32 +40,7 @@ public class PlayerDao {
      */
     public static Player getPlayer(String udid, String password,
                                    int source) {
-        /*String htmlContent = URLFetchUtil.fetch(ServerConfig.webServerBase
-                + "login?udid=" + udid + "&password=" + password + "&source="
-                + source);
-//        log.debug(htmlContent);
-        if (htmlContent != null && !htmlContent.trim().isEmpty()) {
-            String[] msgs = htmlContent.split(",");
 
-            Player player = new Player(msgs[0], msgs[1]);
-            player.setMoney(Integer.parseInt(msgs[2]));
-            player.setExp(Integer.parseInt(msgs[3]));
-            player.setCurrentLevel(Integer.parseInt(msgs[4]));
-            player.setWinCount(Integer.parseInt(msgs[5]));
-            player.setLoseCount(Integer.parseInt(msgs[6]));
-            player.setHistoricalBestHandRank(Integer.parseInt(msgs[7]));
-            player.setHistoricalBestHand(msgs[8]);
-            player.setMaxWin(Integer.parseInt(msgs[9]));
-            player.setCustomAvatar(Integer.parseInt(msgs[10]));
-            player.setAvatar(msgs[11]);
-            player.setSex(Integer.parseInt(msgs[12]));
-            player.setAddress(msgs[13]);
-            player.setRoomid(Integer.MIN_VALUE);
-            player.setLastOnlineTime(TimeUtil.unixtime());
-//            player.setTimeLevelToday(Integer.parseInt(msgs[14]));
-            players.put(udid, player);
-        }
-        return players.get(udid);*/
 
         String json = URLFetchUtil.fetch(ServerConfig.webServerBase
                 + "login?udid=" + udid + "&password=" + password + "&source="
@@ -236,6 +211,7 @@ public class PlayerDao {
 
     }
 
+
     /**
      * 增加经验值
      *
@@ -253,12 +229,17 @@ public class PlayerDao {
         player.setExp(player.getExp() + exp);
     }
 
+    // 增加经验和提升等级
     public static void addExp(Player player, int exp) {
         DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
         DBObject searchQuery = new BasicDBObject("udid", player.getUdid());
         DBObject incQuery = new BasicDBObject("$inc", new BasicDBObject("exp", exp));
         coll.update(searchQuery, incQuery);
         player.setExp(player.getExp() + exp);
+        int level = Level.getLevel(player.getExp());
+        DBObject updateLevel = new BasicDBObject("$set", new BasicDBObject("level", level));
+        coll.update(searchQuery, updateLevel);
+        player.setLevel(level);
     }
 
     public static void updateLastLoginTime(Player player) {

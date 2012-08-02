@@ -1,7 +1,6 @@
 package com.yanchuanli.games.pokr.game;
 
 import com.google.code.tempusfugit.temporal.Duration;
-import com.google.common.collect.HashBiMap;
 import com.yanchuanli.games.pokr.basic.Card;
 import com.yanchuanli.games.pokr.basic.Deck;
 import com.yanchuanli.games.pokr.basic.HandEvaluator;
@@ -44,7 +43,7 @@ public class Game implements Runnable {
     //坐下但是等下局的用户
     private Map<String, Player> waitingPlayers;
 
-    private HashBiMap<Integer, String> table;
+    private Map<Integer, String> table;
 
 
     //本次游戏的所有用户
@@ -76,7 +75,7 @@ public class Game implements Runnable {
         allWinningUsers = new HashSet<>();
         waitingPlayers = new ConcurrentHashMap<>();
         standingPlayers = new ConcurrentHashMap<>();
-        table = HashBiMap.create();
+        table = new ConcurrentHashMap<>();
         for (int i = 0; i < gc.getMaxPlayersCount(); i++) {
             table.put(i, Config.EMPTY_SEAT);
         }
@@ -102,7 +101,7 @@ public class Game implements Runnable {
             playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_WAITING));
         }
         NotificationCenter.respondToPrepareToEnter(player.getSession(), DTOUtil.writeValue(playerDTOs));
-        log.debug("dto to json: " + DTOUtil.writeValue(playerDTOs));
+        log.debug(DTOUtil.writeValue(playerDTOs));
 
         allPlayersInGame.add(player);
     }
@@ -113,15 +112,17 @@ public class Game implements Runnable {
     }
 
     public synchronized void sitDown(Player player, int index) {
-        log.debug(player.getName() + ":" + player.getMoneyInGame() + " is sitting down at " + index + "...");
+        log.debug(player.getName() + ":" + player.getMoneyInGame() + " tries to sit down at " + index + "...");
         boolean sitDownFailed = false;
 
 
         if (index >= 0 && index <= gc.getMaxPlayersCount()) {
             if (index != 0 && !table.get(index).equals(Config.EMPTY_SEAT)) {
+                log.debug("seat " + index + " is taken already");
                 sitDownFailed = true;
             }
         } else {
+            log.debug("wrong index:" + index);
             sitDownFailed = true;
         }
 
@@ -151,7 +152,6 @@ public class Game implements Runnable {
 
 
         } else {
-            log.debug(player.getName() + " is sitting and waiting ...");
             int freeSitsCount = gc.getMaxPlayersCount() - activePlayers.size();
             if (freeSitsCount > 0) {
 
@@ -170,7 +170,11 @@ public class Game implements Runnable {
                 int randomSeat = getNextRandomSeat();
                 player.setSeatIndex(randomSeat);
                 table.put(randomSeat, player.getUdid());
+            } else {
+                player.setSeatIndex(index);
+                table.put(index, player.getUdid());
             }
+
 
             List<PlayerDTO> playerDTOs = new ArrayList<>();
             for (Player aplayer : activePlayers) {
@@ -182,6 +186,7 @@ public class Game implements Runnable {
             }
             RoomDao.updateCurrentPlayerCount(gc.getId(), activePlayers.size() + waitingPlayers.size());
             NotificationCenter.respondToPrepareToEnter(player.getSession(), DTOUtil.writeValue(playerDTOs));
+            log.debug(DTOUtil.writeValue(playerDTOs));
         } else {
             NotificationCenter.sitDownFailed(player);
         }
@@ -726,9 +731,11 @@ public class Game implements Runnable {
 
         for (Player aplayer : activePlayers) {
             if (aplayer.getUdid().equals(player.getUdid())) {
+                table.put(player.getSeatIndex(), Config.EMPTY_SEAT);
                 player.setRoomid(Integer.MIN_VALUE);
                 player.setSeatIndex(0);
                 activePlayers.remove(aplayer);
+
                 log.debug(player.getName() + " has left the room " + gc.getName());
                 playerRemoved = true;
                 break;
@@ -740,6 +747,7 @@ public class Game implements Runnable {
             for (String s : standingPlayers.keySet()) {
                 Player aplayer = standingPlayers.get(s);
                 if (aplayer.getUdid().equals(player.getUdid())) {
+                    table.put(player.getSeatIndex(), Config.EMPTY_SEAT);
                     standingPlayers.remove(s);
                     player.setRoomid(Integer.MIN_VALUE);
                     player.setSeatIndex(0);
@@ -753,6 +761,7 @@ public class Game implements Runnable {
             for (String s : waitingPlayers.keySet()) {
                 Player aplayer = waitingPlayers.get(s);
                 if (aplayer.getUdid().equals(player.getUdid())) {
+                    table.put(player.getSeatIndex(), Config.EMPTY_SEAT);
                     waitingPlayers.remove(s);
                     player.setRoomid(Integer.MIN_VALUE);
                     player.setSeatIndex(0);
@@ -761,6 +770,7 @@ public class Game implements Runnable {
                 }
             }
         }
+
 
         if (playerRemoved) {
             RoomDao.updateCurrentPlayerCount(gc.getId(), activePlayers.size() + waitingPlayers.size());
