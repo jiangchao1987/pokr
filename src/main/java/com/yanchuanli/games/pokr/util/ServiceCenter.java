@@ -131,7 +131,6 @@ public class ServiceCenter {
      * @param info    房间id,用户udid,用户名
      */
     public void leaveRoom(IoSession session, String info) {
-
         String[] cmds = info.split(",");
         Game game = GameEngine.getGame(Integer.parseInt(cmds[0]));
         if (game != null) {
@@ -139,8 +138,6 @@ public class ServiceCenter {
             log.debug("Player " + player.getName() + " is leaving " + cmds[1]);
             game.removePlayer(player);
         }
-
-
     }
 
     /**

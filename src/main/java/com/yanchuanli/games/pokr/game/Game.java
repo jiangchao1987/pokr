@@ -103,6 +103,11 @@ public class Game implements Runnable {
         NotificationCenter.respondToPrepareToEnter(player.getSession(), DTOUtil.writeValue(playerDTOs));
         log.debug(DTOUtil.writeValue(playerDTOs));
 
+        if (gaming) {
+            log.debug("for NewComer:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
+            NotificationCenter.dealCardsOnTableForNewcomers(player.getSession(), Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
+        }
+
         allPlayersInGame.add(player);
     }
 
@@ -187,9 +192,10 @@ public class Game implements Runnable {
                 playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_WAITING));
             }
             RoomDao.updateCurrentPlayerCount(gc.getId(), activePlayers.size() + waitingPlayers.size());
-//            NotificationCenter.respondToPrepareToEnter(player.getSession(), DTOUtil.writeValue(playerDTOs));
             NotificationCenter.sayHello(allPlayersInGame, DTOUtil.writeValue(playerDTOs));
             log.debug(DTOUtil.writeValue(playerDTOs));
+
+
         } else {
             NotificationCenter.sitDownFailed(player);
         }
@@ -659,7 +665,7 @@ public class Game implements Runnable {
             while (!stop) {
 
                 checkAvailablePlayers();
-                if (activePlayers.size() + waitingPlayers.size() >= 5) {
+                if (activePlayers.size() + waitingPlayers.size() >= 2) {
                     try {
                         log.debug("game will start in 3 seconds ...");
                         Thread.sleep(Duration.seconds(1).inMillis());

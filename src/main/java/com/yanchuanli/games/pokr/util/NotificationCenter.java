@@ -12,17 +12,17 @@ import java.util.List;
  * Date: 12-6-16
  */
 public class NotificationCenter {
-	
-	
-	/**
-	 * 从总资产中扣去相应钱数用于继续游戏
-	 * 
-	 * @param session 当前玩家
-	 * @param info  是否成功的标志, 1 success
-	 */
-	public static void buyIn(IoSession session, String info) {
-		notifySpecificOnTable(session, info, Config.TYPE_BUYIN_INGAME);
-	}
+
+
+    /**
+     * 从总资产中扣去相应钱数用于继续游戏
+     *
+     * @param session 当前玩家
+     * @param info    是否成功的标志, 1 success
+     */
+    public static void buyIn(IoSession session, String info) {
+        notifySpecificOnTable(session, info, Config.TYPE_BUYIN_INGAME);
+    }
 
     /**
      * 转发聊天信息
@@ -158,6 +158,10 @@ public class NotificationCenter {
         notifyAllOnTable(players, info, Config.TYPE_CARD_INGAME);
     }
 
+    public static void dealCardsOnTableForNewcomers(IoSession session, String info) {
+        notifySpecificOnTable(session, info, Config.TYPE_CARD_INGAME);
+    }
+
     public static void act(IoSession session, String info) {
         notifySpecificOnTable(session, info, Config.TYPE_ACTION_INGAME);
     }
@@ -203,7 +207,7 @@ public class NotificationCenter {
 
 
     public static void youAreBroke(List<Player> players) {
-         notifyAllOnTable(players, "", Config.TYPE_YOUAREBROKE_INGAME);
-     }
+        notifyAllOnTable(players, "", Config.TYPE_YOUAREBROKE_INGAME);
+    }
 
 }
