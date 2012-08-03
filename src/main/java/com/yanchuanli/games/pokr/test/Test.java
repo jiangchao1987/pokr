@@ -1,6 +1,5 @@
 package com.yanchuanli.games.pokr.test;
 
-import com.google.common.collect.HashBiMap;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.model.Pot;
 import com.yanchuanli.games.pokr.model.Record;
@@ -16,10 +15,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Copyright Candou.com
@@ -43,26 +42,7 @@ public class Test {
     public static void main(String[] args) throws IOException {
 //        testTable();
 //        testPot();
-//        testSharedPlayer();
-
-        Map<Integer, String> table = new HashMap<>();
-        for (int i = 0; i < 5; i++) {
-            if (i == 4) {
-                table.put(i, "");
-            } else {
-                table.put(i, String.valueOf(i));
-            }
-        }
-
-        for (Integer i : table.keySet()) {
-
-        }
-
-
-        HashBiMap<Integer, String> bi = HashBiMap.create();
-
-
-        log.debug(table.size());
+        testSharedPlayer();
 
 
     }
@@ -72,11 +52,12 @@ public class Test {
         player.setMoneyInGame(10000);
         Map<String, Player> map = new HashMap<>();
         map.put("1", player);
-        List<Player> list = new ArrayList<>();
+        List<Player> list = new CopyOnWriteArrayList<>();
         list.add(player);
 
-        player.setMoneyInGame(8000);
         Player aplayer = map.get("1");
+
+        aplayer.setMoneyInGame(8000);
         log.debug(aplayer.getMoneyInGame());
 
         Player bplayer = list.get(0);

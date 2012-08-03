@@ -133,7 +133,7 @@ public class ServiceCenter {
 
         String[] cmds = info.split(",");
         Game game = GameEngine.getGame(Integer.parseInt(cmds[0]));
-        Player player = new Player(cmds[1], cmds[2]);
+        Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
         log.debug("Player " + player.getName() + " is leaving " + cmds[1]);
         game.removePlayer(player);
         NotificationCenter.leaveRoom(game.getActivePlayers(), cmds[1] + ",0");
@@ -158,7 +158,6 @@ public class ServiceCenter {
      * @param info    当前房间id,座位id （座位id=0时，由系统分配座位）
      */
     private void userStandBy(IoSession session, String info) {
-        log.debug("user tries to sit down");
         String[] cmds = info.split(",");
         Game game = GameEngine.getGame(Integer.parseInt(cmds[0]));
         Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
@@ -211,11 +210,12 @@ public class ServiceCenter {
             Player player;
             if (Memory.playersOnServer.containsKey(udid)) {
                 player = Memory.playersOnServer.get(udid);
-            } else {
-                player = PlayerDao.getPlayer(udid, msgs[1], Integer.parseInt(msgs[2]));
-                if (player != null) {
-                    Memory.playersOnServer.put(udid, player);
-                }
+                Util.disconnectUser(player.getSession());
+            }
+
+            player = PlayerDao.getPlayer(udid, msgs[1], Integer.parseInt(msgs[2]));
+            if (player != null) {
+                Memory.playersOnServer.put(udid, player);
             }
 
             if (player != null) {
@@ -236,6 +236,7 @@ public class ServiceCenter {
                         + "," + player.getSex() + "," + player.getAddress() + "," + player.getLevel());
                 NotificationCenter.login(session, sb.toString());
             } else {
+                // 用户名密码验证失败则断掉连接
                 session.close(true);
             }
 

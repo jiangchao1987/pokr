@@ -13,6 +13,7 @@ public class PlayerDTO {
     private String address;
     private int seatIndex;
     private int gamestatus;
+    private int money;
 
     public PlayerDTO() {
 
@@ -28,6 +29,7 @@ public class PlayerDTO {
         this.address = player.getAddress();
         this.seatIndex = player.getSeatIndex();
         this.gamestatus = gamestatus;
+        this.money = player.getMoney();
     }
 
     public String getUdid() {
@@ -100,5 +102,13 @@ public class PlayerDTO {
 
     public void setGamestatus(int gamestatus) {
         this.gamestatus = gamestatus;
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
+    public void setMoney(int money) {
+        this.money = money;
     }
 }

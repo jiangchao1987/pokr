@@ -4,9 +4,6 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
-import com.yanchuanli.games.pokr.dao.PlayerDao;
-import com.yanchuanli.games.pokr.model.Player;
-import com.yanchuanli.games.pokr.util.Memory;
 import com.yanchuanli.games.pokr.util.ServiceCenter;
 import com.yanchuanli.games.pokr.util.Util;
 import org.apache.log4j.Logger;
@@ -39,23 +36,7 @@ public class ServerHandler extends IoHandlerAdapter {
 
     // 当一个客户端关闭时
     public void sessionClosed(IoSession session) {
-        Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
-
-        player.setOnline(false);
-        player.setSession(null);
-
-        Memory.sessionsOnServer.remove(String.valueOf(session.getId()));
-        Memory.playersOnServer.remove(player.getUdid());
-        PlayerDao.updateOnlineStatus(player);
-
-        log.debug(player.getName() + " is leaving room " + player.getRoomid());
-        if (player.getRoomid() != Integer.MIN_VALUE) {
-            String info = player.getRoomid() + "," + player.getUdid() + "," + player.getName();
-            ServiceCenter.getInstance().leaveRoom(session, info);
-        }
-
-
-        log.info(player.getUdid() + ":" + player.getName() + " is now disconnected !");
+        Util.disconnectUser(session);
     }
 
     // 当客户端发送的消息到达时:

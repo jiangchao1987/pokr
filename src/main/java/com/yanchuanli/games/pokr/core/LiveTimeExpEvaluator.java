@@ -3,6 +3,7 @@ package com.yanchuanli.games.pokr.core;
 import com.yanchuanli.games.pokr.dao.PlayerDao;
 import com.yanchuanli.games.pokr.model.EXPTimeLevel;
 import com.yanchuanli.games.pokr.model.Player;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 public class LiveTimeExpEvaluator {
 
     private static List<EXPTimeLevel> levels = new ArrayList<>();
+    private static Logger log = Logger.getLogger(LiveTimeExpEvaluator.class);
 
     static {
         levels.add(EXPTimeLevel.LEVEL1);
@@ -49,6 +51,7 @@ public class LiveTimeExpEvaluator {
     }
 
     public static void checkExp(Player player) {
+
         if (player.getElapsedTimeToday() > 0) {
             int time = player.getElapsedTimeToday();
             int startLevel = player.getTimeLevelToday();
@@ -58,6 +61,7 @@ public class LiveTimeExpEvaluator {
                     if (exp.getLevel() == player.getTimeLevelToday()) {
 
                     } else {
+                        log.debug(player.getName() + " has upgrade his timelevel to " + exp.getLevel());
                         player.setTimeLevelToday(exp.getLevel());
                         PlayerDao.addExp(player, exp.getExp());
                         PlayerDao.updateTimeLevelToday(player);

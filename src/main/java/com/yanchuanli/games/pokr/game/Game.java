@@ -120,6 +120,7 @@ public class Game implements Runnable {
             if (index != 0 && !table.get(index).equals(Config.EMPTY_SEAT)) {
                 log.debug("seat " + index + " is taken already");
                 sitDownFailed = true;
+                log.debug(table);
             }
         } else {
             log.debug("wrong index:" + index);
@@ -170,6 +171,7 @@ public class Game implements Runnable {
                 int randomSeat = getNextRandomSeat();
                 player.setSeatIndex(randomSeat);
                 table.put(randomSeat, player.getUdid());
+
             } else {
                 player.setSeatIndex(index);
                 table.put(index, player.getUdid());
@@ -731,12 +733,13 @@ public class Game implements Runnable {
 
         for (Player aplayer : activePlayers) {
             if (aplayer.getUdid().equals(player.getUdid())) {
+                log.debug(player.getName() + " has left the room " + gc.getName() + " and free the chair " + player.getSeatIndex());
                 table.put(player.getSeatIndex(), Config.EMPTY_SEAT);
+
                 player.setRoomid(Integer.MIN_VALUE);
                 player.setSeatIndex(0);
                 activePlayers.remove(aplayer);
 
-                log.debug(player.getName() + " has left the room " + gc.getName());
                 playerRemoved = true;
                 break;
             }
@@ -747,11 +750,12 @@ public class Game implements Runnable {
             for (String s : standingPlayers.keySet()) {
                 Player aplayer = standingPlayers.get(s);
                 if (aplayer.getUdid().equals(player.getUdid())) {
+                    log.debug(player.getName() + " has left the room " + gc.getName() + " and free the chair " + player.getSeatIndex());
                     table.put(player.getSeatIndex(), Config.EMPTY_SEAT);
                     standingPlayers.remove(s);
                     player.setRoomid(Integer.MIN_VALUE);
                     player.setSeatIndex(0);
-                    log.debug(player.getName() + " has left the room " + gc.getName());
+
                     break;
                 }
             }
@@ -761,11 +765,12 @@ public class Game implements Runnable {
             for (String s : waitingPlayers.keySet()) {
                 Player aplayer = waitingPlayers.get(s);
                 if (aplayer.getUdid().equals(player.getUdid())) {
+                    log.debug(player.getName() + " has left the room " + gc.getName() + " and free the chair " + player.getSeatIndex());
                     table.put(player.getSeatIndex(), Config.EMPTY_SEAT);
                     waitingPlayers.remove(s);
                     player.setRoomid(Integer.MIN_VALUE);
                     player.setSeatIndex(0);
-                    log.debug(player.getName() + " has left the room " + gc.getName());
+
                     break;
                 }
             }
@@ -793,5 +798,13 @@ public class Game implements Runnable {
         return randomChairIndex;
     }
 
+    private void leaveTable(Player player) {
+        for (int i : table.keySet()) {
+            if (table.get(i).equals(player.getUdid())) {
+                table.put(i, Config.EMPTY_SEAT);
+                break;
+            }
+        }
+    }
 
 }
