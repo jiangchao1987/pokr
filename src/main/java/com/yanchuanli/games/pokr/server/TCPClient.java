@@ -56,7 +56,7 @@ public class TCPClient {
                 String[] cmds = input.split(":");
                 sendToServer(cmds[1], Config.TYPE_JOIN_INGAME);
             } else if (input.startsWith("sb")) {
-                sendToServer("1001,6", Config.TYPE_USERSTANDBY_INGAME);
+                sendToServer("1001,0", Config.TYPE_USERSTANDBY_INGAME);
             } else if (input.startsWith("li")) {
                 sendToServer(String.valueOf(Config.NORMAL_ROOM_LEVEL_BEGINNER), 2);
             } else if (input.startsWith("l")) {

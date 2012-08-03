@@ -187,7 +187,8 @@ public class Game implements Runnable {
                 playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_WAITING));
             }
             RoomDao.updateCurrentPlayerCount(gc.getId(), activePlayers.size() + waitingPlayers.size());
-            NotificationCenter.respondToPrepareToEnter(player.getSession(), DTOUtil.writeValue(playerDTOs));
+//            NotificationCenter.respondToPrepareToEnter(player.getSession(), DTOUtil.writeValue(playerDTOs));
+            NotificationCenter.sayHello(allPlayersInGame, DTOUtil.writeValue(playerDTOs));
             log.debug(DTOUtil.writeValue(playerDTOs));
         } else {
             NotificationCenter.sitDownFailed(player);
@@ -658,7 +659,7 @@ public class Game implements Runnable {
             while (!stop) {
 
                 checkAvailablePlayers();
-                if (activePlayers.size() + waitingPlayers.size() >= 2) {
+                if (activePlayers.size() + waitingPlayers.size() >= 5) {
                     try {
                         log.debug("game will start in 3 seconds ...");
                         Thread.sleep(Duration.seconds(1).inMillis());
@@ -729,6 +730,7 @@ public class Game implements Runnable {
     public void removePlayer(Player player) {
 
         boolean playerRemoved = false;
+        boolean activeOrWaitingPlayerLeft = false;
 
 
         for (Player aplayer : activePlayers) {
@@ -741,6 +743,7 @@ public class Game implements Runnable {
                 activePlayers.remove(aplayer);
 
                 playerRemoved = true;
+                activeOrWaitingPlayerLeft = true;
                 break;
             }
         }
@@ -755,7 +758,7 @@ public class Game implements Runnable {
                     standingPlayers.remove(s);
                     player.setRoomid(Integer.MIN_VALUE);
                     player.setSeatIndex(0);
-
+                    playerRemoved = true;
                     break;
                 }
             }
@@ -770,7 +773,8 @@ public class Game implements Runnable {
                     waitingPlayers.remove(s);
                     player.setRoomid(Integer.MIN_VALUE);
                     player.setSeatIndex(0);
-
+                    playerRemoved = true;
+                    activeOrWaitingPlayerLeft = true;
                     break;
                 }
             }
@@ -779,6 +783,14 @@ public class Game implements Runnable {
 
         if (playerRemoved) {
             RoomDao.updateCurrentPlayerCount(gc.getId(), activePlayers.size() + waitingPlayers.size());
+
+
+            if (activeOrWaitingPlayerLeft) {
+                log.debug("notify player leaving");
+                NotificationCenter.leaveRoom(allPlayersInGame, player.getUdid());
+            }
+
+
         }
 
         allPlayersInGame.remove(player);
@@ -798,13 +810,5 @@ public class Game implements Runnable {
         return randomChairIndex;
     }
 
-    private void leaveTable(Player player) {
-        for (int i : table.keySet()) {
-            if (table.get(i).equals(player.getUdid())) {
-                table.put(i, Config.EMPTY_SEAT);
-                break;
-            }
-        }
-    }
 
 }

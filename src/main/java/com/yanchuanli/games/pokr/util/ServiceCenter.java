@@ -94,6 +94,7 @@ public class ServiceCenter {
         String[] cmds = info.split(",");
         Game game = GameEngine.getGame(Integer.parseInt(cmds[2]));
         Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
+        log.debug(newplayer.getName() + " tries to buyin " + Integer.parseInt(cmds[1]) + " in game " + Integer.parseInt(cmds[2]));
         boolean result = game.buyIn(newplayer, Integer.parseInt(cmds[1]));
         if (result) {
             log.debug("buyin success");
@@ -133,10 +134,13 @@ public class ServiceCenter {
 
         String[] cmds = info.split(",");
         Game game = GameEngine.getGame(Integer.parseInt(cmds[0]));
-        Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
-        log.debug("Player " + player.getName() + " is leaving " + cmds[1]);
-        game.removePlayer(player);
-        NotificationCenter.leaveRoom(game.getActivePlayers(), cmds[1] + ",0");
+        if (game != null) {
+            Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
+            log.debug("Player " + player.getName() + " is leaving " + cmds[1]);
+            game.removePlayer(player);
+        }
+
+
     }
 
     /**
