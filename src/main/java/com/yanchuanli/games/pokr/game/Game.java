@@ -796,7 +796,16 @@ public class Game implements Runnable {
 
             if (activeOrWaitingPlayerLeft) {
                 log.debug("notify player leaving");
-                NotificationCenter.leaveRoom(allPlayersInGame, player.getUdid());
+
+                List<PlayerDTO> playerDTOs = new ArrayList<>();
+                for (Player aplayer : activePlayers) {
+                    playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_ACTIVE));
+                }
+                for (String s : waitingPlayers.keySet()) {
+                    Player aplayer = waitingPlayers.get(s);
+                    playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_WAITING));
+                }
+                NotificationCenter.leaveRoom(allPlayersInGame, DTOUtil.writeValue(playerDTOs));
             }
 
 
@@ -821,28 +830,44 @@ public class Game implements Runnable {
 
     // 游戏中站起，换座位
     public void standUp(Player player) {
-        log.debug(player.getName() + " stands up ...");
-        if (player.getSeatIndex() != Config.SEAT_INDEX_NOTSITTED) {
-            table.put(player.getSeatIndex(), Config.EMPTY_SEAT);
-        }
-        if (gaming) {
-            if (waitingPlayers.containsKey(player.getUdid())) {
-                waitingPlayers.remove(player.getUdid());
+
+        if (activePlayers.contains(player) || waitingPlayers.containsKey(player.getUdid())) {
+            log.debug(player.getName() + " stands up ...");
+            if (player.getSeatIndex() != Config.SEAT_INDEX_NOTSITTED) {
+                table.put(player.getSeatIndex(), Config.EMPTY_SEAT);
             }
-            if (activePlayers.contains(player)) {
-                if (actor == player) {
-                    player.setInput("f");
+            if (gaming) {
+                if (waitingPlayers.containsKey(player.getUdid())) {
+                    waitingPlayers.remove(player.getUdid());
                 }
-                activePlayers.remove(player);
+                if (activePlayers.contains(player)) {
+                    if (actor == player) {
+                        player.setInput("f");
+                    }
+                    activePlayers.remove(player);
+                }
+                standingPlayers.put(player.getUdid(), player);
+            } else {
+                if (waitingPlayers.containsKey(player.getUdid())) {
+                    waitingPlayers.remove(player.getUdid());
+                }
             }
+
+            List<PlayerDTO> playerDTOs = new ArrayList<>();
+            for (Player aplayer : activePlayers) {
+                playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_ACTIVE));
+            }
+            for (String s : waitingPlayers.keySet()) {
+                Player aplayer = waitingPlayers.get(s);
+                playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_WAITING));
+            }
+
+            player.setSeatIndex(Config.SEAT_INDEX_NOTSITTED);
             standingPlayers.put(player.getUdid(), player);
-        } else {
-            if (waitingPlayers.containsKey(player.getUdid())) {
-                waitingPlayers.remove(player.getUdid());
-            }
+
+            NotificationCenter.leaveRoom(allPlayersInGame, DTOUtil.writeValue(playerDTOs));
         }
-        player.setSeatIndex(Config.SEAT_INDEX_NOTSITTED);
-        standingPlayers.put(player.getUdid(), player);
+
 
     }
 
