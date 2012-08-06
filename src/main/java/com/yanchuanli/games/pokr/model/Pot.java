@@ -11,21 +11,22 @@ import java.util.*;
  * Email: mail@yanchuanli.com
  * Date: 12-7-6
  */
+
 public class Pot {
 
     private int money;
     private List<Map<String, Integer>> pots;
+    private List<Map<String, Integer>> foldPots;
     private Map<String, Integer> currentFoldPlayers;
     private Map<String, Integer> currentPot;
     private List<Record> currentAllInPlayers;
-    private List<Integer> moneyListOfFoldPlayers;
     private RecordComparator comparator;
     private static Logger log = Logger.getLogger(Pot.class);
 
     public Pot() {
         money = 0;
-        moneyListOfFoldPlayers = new ArrayList<>();
         pots = new ArrayList<>();
+        foldPots = new ArrayList<>();
         currentPot = new HashMap<>();
         currentFoldPlayers = new HashMap<>();
         comparator = new RecordComparator();
@@ -44,7 +45,10 @@ public class Pot {
         }
 
         if (record.getActionType() == Config.ACTION_TYPE_ALL_IN) {
-            currentAllInPlayers.add(record);
+            int hisBet = currentPot.get(record.getUdid());
+            hisBet += record.getBet();
+            Record r = new Record(record.getUdid(), Config.ACTION_TYPE_ALL_IN, hisBet);
+            currentAllInPlayers.add(r);
         } else if (record.getActionType() == Config.ACTION_TYPE_FOLD) {
             int hisBet = currentPot.get(record.getUdid());
             currentPot.remove(record.getUdid());
@@ -53,14 +57,16 @@ public class Pot {
 
             // he would also "fold" in all previous pots and re-calculate the money there
             for (int i = 0; i < pots.size(); i++) {
-                int moneyOfFoldPlayersInThatRound = moneyListOfFoldPlayers.get(i);
                 Map<String, Integer> thatPot = getPotAtIndex(i);
+                Map<String, Integer> thatFoldPot = getFoldPotAtIndex(i);
+
                 if (thatPot.containsKey(record.getUdid())) {
-                    moneyOfFoldPlayersInThatRound += thatPot.get(record.getUdid());
+                    thatFoldPot.put(record.getUdid(), thatPot.get(record.getUdid()));
                     thatPot.remove(record.getUdid());
-                    moneyListOfFoldPlayers.set(i, moneyOfFoldPlayersInThatRound);
                 }
             }
+
+
         }
 
     }
@@ -88,7 +94,24 @@ public class Pot {
                 }
             }
 
+            Map<String, Integer> smallFoldPot = new HashMap<>();
+            Iterator<String> fit = currentFoldPlayers.keySet().iterator();
+            while (fit.hasNext()) {
+                String udid = fit.next();
+                int hisBet = currentFoldPlayers.get(udid);
+                if (hisBet <= minBet) {
+                    smallFoldPot.put(udid, hisBet);
+                    fit.remove();
+                } else {
+                    hisBet = hisBet - minBet;
+                    smallFoldPot.put(udid, minBet);
+                    currentFoldPlayers.put(udid, hisBet);
+
+                }
+            }
+
             pots.add(smallPot);
+            foldPots.add(smallFoldPot);
         }
 
         //在遍历完所有AllIn玩家后，还可能存在在AllIn玩家之后的下一个玩家raise他的情况。
@@ -101,22 +124,30 @@ public class Pot {
                 it.remove();
             }
             pots.add(smallPot);
+//            Map<String, Integer> smallFoldPot = new HashMap<>();
+            foldPots.add(currentFoldPlayers);
         } else {
         }
 
         currentPot = pots.get(pots.size() - 1);
         pots.remove(pots.size() - 1);
+        currentFoldPlayers = foldPots.get(foldPots.size() - 1);
+        foldPots.remove(foldPots.size() - 1);
 
 
-        int currentFoldMoney = 0;
-        for (String s : currentFoldPlayers.keySet()) {
-            currentFoldMoney += currentFoldPlayers.get(s);
+        // 如果该AllInPlayer进入到下轮的池子，则不需要删除掉，参考Test.testPot2;
+        Iterator<Record> rit = currentAllInPlayers.iterator();
+        while (rit.hasNext()) {
+            Record r = rit.next();
+            if (currentFoldPlayers.containsKey(r.getUdid()) || currentPot.containsKey(r.getUdid())) {
+
+            } else {
+                rit.remove();
+            }
         }
-        moneyListOfFoldPlayers.add(currentFoldMoney);
 
+//        currentAllInPlayers.clear();
 
-        currentAllInPlayers.clear();
-        currentFoldPlayers.clear();
 
     }
 
@@ -124,11 +155,15 @@ public class Pot {
     public void finish() {
         if (!currentPot.isEmpty()) {
             pots.add(currentPot);
+            foldPots.add(currentFoldPlayers);
         }
 
         for (int i = 0; i < pots.size(); i++) {
+            log.debug("===========================");
             Map<String, Integer> m = pots.get(i);
             log.debug(m);
+            Map<String, Integer> f = foldPots.get(i);
+            log.debug(f);
             int moneyInThisPot = getMoneyAtIndex(i);
             log.debug("money in this pot:" + moneyInThisPot);
         }
@@ -153,6 +188,10 @@ public class Pot {
         return pots.get(index);
     }
 
+    public Map<String, Integer> getFoldPotAtIndex(int index) {
+        return foldPots.get(index);
+    }
+
     public int getMoneyAtIndex(int index) {
         int result = 0;
         Map<String, Integer> m = getPotAtIndex(index);
@@ -161,14 +200,19 @@ public class Pot {
             Integer t = m.get(udid);
             result += t;
         }
-        result += moneyListOfFoldPlayers.get(index);
+
+        Map<String, Integer> f = getFoldPotAtIndex(index);
+        for (String udid : f.keySet()) {
+            Integer t = f.get(udid);
+            result += t;
+        }
+//        result += moneyListOfFoldPlayers.get(index);
         return result;
     }
 
     public void clear() {
         money = 0;
 
-        moneyListOfFoldPlayers.clear();
         pots.clear();
         currentPot.clear();
         currentAllInPlayers.clear();

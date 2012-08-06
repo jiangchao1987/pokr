@@ -398,7 +398,7 @@ public class Game implements Runnable {
                 //每个边池给客户端足够做动画的时间
                 NotificationCenter.winorlose(playersListInThisPot, sb.toString());
                 try {
-                    Thread.sleep(gc.getInactivityCheckInterval().inMillis() * 4);
+                    Thread.sleep(Duration.seconds(2).inMillis());
                 } catch (InterruptedException e) {
                     log.error(ExceptionUtils.getStackTrace(e));
                 }
@@ -417,6 +417,11 @@ public class Game implements Runnable {
                 List<Player> playersListInThisPot = new ArrayList<>();
                 playersListInThisPot.add(player1);
                 NotificationCenter.winorlose(playersListInThisPot, sb.toString());
+                try {
+                    Thread.sleep(Duration.seconds(2).inMillis());
+                } catch (InterruptedException e) {
+                    log.error(ExceptionUtils.getStackTrace(e));
+                }
             }
         }
 
@@ -642,7 +647,7 @@ public class Game implements Runnable {
 
 
         NotificationCenter.sayHello(allPlayersInGame, DTOUtil.writeValue(DTOUtil.getPlayerDTOList(activePlayers, Config.GAMESTATUS_ACTIVE)));
-        log.debug("dto to json: " + DTOUtil.writeValue(DTOUtil.getPlayerDTOList(activePlayers, Config.GAMESTATUS_ACTIVE)));
+        log.debug(DTOUtil.writeValue(DTOUtil.getPlayerDTOList(activePlayers, Config.GAMESTATUS_ACTIVE)));
 
 
 //        NotificationCenter.sayHello(allPlayersInGame, info);
@@ -838,17 +843,18 @@ public class Game implements Runnable {
             }
             if (gaming) {
                 if (waitingPlayers.containsKey(player.getUdid())) {
+                    log.debug(player.getName() + " stands up from waiting players");
                     waitingPlayers.remove(player.getUdid());
-                }
-                if (activePlayers.contains(player)) {
+                } else if (activePlayers.contains(player)) {
                     if (actor == player) {
                         player.setInput("f");
                     }
+                    log.debug(player.getName() + " stands up from active players");
                     activePlayers.remove(player);
                 }
-                standingPlayers.put(player.getUdid(), player);
             } else {
                 if (waitingPlayers.containsKey(player.getUdid())) {
+                    log.debug(player.getName() + " stands up from waiting players");
                     waitingPlayers.remove(player.getUdid());
                 }
             }
@@ -862,10 +868,12 @@ public class Game implements Runnable {
                 playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_WAITING));
             }
 
+            NotificationCenter.leaveRoom(allPlayersInGame, DTOUtil.writeValue(playerDTOs));
+
             player.setSeatIndex(Config.SEAT_INDEX_NOTSITTED);
             standingPlayers.put(player.getUdid(), player);
 
-            NotificationCenter.leaveRoom(allPlayersInGame, DTOUtil.writeValue(playerDTOs));
+
         }
 
 
