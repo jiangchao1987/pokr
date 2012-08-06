@@ -676,7 +676,10 @@ public class Game implements Runnable {
                     } catch (InterruptedException e) {
                         log.error(ExceptionUtils.getStackTrace(e));
                     }
-                    start();
+                    if (activePlayers.size() + waitingPlayers.size() >= 2) {
+                        start();
+                    }
+
                 } else {
 //                    log.debug("activeplayers:" + activePlayers.size());
 //                    log.debug("waitingplayers:" + standingPlayers.size());
