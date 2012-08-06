@@ -40,6 +40,7 @@ public class Config {
     public static final int TYPE_STANDUP_INGAME = 23;
     public static final int TYPE_YOUAREBROKE_INGAME = 24;
 
+
     public static final int RESULT_BUYINSUCCESS = 1;
 
     public static final int GAMEINFO_NOTSTARTED = 0;
@@ -77,6 +78,7 @@ public class Config {
     public static final int GAMESTATUS_WAITING = 0;
 
     public static final String EMPTY_SEAT = "empty";
+    public static final int SEAT_INDEX_NOTSITTED = 0;
 
 
 }

@@ -62,6 +62,7 @@ public class Test {
 
         Player bplayer = list.get(0);
         log.debug(bplayer.getMoneyInGame());
+        log.debug(list.contains(aplayer));
     }
 
     public static void testTable() {

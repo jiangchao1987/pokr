@@ -79,8 +79,25 @@ public class ServiceCenter {
                     break;
                 case Config.TYPE_BUYIN_INGAME:
                     buyIn(session, map.get(key));
+                    break;
+                case Config.TYPE_STANDUP_INGAME:
+                    standUp(session, map.get(key));
+                    break;
             }
         }
+    }
+
+    /**
+     * 房间中已坐下用户站起
+     *
+     * @param session
+     * @param info    房间id,用户udid
+     */
+    public void standUp(IoSession session, String info) {
+        String[] cmds = info.split(",");
+        Game game = GameEngine.getGame(Integer.parseInt(cmds[0]));
+        Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
+        game.standUp(newplayer);
     }
 
     /**
@@ -113,15 +130,11 @@ public class ServiceCenter {
     private void chat(IoSession session, String info) {
         String[] cmds = info.split(",");
         Game game = GameEngine.getGame(Integer.parseInt(cmds[0]));
-        List<Player> players = new ArrayList<>();
-        for (Player p : game.getActivePlayers()) {
-            if (!p.getUdid().equals(cmds[1])) {
-                players.add(p);
-            }
+        if (game != null) {
+            Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
+            game.chat(player,cmds[2]);
         }
-        NotificationCenter.chat(players, cmds[1] + ": " + cmds[2]);
-        players.clear();
-        players = null;
+
     }
 
     /**
@@ -135,7 +148,7 @@ public class ServiceCenter {
         Game game = GameEngine.getGame(Integer.parseInt(cmds[0]));
         if (game != null) {
             Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
-            log.debug("Player " + player.getName() + " is leaving " + cmds[1]);
+            log.debug("Player " + player.getName() + " is leaving " + cmds[0]);
             game.removePlayer(player);
         }
     }

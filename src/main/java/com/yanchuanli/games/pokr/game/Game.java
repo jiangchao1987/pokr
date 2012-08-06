@@ -745,7 +745,7 @@ public class Game implements Runnable {
                 table.put(player.getSeatIndex(), Config.EMPTY_SEAT);
 
                 player.setRoomid(Integer.MIN_VALUE);
-                player.setSeatIndex(0);
+                player.setSeatIndex(Config.SEAT_INDEX_NOTSITTED);
                 activePlayers.remove(aplayer);
 
                 playerRemoved = true;
@@ -763,7 +763,7 @@ public class Game implements Runnable {
                     table.put(player.getSeatIndex(), Config.EMPTY_SEAT);
                     standingPlayers.remove(s);
                     player.setRoomid(Integer.MIN_VALUE);
-                    player.setSeatIndex(0);
+                    player.setSeatIndex(Config.SEAT_INDEX_NOTSITTED);
                     playerRemoved = true;
                     break;
                 }
@@ -778,7 +778,7 @@ public class Game implements Runnable {
                     table.put(player.getSeatIndex(), Config.EMPTY_SEAT);
                     waitingPlayers.remove(s);
                     player.setRoomid(Integer.MIN_VALUE);
-                    player.setSeatIndex(0);
+                    player.setSeatIndex(Config.SEAT_INDEX_NOTSITTED);
                     playerRemoved = true;
                     activeOrWaitingPlayerLeft = true;
                     break;
@@ -816,5 +816,43 @@ public class Game implements Runnable {
         return randomChairIndex;
     }
 
+    // 游戏中站起，换座位
+    public void standUp(Player player) {
+        log.debug(player.getName() + " stands up ...");
+        if (player.getSeatIndex() != Config.SEAT_INDEX_NOTSITTED) {
+            table.put(player.getSeatIndex(), Config.EMPTY_SEAT);
+        }
+        if (gaming) {
+            if (waitingPlayers.containsKey(player.getUdid())) {
+                waitingPlayers.remove(player.getUdid());
+            }
+            if (activePlayers.contains(player)) {
+                if (actor == player) {
+                    player.setInput("f");
+                }
+                activePlayers.remove(player);
+            }
+            standingPlayers.put(player.getUdid(), player);
+        } else {
+            if (waitingPlayers.containsKey(player.getUdid())) {
+                waitingPlayers.remove(player.getUdid());
+            }
+        }
+        player.setSeatIndex(Config.SEAT_INDEX_NOTSITTED);
+        standingPlayers.put(player.getUdid(), player);
 
+    }
+
+    public void chat(Player player, String content) {
+        log.debug(player.getName() + " says:[" + content + "]");
+        List<Player> players = new ArrayList<>();
+        for (Player p : allPlayersInGame) {
+            if (!p.getUdid().equals(player.getUdid())) {
+                players.add(p);
+            }
+        }
+        NotificationCenter.chat(players, player.getUdid() + ": " + content);
+        players.clear();
+        players = null;
+    }
 }
