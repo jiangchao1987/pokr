@@ -46,15 +46,17 @@ public class PlayerDao {
                 + "login?udid=" + udid + "&password=" + password + "&source="
                 + source);
         if (json != null && json.contains("user")) {
-            if (json.contains("{\"user\":null}")) {
+            if (json.contains("{\"user\":null}") || json.contains("\"stat\": 0")) {
                 return null;
             } else {
-                json = json.replace("{\"user\":{", "{").replace("}}", "}");
-                Player player = parsePlayer(json);
-                if (player == null) {
-                    return null;
-                }
-                players.put(udid, player);
+				json = json.replace(
+						"{\"message\":\"登录成功\",\"stat\":1,\"user\":{", "{")
+						.replace("}}", "}");
+				Player player = parsePlayer(json);
+				if (player == null) {
+					return null;
+				}
+				players.put(udid, player);
             }
         }
         return players.get(udid);
