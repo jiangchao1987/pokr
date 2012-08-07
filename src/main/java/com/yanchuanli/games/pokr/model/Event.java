@@ -1,9 +1,10 @@
 package com.yanchuanli.games.pokr.model;
 
-public class Event {
+public abstract class Event {
 
 	private String udid;
-	private int money;
+	private int time;
+	private int type;
 
 	public String getUdid() {
 		return udid;
@@ -13,12 +14,20 @@ public class Event {
 		this.udid = udid;
 	}
 
-	public int getMoney() {
-		return money;
+	public int getTime() {
+		return time;
 	}
 
-	public void setMoney(int money) {
-		this.money = money;
+	public void setTime(int time) {
+		this.time = time;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
 	}
 
 }
