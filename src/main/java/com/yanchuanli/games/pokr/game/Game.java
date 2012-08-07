@@ -5,6 +5,7 @@ import com.yanchuanli.games.pokr.basic.Card;
 import com.yanchuanli.games.pokr.basic.Deck;
 import com.yanchuanli.games.pokr.basic.HandEvaluator;
 import com.yanchuanli.games.pokr.basic.PlayerRankComparator;
+import com.yanchuanli.games.pokr.dao.EventDao;
 import com.yanchuanli.games.pokr.dao.PlayerDao;
 import com.yanchuanli.games.pokr.dao.RoomDao;
 import com.yanchuanli.games.pokr.dto.PlayerDTO;
@@ -49,7 +50,7 @@ public class Game implements Runnable {
     //本次游戏的所有用户
     private List<Player> allPlayersInGame;
     //本次游戏的所有赢钱用户
-    private Set<String> allWinningUsers;
+    private Map<String, Integer> allWinningUsers;
 
 
     private List<Card> cardsOnTable;
@@ -72,7 +73,7 @@ public class Game implements Runnable {
         this.gc = gc;
         activePlayers = new CopyOnWriteArrayList<>();
         allPlayersInGame = new CopyOnWriteArrayList<>();
-        allWinningUsers = new HashSet<>();
+        allWinningUsers = new ConcurrentHashMap<>();
         waitingPlayers = new ConcurrentHashMap<>();
         standingPlayers = new ConcurrentHashMap<>();
         table = new ConcurrentHashMap<>();
@@ -367,10 +368,16 @@ public class Game implements Runnable {
 
                         for (Player player : players) {
                             player.addMoney(moneyForEveryOne);
-                            PlayerDao.cashBack(player, moneyForEveryOne);
-                            PlayerDao.updateMaxWin(player.getUdid(), moneyForEveryOne);
 
-                            allWinningUsers.add(player.getUdid());
+
+                            if (allWinningUsers.containsKey(player.getUdid())) {
+                                int hisMoney = allWinningUsers.get(player.getUdid());
+                                hisMoney += moneyForEveryOne;
+                                allWinningUsers.put(player.getUdid(), hisMoney);
+                            } else {
+                                allWinningUsers.put(player.getUdid(), moneyForEveryOne);
+                            }
+
                             sb.append(player.getUdid()).append(",").append(player.getNameOfBestHand()).append(",").append(String.valueOf(player.getGIndexesForOwnCardsUsedInBestFive())).append(",").append(player.getIndexesForUsedCommunityCardsInBestFive(cardsArray)).append(",").append(String.valueOf(moneyForEveryOne)).append(";");
                             playersInThisPot.remove(player.getUdid());
                             playersListInThisPot.add(player);
@@ -390,10 +397,14 @@ public class Game implements Runnable {
                 }
 
                 for (Player p : activePlayers) {
-                    if (allWinningUsers.contains(p.getUdid())) {
+                    if (allWinningUsers.containsKey(p.getUdid())) {
                         PlayerDao.updateWinCount(p);
+                        PlayerDao.updateMaxWin(p.getUdid(), allWinningUsers.get(p.getUdid()));
+                        PlayerDao.cashBack(p, allWinningUsers.get(p.getUdid()));
+                        EventDao.insertWinOrLoseEvent(p, gc.getName(), allWinningUsers.get(p.getUdid()), String.valueOf(p.getGIndexesForOwnCardsUsedInBestFive()), true);
                     } else {
                         PlayerDao.updateLoseCount(p);
+                        EventDao.insertWinOrLoseEvent(p, gc.getName(), p.getBetThisGame(), String.valueOf(p.getGIndexesForOwnCardsUsedInBestFive()), false);
                     }
                 }
 
@@ -413,8 +424,9 @@ public class Game implements Runnable {
                 StringBuilder sb = new StringBuilder();
                 player1.addMoney(pot.getMoney());
                 PlayerDao.cashBack(player1, pot.getMoney());
+                PlayerDao.updateMaxWin(player1.getUdid(), pot.getMoney());
                 PlayerDao.updateWinCount(player1);
-                PlayerDao.updateWinCount(player1);
+
                 sb.append(player1.getUdid()).append(",").append("").append(",").append("").append(",").append("").append(",").append(String.valueOf(pot.getMoney())).append(";");
                 List<Player> playersListInThisPot = new ArrayList<>();
                 playersListInThisPot.add(player1);
@@ -535,6 +547,8 @@ public class Game implements Runnable {
                         log.debug(this.activePlayers.get(0).getName() + " win ...");
                         playersToAct = 0;
                     }
+
+                    EventDao.insertWinOrLoseEvent(actor, gc.getName(), actor.getBetThisGame(), actor.getHand().getGIndexes(), false);
                     PlayerDao.updateLoseCount(actor);
                     break;
                 case SMALL_BLIND:
@@ -642,18 +656,9 @@ public class Game implements Runnable {
 
         waitingPlayers.clear();
 
-        /*String info = "";
-        for (Player player : activePlayers) {
-            info = info + player.getUdid() + "," + player.getName() + "," + player.getMoneyInGame() + "," + player.getCustomAvatar() + "," + player.getAvatar() + "," + player.getSex() + "," + player.getAddress() + ";";
-        }*/
-
-
         NotificationCenter.sayHello(allPlayersInGame, DTOUtil.writeValue(DTOUtil.getPlayerDTOList(activePlayers, Config.GAMESTATUS_ACTIVE)));
         log.debug(DTOUtil.writeValue(DTOUtil.getPlayerDTOList(activePlayers, Config.GAMESTATUS_ACTIVE)));
 
-
-//        NotificationCenter.sayHello(allPlayersInGame, info);
-//        log.debug(info);
 
     }
 

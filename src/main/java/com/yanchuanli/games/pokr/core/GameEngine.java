@@ -9,6 +9,7 @@ import com.yanchuanli.games.pokr.model.Room;
 import com.yanchuanli.games.pokr.util.Config;
 import org.apache.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +44,18 @@ public void handle(Signal sig) {
 
         RoomDao.init();
         games = new HashMap<Integer, Game>();
-        List<Room> roomsToPrepare = RoomDao.getRooms(Config.NORMAL_ROOM_LEVEL_BEGINNER);
+
+        List<Room> roomsToPrepare = new ArrayList<>();
+        roomsToPrepare.addAll(RoomDao.getRooms(Config.NORMAL_ROOM_LEVEL_BEGINNER));
+        roomsToPrepare.addAll(RoomDao.getRooms(Config.NORMAL_ROOM_LEVEL_PROFESSIONAL));
+        roomsToPrepare.addAll(RoomDao.getRooms(Config.NORMAL_ROOM_LEVEL_MASTER));
+        roomsToPrepare.addAll(RoomDao.getRooms(Config.NORMAL_ROOM_LEVEL_VIP));
+        roomsToPrepare.addAll(RoomDao.getRooms(Config.FAST_ROOM_LEVEL_BEGINNER));
+        roomsToPrepare.addAll(RoomDao.getRooms(Config.FAST_ROOM_LEVEL_PROFESSIONAL));
+        roomsToPrepare.addAll(RoomDao.getRooms(Config.FAST_ROOM_LEVEL_MASTER));
+        roomsToPrepare.addAll(RoomDao.getRooms(Config.FAST_ROOM_LEVEL_VIP));
+
+
         pool = Executors.newFixedThreadPool(roomsToPrepare.size() + 1);
 
         for (Room room : roomsToPrepare) {

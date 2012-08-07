@@ -32,8 +32,9 @@ public class Player {
     private boolean online;
     //进这个房间buy in的筹码
     private int moneyInGame;
-    private int betThisTime;
-    private int betThisRound;
+    private int betThisTime;   //这一次的投注
+    private int betThisRound;  //这一轮的投注
+    private int betThisGame;   //这次游戏的投注
     private int money;
     private String input;
     private String nameOfBestHand;
@@ -270,23 +271,28 @@ public class Player {
                 String[] inputs = input.split(":");
                 setBetThisTime(Integer.parseInt(inputs[1]));
                 betThisRound += betThisTime;
+                betThisGame += betThisTime;
                 result = Action.RAISE;
             } else if (input.startsWith("sb")) {
                 setBetThisTime(blindamount);
                 betThisRound += betThisTime;
+                betThisGame += betThisTime;
                 result = Action.SMALL_BLIND;
             } else if (input.startsWith("bb")) {
                 setBetThisTime(blindamount);
                 betThisRound += betThisTime;
+                betThisGame += betThisTime;
                 result = Action.BIG_BLIND;
             } else if (input.startsWith("a")) {
                 setBetThisTime(moneyInGame);
                 betThisRound += betThisTime;
+                betThisGame += betThisTime;
                 result = Action.ALLIN;
             } else {
                 String[] inputs = input.split(":");
                 setBetThisTime(Integer.parseInt(inputs[1]));
                 betThisRound += betThisTime;
+                betThisGame += betThisTime;
                 result = Action.BET;
             }
             moneyInGame -= betThisTime;
@@ -371,6 +377,10 @@ public class Player {
         bestHandRank = Integer.MIN_VALUE;
         smallBlind = false;
         bigBlind = false;
+        betThisGame = 0;
+        betThisRound = 0;
+        betThisTime = 0;
+
     }
 
     public boolean isSmallBlind() {
@@ -516,5 +526,13 @@ public class Player {
 
         Player player = (Player) obj;
         return this.getUdid().equals(player.getUdid());
+    }
+
+    public int getBetThisGame() {
+        return betThisGame;
+    }
+
+    public void setBetThisGame(int betThisGame) {
+        this.betThisGame = betThisGame;
     }
 }
