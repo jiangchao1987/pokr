@@ -2,6 +2,7 @@ package com.yanchuanli.games.pokr.util;
 
 import com.yanchuanli.games.pokr.basic.Dealer;
 import com.yanchuanli.games.pokr.core.GameEngine;
+import com.yanchuanli.games.pokr.dao.EventDao;
 import com.yanchuanli.games.pokr.dao.PlayerDao;
 import com.yanchuanli.games.pokr.dao.RoomDao;
 import com.yanchuanli.games.pokr.game.Game;
@@ -132,7 +133,7 @@ public class ServiceCenter {
         Game game = GameEngine.getGame(Integer.parseInt(cmds[0]));
         if (game != null) {
             Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
-            game.chat(player,cmds[2]);
+            game.chat(player, cmds[2]);
         }
 
     }
@@ -239,6 +240,9 @@ public class ServiceCenter {
                 Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);
 
                 PlayerDao.updateOnlineStatus(player);
+
+
+                EventDao.insertLoginEvent(player);
 
                 StringBuffer sb = new StringBuffer();
                 sb.append(player.getUdid()).append(",").append(player.getName()).append(",").append(
