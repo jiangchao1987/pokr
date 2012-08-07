@@ -6,17 +6,17 @@ package com.yanchuanli.games.pokr.event;
  * Email: mail@yanchuanli.com
  * Date: 12-7-27
  */
-public class Event {
+public class MQEvent {
     private String udid;
     private int timestamp;
     private int type;
     private String info;
     private int processed;
     
-    public Event() {
+    public MQEvent() {
     }
 
-    public Event(String udid, int timestamp, int type, String info) {
+    public MQEvent(String udid, int timestamp, int type, String info) {
         this.udid = udid;
         this.timestamp = timestamp;
         this.type = type;

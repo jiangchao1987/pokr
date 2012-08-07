@@ -369,7 +369,7 @@ public class Game implements Runnable {
                             player.addMoney(moneyForEveryOne);
                             PlayerDao.cashBack(player, moneyForEveryOne);
                             PlayerDao.updateMaxWin(player.getUdid(), moneyForEveryOne);
-                            PlayerDao.updateWinCount(player);
+
                             allWinningUsers.add(player.getUdid());
                             sb.append(player.getUdid()).append(",").append(player.getNameOfBestHand()).append(",").append(String.valueOf(player.getGIndexesForOwnCardsUsedInBestFive())).append(",").append(player.getIndexesForUsedCommunityCardsInBestFive(cardsArray)).append(",").append(String.valueOf(moneyForEveryOne)).append(";");
                             playersInThisPot.remove(player.getUdid());
@@ -391,7 +391,7 @@ public class Game implements Runnable {
 
                 for (Player p : activePlayers) {
                     if (allWinningUsers.contains(p.getUdid())) {
-
+                        PlayerDao.updateWinCount(p);
                     } else {
                         PlayerDao.updateLoseCount(p);
                     }

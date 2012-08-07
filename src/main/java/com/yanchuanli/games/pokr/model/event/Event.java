@@ -1,4 +1,4 @@
-package com.yanchuanli.games.pokr.model;
+package com.yanchuanli.games.pokr.model.event;
 
 public abstract class Event {
 
