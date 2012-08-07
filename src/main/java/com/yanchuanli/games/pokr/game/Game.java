@@ -76,7 +76,7 @@ public class Game implements Runnable {
         waitingPlayers = new ConcurrentHashMap<>();
         standingPlayers = new ConcurrentHashMap<>();
         table = new ConcurrentHashMap<>();
-        for (int i = 0; i < gc.getMaxPlayersCount(); i++) {
+        for (int i = 1; i <= gc.getMaxPlayersCount(); i++) {
             table.put(i, Config.EMPTY_SEAT);
         }
         cardsOnTable = new ArrayList<>();
@@ -125,6 +125,8 @@ public class Game implements Runnable {
             if (index != 0 && !table.get(index).equals(Config.EMPTY_SEAT)) {
                 log.debug("seat " + index + " is taken already");
                 sitDownFailed = true;
+                log.debug(table);
+            } else {
                 log.debug(table);
             }
         } else {

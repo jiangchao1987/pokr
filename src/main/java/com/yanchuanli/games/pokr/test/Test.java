@@ -44,9 +44,11 @@ public class Test {
 //        testPot();
 //        testSharedPlayer();
 
-        testPot2();
+//        testPot2();
 
 //        testPot3();
+
+        testPot4();
     }
 
     public static void testSharedPlayer() {
@@ -80,6 +82,54 @@ public class Test {
         }
     }
 
+    public static void testPot4() {
+        String a = "a";
+        String b = "b";
+        String c = "c";
+        String d = "d";
+        String e = "e";
+        Record record1 = new Record(d, Config.ACTION_TYPE_SMALL_BLIND, 5);
+        Record record2 = new Record(e, Config.ACTION_TYPE_BIG_BLIND, 10);
+        Record record3 = new Record(a, Config.ACTION_TYPE_ALL_IN, 30);
+        Record record4 = new Record(b, Config.ACTION_TYPE_CALL, 30);
+        Record record5 = new Record(c, Config.ACTION_TYPE_CALL, 30);
+        Record record6 = new Record(d, Config.ACTION_TYPE_RAISE, 55);
+        Record record7 = new Record(e, Config.ACTION_TYPE_CALL, 50);
+        Record record8 = new Record(b, Config.ACTION_TYPE_CALL, 30);
+        Record record9 = new Record(c, Config.ACTION_TYPE_CALL, 30);
+
+        Pot pot = new Pot();
+        pot.addRecord(record1);
+        pot.addRecord(record2);
+        pot.addRecord(record3);
+        pot.addRecord(record4);
+        pot.addRecord(record5);
+        pot.addRecord(record6);
+        pot.addRecord(record7);
+        pot.addRecord(record8);
+        pot.addRecord(record9);
+        pot.buildPotList();
+
+        Record record10 = new Record(b, Config.ACTION_TYPE_RAISE, 50);
+        Record record11 = new Record(a, Config.ACTION_TYPE_FOLD, 0);
+        Record record12 = new Record(c, Config.ACTION_TYPE_ALL_IN, 10);
+        Record record13 = new Record(d, Config.ACTION_TYPE_ALL_IN, 20);
+        Record record14 = new Record(e, Config.ACTION_TYPE_RAISE, 100);
+        Record record15 = new Record(b, Config.ACTION_TYPE_FOLD, 0);
+
+        pot.addRecord(record10);
+        pot.addRecord(record11);
+        pot.addRecord(record12);
+        pot.addRecord(record13);
+        pot.addRecord(record14);
+        pot.addRecord(record15);
+        pot.buildPotList();
+
+        pot.finish();
+
+
+    }
+
     public static void testPot3() {
         String a = "a";
         String b = "b";
@@ -90,7 +140,7 @@ public class Test {
         Record record4 = new Record(a, Config.ACTION_TYPE_CALL, 25);
         Record record5 = new Record(b, Config.ACTION_TYPE_CALL, 20);
 
-        Pot pot=new Pot();
+        Pot pot = new Pot();
         pot.addRecord(record1);
         pot.addRecord(record2);
         pot.addRecord(record3);
