@@ -4,6 +4,8 @@ import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.model.Pot;
 import com.yanchuanli.games.pokr.model.Record;
 import com.yanchuanli.games.pokr.model.Table;
+import com.yanchuanli.games.pokr.model.event.Event;
+import com.yanchuanli.games.pokr.model.event.LoginEvent;
 import com.yanchuanli.games.pokr.util.Config;
 import org.apache.log4j.Logger;
 import sun.misc.BASE64Encoder;
@@ -48,7 +50,13 @@ public class Test {
 
 //        testPot3();
 
-        testPot4();
+//        testPot4();
+        testEvent();
+    }
+
+    public static void testEvent() {
+        Event e = new LoginEvent();
+        log.debug(e.getTime());
     }
 
     public static void testSharedPlayer() {

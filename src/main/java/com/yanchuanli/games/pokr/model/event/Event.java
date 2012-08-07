@@ -1,33 +1,35 @@
 package com.yanchuanli.games.pokr.model.event;
 
+import com.yanchuanli.games.pokr.util.TimeUtil;
+
 public abstract class Event {
 
-	private String udid;
-	private int time;
-	private int type;
+    private String udid;
+    private int time;
+    private int type;
 
-	public String getUdid() {
-		return udid;
-	}
+    public Event() {
+        time = TimeUtil.unixtime();
+    }
 
-	public void setUdid(String udid) {
-		this.udid = udid;
-	}
+    public String getUdid() {
+        return udid;
+    }
 
-	public int getTime() {
-		return time;
-	}
+    public void setUdid(String udid) {
+        this.udid = udid;
+    }
 
-	public void setTime(int time) {
-		this.time = time;
-	}
+    public int getTime() {
+        return time;
+    }
 
-	public int getType() {
-		return type;
-	}
+    public int getType() {
+        return type;
+    }
 
-	public void setType(int type) {
-		this.type = type;
-	}
+    public void setType(int type) {
+        this.type = type;
+    }
 
 }
