@@ -729,6 +729,7 @@ public class Game implements Runnable {
 
         for (Player player : activePlayers) {
             if (player.getMoneyInGame() <= 0) {
+                log.debug(player.getName() + " is rejected because of empty pocket");
                 activePlayers.remove(player);
                 standingPlayers.put(player.getUdid(), player);
                 brokePlayers.add(player);
@@ -738,6 +739,7 @@ public class Game implements Runnable {
         for (String udid : waitingPlayers.keySet()) {
             Player player = waitingPlayers.get(udid);
             if (player.getMoneyInGame() <= 0) {
+                log.debug(player.getName() + " is rejected because of empty pocket");
                 waitingPlayers.remove(udid);
                 standingPlayers.put(udid, player);
                 brokePlayers.add(player);
@@ -897,5 +899,17 @@ public class Game implements Runnable {
         NotificationCenter.chat(players, player.getUdid() + ": " + content);
         players.clear();
         players = null;
+    }
+
+    public void printUserList() {
+        List<PlayerDTO> playerDTOs = new ArrayList<>();
+        for (Player aplayer : activePlayers) {
+            playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_ACTIVE));
+        }
+        for (String s : waitingPlayers.keySet()) {
+            Player aplayer = waitingPlayers.get(s);
+            playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_WAITING));
+        }
+        log.debug(DTOUtil.writeValue(playerDTOs));
     }
 }

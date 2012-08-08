@@ -1,4 +1,4 @@
-package com.yanchuanli.games.pokr.event;
+package com.yanchuanli.games.pokr.messagequeue;
 
 /**
  * Copyright Candou.com

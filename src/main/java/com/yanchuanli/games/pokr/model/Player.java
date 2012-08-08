@@ -261,7 +261,10 @@ public class Player {
                 result = Action.CONTINUE;
             } else if (input.startsWith("ca")) {
                 int diff = currentBet - betThisRound;
+                diff = diff > moneyInGame ? moneyInGame : diff;
                 setBetThisTime(diff);
+                betThisRound += betThisTime;
+                betThisGame += betThisTime;
                 result = Action.CALL;
             } else if (input.startsWith("c")) {
                 result = Action.CHECK;
