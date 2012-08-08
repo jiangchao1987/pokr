@@ -1,6 +1,7 @@
 package com.yanchuanli.games.pokr.core;
 
 import com.google.code.tempusfugit.temporal.Duration;
+import com.yanchuanli.games.pokr.dao.PlayerDao;
 import com.yanchuanli.games.pokr.dao.RoomDao;
 import com.yanchuanli.games.pokr.game.Game;
 import com.yanchuanli.games.pokr.game.GameConfig;
@@ -41,6 +42,8 @@ public void handle(Signal sig) {
 });
         */
 
+
+        PlayerDao.resetOnlineStatusAndRoomId();
 
         RoomDao.init();
         games = new HashMap<Integer, Game>();

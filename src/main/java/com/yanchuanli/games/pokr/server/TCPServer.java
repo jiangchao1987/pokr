@@ -55,6 +55,11 @@ public class TCPServer {
                 if (player != null && player.isOnline()) {
                     Util.disconnectUser(player.getSession());
                 }
+            } else if (input.startsWith("users")) {
+                for (String udid : Memory.playersOnServer.keySet()) {
+                    Player player = Memory.playersOnServer.get(udid);
+                    log.debug(player.getName() + " is playing in Room " + player.getRoomid() + " with " + player.getMoneyInGame() + " on table!");
+                }
             } else {
                 log.info("INPUT:" + input);
                 for (String s : Memory.sessionsOnServer.keySet()) {

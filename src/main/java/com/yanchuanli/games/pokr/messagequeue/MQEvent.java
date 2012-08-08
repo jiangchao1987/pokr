@@ -1,5 +1,7 @@
 package com.yanchuanli.games.pokr.messagequeue;
 
+import com.yanchuanli.games.pokr.util.TimeUtil;
+
 /**
  * Copyright Candou.com
  * Author: Yanchuan Li
@@ -7,28 +9,15 @@ package com.yanchuanli.games.pokr.messagequeue;
  * Date: 12-7-27
  */
 public class MQEvent {
-    private String udid;
+
     private int timestamp;
     private int type;
     private String info;
-    private int processed;
-    
-    public MQEvent() {
-    }
 
-    public MQEvent(String udid, int timestamp, int type, String info) {
-        this.udid = udid;
-        this.timestamp = timestamp;
+    public MQEvent(int type, String info) {
+        this.timestamp = TimeUtil.unixtime();
         this.type = type;
         this.info = info;
-    }
-
-    public String getUdid() {
-        return udid;
-    }
-
-    public void setUdid(String udid) {
-        this.udid = udid;
     }
 
     public int getTimestamp() {
@@ -54,13 +43,4 @@ public class MQEvent {
     public void setInfo(String info) {
         this.info = info;
     }
-
-	public int getProcessed() {
-		return processed;
-	}
-
-	public void setProcessed(int processed) {
-		this.processed = processed;
-	}
-    
 }
