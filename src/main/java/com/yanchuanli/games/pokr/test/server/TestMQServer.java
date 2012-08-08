@@ -4,7 +4,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
-import com.yanchuanli.games.pokr.event.EventConsumer;
+import com.yanchuanli.games.pokr.messagequeue.EventConsumer;
 import com.yanchuanli.games.pokr.util.Config;
 import com.yanchuanli.games.pokr.util.ServerConfig;
 import org.apache.log4j.Logger;

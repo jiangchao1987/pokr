@@ -61,6 +61,7 @@ public void handle(Signal sig) {
         for (Room room : roomsToPrepare) {
             GameConfig gc = new GameConfig(room.getId(), room.getName(), room.getSmallBlindAmount(), room.getBigBlindAmount(), room.getMinHolding(), room.getMaxHolding(), room.getMaxPlayersCount(), Duration.millis(room.getBettingDuration()), Duration.millis(room.getInactivityCheckInterval()), Duration.millis(room.getGameCheckInterval()));
             Game game = new Game(gc);
+
             games.put(room.getId(), game);
             pool.execute(game);
         }

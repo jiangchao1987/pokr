@@ -1,11 +1,12 @@
 package com.yanchuanli.games.pokr.server;
 
 import com.yanchuanli.games.pokr.core.GameEngine;
+import com.yanchuanli.games.pokr.game.Game;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.util.Memory;
 import com.yanchuanli.games.pokr.util.NotificationCenter;
 import com.yanchuanli.games.pokr.util.ServerConfig;
-import org.apache.commons.lang3.exception.ExceptionUtils;
+import com.yanchuanli.games.pokr.util.Util;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder;
 import org.apache.mina.filter.executor.ExecutorFilter;
@@ -42,16 +43,29 @@ public class TCPServer {
         String input = scanner.nextLine();
         while (!input.equalsIgnoreCase("quit")) {
 
-            log.info("INPUT:" + input);
-//                Util.sendToAll(input);
-            for (String s : Memory.sessionsOnServer.keySet()) {
-                Player player = Memory.sessionsOnServer.get(s);
+            if (input.startsWith("list")) {
+                String[] cmds = input.split(":");
+                String roomid = cmds[1];
+                Game game = GameEngine.getGame(Integer.parseInt(roomid));
+                game.printUserList();
+            } else if (input.startsWith("kick")) {
+                String[] cmds = input.split(":");
+                String udid = cmds[1];
+                Player player = Memory.playersOnServer.get(udid);
+                if (player != null && player.isOnline()) {
+                    Util.disconnectUser(player.getSession());
+                }
+            } else {
+                log.info("INPUT:" + input);
+                for (String s : Memory.sessionsOnServer.keySet()) {
+                    Player player = Memory.sessionsOnServer.get(s);
 
 
-                List<Player> players = new ArrayList<>();
-                players.add(player);
-                NotificationCenter.chat(players, s);
+                    List<Player> players = new ArrayList<>();
+                    players.add(player);
+                    NotificationCenter.chat(players, s);
 
+                }
             }
 
 
@@ -72,11 +86,12 @@ public class TCPServer {
         chain.addLast("threadPool", new ExecutorFilter(Executors.newCachedThreadPool()));
         SocketSessionConfig dcfg = acceptor.getSessionConfig();
         dcfg.setReuseAddress(true);
-        log.info("TCPServer is listening on " + getIPAddress() + ":" + ServerConfig.gameServerPort);
+
         try {
             acceptor.bind(new InetSocketAddress(ServerConfig.gameServerPort));
+            log.info("TCPServer is listening on " + getIPAddress() + ":" + ServerConfig.gameServerPort);
         } catch (IOException e) {
-            log.error(ExceptionUtils.getStackTrace(e));
+            log.error(e);
         }
 
     }

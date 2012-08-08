@@ -1,4 +1,4 @@
-package com.yanchuanli.games.pokr.event;
+package com.yanchuanli.games.pokr.messagequeue;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
