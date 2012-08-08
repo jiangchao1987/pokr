@@ -340,7 +340,7 @@ public class PlayerDao {
     	DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
         DBObject searchQuery = new BasicDBObject(new BasicDBObject("udid", player.getUdid()));
         DBObject setQuery = new BasicDBObject("$set", new BasicDBObject("roomId", player.getRoomid()));
-        coll.update(searchQuery, setQuery);
+        coll.update(searchQuery, setQuery, true, true);
     }
 
 }
