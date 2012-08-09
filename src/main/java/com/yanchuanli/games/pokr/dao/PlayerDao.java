@@ -45,18 +45,21 @@ public class PlayerDao {
         String json = URLFetchUtil.fetch(ServerConfig.webServerBase
                 + "login?udid=" + udid + "&password=" + password + "&source="
                 + source);
+        log.debug(ServerConfig.webServerBase
+                + "login?udid=" + udid + "&password=" + password + "&source="
+                + source);
         if (json != null && json.contains("user")) {
             if (json.contains("{\"user\":null}") || json.contains("\"stat\": 0")) {
                 return null;
             } else {
-				json = json.replace(
-						"{\"message\":\"登录成功\",\"stat\":1,\"user\":{", "{")
-						.replace("}}", "}");
-				Player player = parsePlayer(json);
-				if (player == null) {
-					return null;
-				}
-				players.put(udid, player);
+                json = json.replace(
+                        "{\"message\":\"登录成功\",\"stat\":1,\"user\":{", "{")
+                        .replace("}}", "}");
+                Player player = parsePlayer(json);
+                if (player == null) {
+                    return null;
+                }
+                players.put(udid, player);
             }
         }
         return players.get(udid);
@@ -186,7 +189,7 @@ public class PlayerDao {
             player.setAvatar((String) obj.get("face"));
             player.setSex((Integer) obj.get("sex"));
             player.setAddress((String) obj.get("address"));
-            player.setRoomid(Integer.MIN_VALUE);
+            player.setRoomId(Integer.MIN_VALUE);
         }
 
         return player;
@@ -316,14 +319,14 @@ public class PlayerDao {
         DBObject setQuery = new BasicDBObject("$set", new BasicDBObject("timeLevelToday", 0));
         coll.update(searchQuery, setQuery, true, true);
     }
-    
+
     /**
      * 重置在线状态和房间状态
      */
     public static void resetOnlineStatusAndRoomId() {
-    	DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
+        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
         DBObject searchQuery = new BasicDBObject();
-        
+
         DBObject setValue = new BasicDBObject();
         setValue.put("online", 0);
         setValue.put("roomId", 0);
@@ -331,15 +334,16 @@ public class PlayerDao {
         setQuery.put("$set", setValue);
         coll.update(searchQuery, setQuery, true, true);
     }
-    
+
     /**
      * 更新当前玩家的房间信息
+     *
      * @param player
      */
     public static void updateRoomId(Player player) {
-    	DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
+        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
         DBObject searchQuery = new BasicDBObject(new BasicDBObject("udid", player.getUdid()));
-        DBObject setQuery = new BasicDBObject("$set", new BasicDBObject("roomId", player.getRoomid()));
+        DBObject setQuery = new BasicDBObject("$set", new BasicDBObject("roomId", player.getRoomId()));
         coll.update(searchQuery, setQuery, true, true);
     }
 

@@ -48,7 +48,7 @@ public class Player {
     private int customAvatar;
     private boolean smallBlind;
     private boolean bigBlind;
-    private int roomid;
+    private int roomId;
     private int sex;
     private String address;
     private int level;
@@ -369,7 +369,7 @@ public class Player {
                 + ", historicalBestHand=" + historicalBestHand + ", maxWin="
                 + maxWin + ", avatar=" + avatar + ", customAvatar="
                 + customAvatar + ", smallBlind=" + smallBlind + ", bigBlind="
-                + bigBlind + ", roomid=" + roomid + ", sex=" + sex
+                + bigBlind + ", roomId=" + roomId + ", sex=" + sex
                 + ", address=" + address + ", level=" + level
                 + "]";
     }
@@ -402,16 +402,16 @@ public class Player {
         this.bigBlind = bigBlind;
     }
 
-    public int getRoomid() {
-        return roomid;
+    public int getRoomId() {
+        return roomId;
     }
 
-    public void setRoomid(int roomid) {
-        this.roomid = roomid;
+    public void setRoomId(int roomId) {
+        this.roomId = roomId;
     }
 
     public boolean inRoom(int roomID) {
-        return roomid == roomID;
+        return roomId == roomID;
     }
 
     public int getMoney() {

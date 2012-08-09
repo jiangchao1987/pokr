@@ -90,7 +90,7 @@ public class Game implements Runnable {
     }
 
     public void enterRoom(Player player) {
-        player.setRoomid(gc.getId());
+        player.setRoomId(gc.getId());
         standingPlayers.put(player.getUdid(), player);
 
         List<PlayerDTO> playerDTOs = new ArrayList<>();
@@ -784,7 +784,7 @@ public class Game implements Runnable {
                 log.debug(player.getName() + " has left the room " + gc.getName() + " and free the chair " + player.getSeatIndex());
                 table.put(player.getSeatIndex(), Config.EMPTY_SEAT);
 
-                player.setRoomid(Integer.MIN_VALUE);
+                player.setRoomId(Integer.MIN_VALUE);
                 player.setSeatIndex(Config.SEAT_INDEX_NOTSITTED);
                 activePlayers.remove(aplayer);
 
@@ -802,7 +802,7 @@ public class Game implements Runnable {
                     log.debug(player.getName() + " has left the room " + gc.getName() + " and free the chair " + player.getSeatIndex());
                     table.put(player.getSeatIndex(), Config.EMPTY_SEAT);
                     standingPlayers.remove(s);
-                    player.setRoomid(Integer.MIN_VALUE);
+                    player.setRoomId(Integer.MIN_VALUE);
                     player.setSeatIndex(Config.SEAT_INDEX_NOTSITTED);
                     playerRemoved = true;
                     break;
@@ -817,7 +817,7 @@ public class Game implements Runnable {
                     log.debug(player.getName() + " has left the room " + gc.getName() + " and free the chair " + player.getSeatIndex());
                     table.put(player.getSeatIndex(), Config.EMPTY_SEAT);
                     waitingPlayers.remove(s);
-                    player.setRoomid(Integer.MIN_VALUE);
+                    player.setRoomId(Integer.MIN_VALUE);
                     player.setSeatIndex(Config.SEAT_INDEX_NOTSITTED);
                     playerRemoved = true;
                     activeOrWaitingPlayerLeft = true;

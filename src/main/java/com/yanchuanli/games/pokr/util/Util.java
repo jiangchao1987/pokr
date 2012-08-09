@@ -24,9 +24,9 @@ public class Util {
 
     public static void disconnectUser(IoSession session) {
         Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
-        if (player.getRoomid() != Integer.MIN_VALUE) {
-            log.debug(player.getName() + " is leaving room " + player.getRoomid());
-            String info = player.getRoomid() + "," + player.getUdid() + "," + player.getName();
+        if (player.getRoomId() != Integer.MIN_VALUE) {
+            log.debug(player.getName() + " is leaving room " + player.getRoomId());
+            String info = player.getRoomId() + "," + player.getUdid() + "," + player.getName();
             ServiceCenter.getInstance().leaveRoom(session, info);
         }
         player.setOnline(false);
