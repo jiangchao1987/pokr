@@ -58,7 +58,7 @@ public class TCPServer {
             } else if (input.startsWith("users")) {
                 for (String udid : Memory.playersOnServer.keySet()) {
                     Player player = Memory.playersOnServer.get(udid);
-                    log.debug(player.getName() + " is playing in Room " + player.getRoomid() + " with " + player.getMoneyInGame() + " on table!");
+                    log.debug(player.getName() + " is sitting at " + player.getSeatIndex() + " in Room " + player.getRoomid() + " with " + player.getMoneyInGame() + " on table!");
                 }
             } else {
                 log.info("INPUT:" + input);
@@ -97,6 +97,7 @@ public class TCPServer {
             log.info("TCPServer is listening on " + getIPAddress() + ":" + ServerConfig.gameServerPort);
         } catch (IOException e) {
             log.error(e);
+            System.exit(1);
         }
 
     }

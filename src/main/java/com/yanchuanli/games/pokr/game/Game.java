@@ -214,59 +214,64 @@ public class Game implements Runnable {
 
 
         // rotate markCurrentDealer position
-        rotateDealer();
 
-        deal2Cards();
 
-        // deal 2 cards per player
-
-        doBettingRound(true);
-
-        // pre flop betting round
-        // deal 3 flp cards on the table
-        try {
-            if (activePlayers.size() > 1 && !stop) {
-                deal3FlipCards();
-                doBettingRound(false);
-                // flop the betting round
-                // deal the turn card (4th) on the table
-                if (activePlayers.size() > 1 && !stop) {
-                    dealTurnCard();
-                    doBettingRound(false);
+        if (activePlayers.size() > 1) {
+            rotateDealer();
+            deal2Cards();
+            if (activePlayers.size() > 1) {
+                // deal 2 cards per player
+                doBettingRound(true);
+                // pre flop betting round
+                // deal 3 flp cards on the table
+                try {
                     if (activePlayers.size() > 1 && !stop) {
-                        dealRiverCard();
+                        deal3FlipCards();
                         doBettingRound(false);
+                        // flop the betting round
+                        // deal the turn card (4th) on the table
                         if (activePlayers.size() > 1 && !stop) {
-                            bet = 0;
+                            dealTurnCard();
+                            doBettingRound(false);
+                            if (activePlayers.size() > 1 && !stop) {
+                                dealRiverCard();
+                                doBettingRound(false);
+                                if (activePlayers.size() > 1 && !stop) {
+                                    bet = 0;
+                                    showdown();
+                                }
+                            } else {
+                                showdown();
+                            }
+                        } else {
                             showdown();
                         }
                     } else {
                         showdown();
                     }
-                } else {
+                } catch (Exception e) {
                     showdown();
                 }
-            } else {
-                showdown();
             }
-        } catch (Exception e) {
-            showdown();
+
         }
 
 
     }
 
     private void rotateDealer() {
-        dealerPosition = (dealerPosition + 1) % activePlayers.size();
+        List<Player> playersInThisRound = getRestActivePlayers();
+
+        dealerPosition = (dealerPosition + 1) % playersInThisRound.size();
         actorPosition = dealerPosition;
-        Player dealer = activePlayers.get(actorPosition);
+        Player dealer = playersInThisRound.get(actorPosition);
 
         NotificationCenter.markCurrentDealer(allPlayersInGame, dealer.getUdid());
-        int smallBlindIndex = (actorPosition + 1) % activePlayers.size();
-        int bigBlindIndex = (actorPosition + 2) % activePlayers.size();
-        Player smallBlind = activePlayers.get(smallBlindIndex);
+        int smallBlindIndex = (actorPosition + 1) % playersInThisRound.size();
+        int bigBlindIndex = (actorPosition + 2) % playersInThisRound.size();
+        Player smallBlind = playersInThisRound.get(smallBlindIndex);
         smallBlind.setSmallBlind(true);
-        Player bigBlind = activePlayers.get(bigBlindIndex);
+        Player bigBlind = playersInThisRound.get(bigBlindIndex);
         bigBlind.setBigBlind(true);
         NotificationCenter.markSmallBlind(allPlayersInGame, smallBlind.getUdid());
         NotificationCenter.markBigBlind(allPlayersInGame, bigBlind.getUdid());
@@ -277,7 +282,7 @@ public class Game implements Runnable {
         log.debug("current smallblind:" + smallBlind.getName());
         log.debug("current bigblind:" + bigBlind.getName());
 
-        rotateActor();
+        rotateActor(playersInThisRound);
     }
 
     private void deal2Cards() {
@@ -406,12 +411,13 @@ public class Game implements Runnable {
                         PlayerDao.updateLoseCount(p);
                         EventDao.insertWinOrLoseEvent(p, gc.getName(), p.getBetThisGame(), String.valueOf(p.getGIndexesForOwnCardsUsedInBestFive()), false);
                     }
+                    PlayerDao.updateBestHandOfPlayer(p);
                 }
 
                 //每个边池给客户端足够做动画的时间
                 NotificationCenter.winorlose(playersListInThisPot, sb.toString());
                 try {
-                    Thread.sleep(Duration.seconds(2).inMillis());
+                    Thread.sleep(Duration.seconds(4).inMillis());
                 } catch (InterruptedException e) {
                     log.error(ExceptionUtils.getStackTrace(e));
                 }
@@ -432,13 +438,34 @@ public class Game implements Runnable {
                 playersListInThisPot.add(player1);
                 NotificationCenter.winorlose(playersListInThisPot, sb.toString());
                 try {
-                    Thread.sleep(Duration.seconds(2).inMillis());
+                    Thread.sleep(Duration.seconds(4).inMillis());
                 } catch (InterruptedException e) {
                     log.error(ExceptionUtils.getStackTrace(e));
                 }
             }
         }
 
+        //eject user who's money is zero when game's over.
+        List<PlayerDTO> playerDTOs = new ArrayList<>();
+        for (Player aplayer : activePlayers) {
+            if (aplayer.getMoneyInGame() <= 0) {
+                log.debug(aplayer.getName() + " is rejected because of empty pocket");
+                if (aplayer.getSeatIndex() != 0) {
+                    table.put(aplayer.getSeatIndex(), Config.EMPTY_SEAT);
+                }
+                activePlayers.remove(aplayer);
+                standingPlayers.put(aplayer.getUdid(), aplayer);
+            } else {
+                playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_ACTIVE));
+            }
+
+        }
+        for (String s : waitingPlayers.keySet()) {
+            Player aplayer = waitingPlayers.get(s);
+            playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_WAITING));
+        }
+
+        NotificationCenter.gameover(allPlayersInGame, DTOUtil.writeValue(playerDTOs));
 
         results.clear();
         gaming = false;
@@ -463,11 +490,12 @@ public class Game implements Runnable {
 
     private void doBettingRound(boolean preflop) {
 
-        int playersToAct = activePlayers.size();
+        List<Player> playersInThisRound = getRestActivePlayers();
+        int playersToAct = playersInThisRound.size();
         actorPosition = dealerPosition;
         bet = 0;
 
-        for (Player player : activePlayers) {
+        for (Player player : playersInThisRound) {
             player.setBetThisRound(0);
         }
 
@@ -475,7 +503,7 @@ public class Game implements Runnable {
             //rotate the actor
 
             playersToAct--;
-            rotateActor();
+            rotateActor(playersInThisRound);
             log.debug("playersToAct: " + playersToAct + " id: " + actor.getUdid() + " name: " + actor.getName());
 
 
@@ -607,9 +635,7 @@ public class Game implements Runnable {
                 }
                 if (player.getMoneyInGame() >= bet * 2) {
                     actions.add(Action.RAISE);
-                }
-
-                if (player.getMoneyInGame() > 0) {
+                } else if (player.getMoneyInGame() > 0) {
                     actions.add(Action.ALLIN);
                 }
             }
@@ -622,12 +648,12 @@ public class Game implements Runnable {
         return actions;
     }
 
-    private void rotateActor() {
-        if (activePlayers.size() > 0) {
+    private void rotateActor(List<Player> playersInThisRound) {
+        if (playersInThisRound.size() > 0) {
             do {
-                actorPosition = (actorPosition + 1) % activePlayers.size();
-                actor = activePlayers.get(actorPosition);
-            } while (!activePlayers.contains(actor));
+                actorPosition = (actorPosition + 1) % playersInThisRound.size();
+                actor = playersInThisRound.get(actorPosition);
+            } while (!playersInThisRound.contains(actor));
 
         } else {
             throw new IllegalStateException("No active activePlayers left");
@@ -725,29 +751,26 @@ public class Game implements Runnable {
             }
         }
 
-        List<Player> brokePlayers = new ArrayList<>();
 
         for (Player player : activePlayers) {
-            if (player.getMoneyInGame() <= 0) {
-                log.debug(player.getName() + " is rejected because of empty pocket");
+            if (player.isOnline() && player.inRoom(gc.getId())) {
+
+            } else {
                 activePlayers.remove(player);
-                standingPlayers.put(player.getUdid(), player);
-                brokePlayers.add(player);
             }
+
         }
 
         for (String udid : waitingPlayers.keySet()) {
             Player player = waitingPlayers.get(udid);
-            if (player.getMoneyInGame() <= 0) {
-                log.debug(player.getName() + " is rejected because of empty pocket");
+            if (player.isOnline() && player.inRoom(gc.getId())) {
+
+            } else {
                 waitingPlayers.remove(udid);
-                standingPlayers.put(udid, player);
-                brokePlayers.add(player);
             }
+
         }
-        //破产玩家弹窗要求买筹码
-        NotificationCenter.youAreBroke(brokePlayers);
-        brokePlayers.clear();
+
     }
 
     public void removePlayer(Player player) {
@@ -911,5 +934,22 @@ public class Game implements Runnable {
             playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_WAITING));
         }
         log.debug(DTOUtil.writeValue(playerDTOs));
+    }
+
+    //当部分人allin时，可能有玩家还存活着并且有余力进行下一轮下注，那则需要继续是否还有人有钱可以继续下注。
+    public List<Player> getRestActivePlayers() {
+        List<Player> players = new ArrayList<>();
+        for (Player player : activePlayers) {
+            if (player.getMoneyInGame() > 0) {
+                players.add(player);
+            }
+        }
+        return players;
+    }
+
+    public void forwardAddFriendRequest(Player fromPlayer, Player toPlayer) {
+        if (allPlayersInGame.contains(fromPlayer) && allPlayersInGame.contains(toPlayer)) {
+            NotificationCenter.forwardAddFriendRequest(fromPlayer, toPlayer.getName() + "," + toPlayer.getUdid());
+        }
     }
 }

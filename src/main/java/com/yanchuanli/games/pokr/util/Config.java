@@ -39,6 +39,8 @@ public class Config {
     public static final int TYPE_BUYIN_INGAME = 22;
     public static final int TYPE_STANDUP_INGAME = 23;
     public static final int TYPE_YOUAREBROKE_INGAME = 24;
+    public static final int TYPE_ADDFRIENDREQUEST = 25;
+
 
 
     public static final int RESULT_BUYINSUCCESS = 1;

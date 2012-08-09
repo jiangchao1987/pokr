@@ -84,8 +84,27 @@ public class ServiceCenter {
                 case Config.TYPE_STANDUP_INGAME:
                     standUp(session, map.get(key));
                     break;
+                case Config.TYPE_ADDFRIENDREQUEST:
+                    addFriendRequest(session, map.get(key));
+                    break;
             }
         }
+    }
+
+    /**
+     * 房间中加好友
+     *
+     * @param session
+     * @param info    房间id,目标用户udid
+     */
+    public void addFriendRequest(IoSession session, String info) {
+        String[] cmds = info.split(",");
+        String roomid = cmds[0];
+        String targetUdid = cmds[1];
+        Game game = GameEngine.getGame(Integer.parseInt(roomid));
+        Player targetPlayer = Memory.playersOnServer.get(targetUdid);
+        Player fromPlayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
+        game.forwardAddFriendRequest(fromPlayer, targetPlayer);
     }
 
     /**
