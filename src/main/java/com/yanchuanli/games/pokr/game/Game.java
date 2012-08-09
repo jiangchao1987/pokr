@@ -949,7 +949,7 @@ public class Game implements Runnable {
 
     public void forwardAddFriendRequest(Player fromPlayer, Player toPlayer) {
         if (allPlayersInGame.contains(fromPlayer) && allPlayersInGame.contains(toPlayer)) {
-            NotificationCenter.forwardAddFriendRequest(fromPlayer, toPlayer.getName() + "," + toPlayer.getUdid());
+            NotificationCenter.forwardAddFriendRequest(fromPlayer, fromPlayer.getName() + "," + fromPlayer.getUdid());
         }
     }
 }
