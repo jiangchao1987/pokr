@@ -952,7 +952,7 @@ public class Game implements Runnable {
         boolean fromPlayerIsOnSeat = waitingPlayers.keySet().contains(fromPlayer.getUdid()) || activePlayers.contains(fromPlayer);
         boolean toPlayerIsOnSeat = waitingPlayers.keySet().contains(toPlayer.getUdid()) || activePlayers.contains(toPlayer);
         if (fromPlayerIsOnSeat && toPlayerIsOnSeat) {
-            NotificationCenter.forwardAddFriendRequest(fromPlayer, fromPlayer.getName() + "," + fromPlayer.getUdid());
+            NotificationCenter.forwardAddFriendRequest(toPlayer, fromPlayer.getName() + "," + fromPlayer.getUdid());
         }
     }
 }
