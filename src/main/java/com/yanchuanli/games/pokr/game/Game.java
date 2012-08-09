@@ -947,8 +947,11 @@ public class Game implements Runnable {
         return players;
     }
 
+    //参考博雅，只有坐下的人能互加好友
     public void forwardAddFriendRequest(Player fromPlayer, Player toPlayer) {
-        if (allPlayersInGame.contains(fromPlayer) && allPlayersInGame.contains(toPlayer)) {
+        boolean fromPlayerIsOnSeat = waitingPlayers.keySet().contains(fromPlayer.getUdid()) || activePlayers.contains(fromPlayer);
+        boolean toPlayerIsOnSeat = waitingPlayers.keySet().contains(toPlayer.getUdid()) || activePlayers.contains(toPlayer);
+        if (fromPlayerIsOnSeat && toPlayerIsOnSeat) {
             NotificationCenter.forwardAddFriendRequest(fromPlayer, fromPlayer.getName() + "," + fromPlayer.getUdid());
         }
     }
