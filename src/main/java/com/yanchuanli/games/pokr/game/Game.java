@@ -456,6 +456,7 @@ public class Game implements Runnable {
                 if (aplayer.getSeatIndex() != 0) {
                     table.put(aplayer.getSeatIndex(), Config.EMPTY_SEAT);
                 }
+                NotificationCenter.youAreBroke(aplayer);
                 activePlayers.remove(aplayer);
                 standingPlayers.put(aplayer.getUdid(), aplayer);
             } else {

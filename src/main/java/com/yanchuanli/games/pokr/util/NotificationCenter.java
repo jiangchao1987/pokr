@@ -206,8 +206,8 @@ public class NotificationCenter {
     }
 
 
-    public static void youAreBroke(List<Player> players) {
-        notifyAllOnTable(players, "", Config.TYPE_YOUAREBROKE_INGAME);
+    public static void youAreBroke(Player player) {
+        notifySpecificOnTable(player.getSession(), "", Config.TYPE_YOUAREBROKE_INGAME);
     }
 
     public static void forwardAddFriendRequest(Player player, String info) {
