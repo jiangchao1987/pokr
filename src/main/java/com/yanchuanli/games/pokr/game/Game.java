@@ -91,6 +91,7 @@ public class Game implements Runnable {
 
     public void enterRoom(Player player) {
         player.setRoomId(gc.getId());
+        PlayerDao.updateRoomId(player);
         standingPlayers.put(player.getUdid(), player);
 
         List<PlayerDTO> playerDTOs = new ArrayList<>();
@@ -415,7 +416,9 @@ public class Game implements Runnable {
                 }
 
                 //每个边池给客户端足够做动画的时间
-                NotificationCenter.winorlose(playersListInThisPot, sb.toString());
+
+                log.debug(sb.toString());
+                NotificationCenter.winorlose(allPlayersInGame, sb.toString());
                 try {
                     Thread.sleep(Duration.seconds(4).inMillis());
                 } catch (InterruptedException e) {
@@ -784,7 +787,8 @@ public class Game implements Runnable {
                 log.debug(player.getName() + " has left the room " + gc.getName() + " and free the chair " + player.getSeatIndex());
                 table.put(player.getSeatIndex(), Config.EMPTY_SEAT);
 
-                player.setRoomId(Integer.MIN_VALUE);
+                player.setRoomId(0);
+                PlayerDao.updateRoomId(player);
                 player.setSeatIndex(Config.SEAT_INDEX_NOTSITTED);
                 activePlayers.remove(aplayer);
 
@@ -802,7 +806,8 @@ public class Game implements Runnable {
                     log.debug(player.getName() + " has left the room " + gc.getName() + " and free the chair " + player.getSeatIndex());
                     table.put(player.getSeatIndex(), Config.EMPTY_SEAT);
                     standingPlayers.remove(s);
-                    player.setRoomId(Integer.MIN_VALUE);
+                    player.setRoomId(0);
+                    PlayerDao.updateRoomId(player);
                     player.setSeatIndex(Config.SEAT_INDEX_NOTSITTED);
                     playerRemoved = true;
                     break;
@@ -817,7 +822,8 @@ public class Game implements Runnable {
                     log.debug(player.getName() + " has left the room " + gc.getName() + " and free the chair " + player.getSeatIndex());
                     table.put(player.getSeatIndex(), Config.EMPTY_SEAT);
                     waitingPlayers.remove(s);
-                    player.setRoomId(Integer.MIN_VALUE);
+                    player.setRoomId(0);
+                    PlayerDao.updateRoomId(player);
                     player.setSeatIndex(Config.SEAT_INDEX_NOTSITTED);
                     playerRemoved = true;
                     activeOrWaitingPlayerLeft = true;
@@ -952,6 +958,7 @@ public class Game implements Runnable {
         boolean fromPlayerIsOnSeat = waitingPlayers.keySet().contains(fromPlayer.getUdid()) || activePlayers.contains(fromPlayer);
         boolean toPlayerIsOnSeat = waitingPlayers.keySet().contains(toPlayer.getUdid()) || activePlayers.contains(toPlayer);
         if (fromPlayerIsOnSeat && toPlayerIsOnSeat) {
+            log.debug(fromPlayer.getName() + " wants to add " + toPlayer.getName() + " as his friend.");
             NotificationCenter.forwardAddFriendRequest(toPlayer, fromPlayer.getName() + "," + fromPlayer.getUdid());
         }
     }

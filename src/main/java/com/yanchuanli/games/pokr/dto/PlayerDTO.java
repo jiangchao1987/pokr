@@ -14,6 +14,7 @@ public class PlayerDTO {
     private int seatIndex;
     private int gamestatus;
     private int money;
+    private int level;
 
     public PlayerDTO() {
 
@@ -30,6 +31,7 @@ public class PlayerDTO {
         this.seatIndex = player.getSeatIndex();
         this.gamestatus = gamestatus;
         this.money = player.getMoney();
+        this.level = player.getLevel();
     }
 
     public String getUdid() {
@@ -110,5 +112,13 @@ public class PlayerDTO {
 
     public void setMoney(int money) {
         this.money = money;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 }
