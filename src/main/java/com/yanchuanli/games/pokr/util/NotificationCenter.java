@@ -158,6 +158,10 @@ public class NotificationCenter {
         notifyAllOnTable(players, info, Config.TYPE_CARD_INGAME);
     }
 
+    public static void showdown(List<Player> players) {
+        notifyAllOnTable(players, "", Config.TYPE_SHOWDOWN_INGAME);
+    }
+
     public static void dealCardsOnTableForNewcomers(IoSession session, String info) {
         notifySpecificOnTable(session, info, Config.TYPE_CARD_INGAME);
     }

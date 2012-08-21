@@ -326,6 +326,7 @@ public class Game implements Runnable {
 
         log.debug("showdown ...");
 
+        NotificationCenter.showdown(allPlayersInGame);
         pot.finish();
 
         log.debug("OnTable: " + Util.cardsToString(cardsOnTable));
