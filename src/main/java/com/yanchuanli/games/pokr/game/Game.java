@@ -841,16 +841,7 @@ public class Game implements Runnable {
 
             if (activeOrWaitingPlayerLeft) {
                 log.debug("notify player leaving");
-
-                List<PlayerDTO> playerDTOs = new ArrayList<>();
-                for (Player aplayer : activePlayers) {
-                    playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_ACTIVE));
-                }
-                for (String s : waitingPlayers.keySet()) {
-                    Player aplayer = waitingPlayers.get(s);
-                    playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_WAITING));
-                }
-                NotificationCenter.leaveRoom(allPlayersInGame, DTOUtil.writeValue(playerDTOs));
+                NotificationCenter.leaveRoom(allPlayersInGame, player.getUdid());
             }
 
 
@@ -899,16 +890,8 @@ public class Game implements Runnable {
                 }
             }
 
-            List<PlayerDTO> playerDTOs = new ArrayList<>();
-            for (Player aplayer : activePlayers) {
-                playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_ACTIVE));
-            }
-            for (String s : waitingPlayers.keySet()) {
-                Player aplayer = waitingPlayers.get(s);
-                playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_WAITING));
-            }
 
-            NotificationCenter.leaveRoom(allPlayersInGame, DTOUtil.writeValue(playerDTOs));
+            NotificationCenter.leaveRoom(allPlayersInGame, player.getUdid());
 
             player.setSeatIndex(Config.SEAT_INDEX_NOTSITTED);
             standingPlayers.put(player.getUdid(), player);
