@@ -9,6 +9,8 @@ import com.yanchuanli.games.pokr.dao.EventDao;
 import com.yanchuanli.games.pokr.dao.PlayerDao;
 import com.yanchuanli.games.pokr.dao.RoomDao;
 import com.yanchuanli.games.pokr.dto.PlayerDTO;
+import com.yanchuanli.games.pokr.game.workers.AddFriendRequestWorker;
+import com.yanchuanli.games.pokr.game.workers.ChatThreadWorker;
 import com.yanchuanli.games.pokr.model.Action;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.model.Pot;
@@ -23,6 +25,8 @@ import org.apache.log4j.Logger;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Copyright Candou.com
@@ -67,6 +71,7 @@ public class Game implements Runnable {
     private HandEvaluator handEval;
     private Pot pot;
     private Random random;
+    private ExecutorService pool;
 
 
     public Game(GameConfig gc) {
@@ -87,6 +92,7 @@ public class Game implements Runnable {
         handEval = new HandEvaluator();
         pot = new Pot();
         random = new Random();
+        pool = Executors.newCachedThreadPool();
     }
 
     public void enterRoom(Player player) {
@@ -102,12 +108,19 @@ public class Game implements Runnable {
             Player aplayer = waitingPlayers.get(s);
             playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_WAITING));
         }
+
+
         NotificationCenter.respondToPrepareToEnter(player.getSession(), DTOUtil.writeValue(playerDTOs));
+
+
         log.debug(DTOUtil.writeValue(playerDTOs));
 
         if (gaming) {
             log.debug("for NewComer:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
+            NotificationCenter.notifyUserAboutGameStatus(player.getSession(), "1");
             NotificationCenter.dealCardsOnTableForNewcomers(player.getSession(), Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
+        } else {
+            NotificationCenter.notifyUserAboutGameStatus(player.getSession(), "0");
         }
 
         allPlayersInGame.add(player);
@@ -159,7 +172,6 @@ public class Game implements Runnable {
             } else {
                 sitDownFailed = true;
             }
-
 
         } else {
             int freeSitsCount = gc.getMaxPlayersCount() - activePlayers.size();
@@ -327,6 +339,11 @@ public class Game implements Runnable {
         log.debug("showdown ...");
 
         NotificationCenter.showdown(allPlayersInGame);
+        try {
+            Thread.sleep(Duration.seconds(2).inMillis());
+        } catch (InterruptedException e) {
+            log.error(ExceptionUtils.getStackTrace(e));
+        }
         pot.finish();
 
         log.debug("OnTable: " + Util.cardsToString(cardsOnTable));
@@ -345,7 +362,7 @@ public class Game implements Runnable {
             }
         }
         log.debug("show2cards:" + cardsInfo.toString());
-        NotificationCenter.show2cards(results, cardsInfo.toString());
+        NotificationCenter.show2cards(allPlayersInGame, cardsInfo.toString());
 
 
         if (results.size() > 1) {
@@ -438,9 +455,7 @@ public class Game implements Runnable {
                 PlayerDao.updateWinCount(player1);
 
                 sb.append(player1.getUdid()).append(",").append("").append(",").append("").append(",").append("").append(",").append(String.valueOf(pot.getMoney())).append(";");
-                List<Player> playersListInThisPot = new ArrayList<>();
-                playersListInThisPot.add(player1);
-                NotificationCenter.winorlose(playersListInThisPot, sb.toString());
+                NotificationCenter.winorlose(allPlayersInGame, sb.toString());
                 try {
                     Thread.sleep(Duration.seconds(4).inMillis());
                 } catch (InterruptedException e) {
@@ -484,147 +499,155 @@ public class Game implements Runnable {
         cardsOnTable.clear();
 //        activePlayers.clear();
         allWinningUsers.clear();
-        pot.clear();
+        pot = new Pot();
         bet = 0;
 
-        for (Player player : activePlayers) {
+        for (Player player : allPlayersInGame) {
             player.reset();
         }
         log.debug("Game has been resetted ...");
     }
 
     private void doBettingRound(boolean preflop) {
+        try {
+            List<Player> playersInThisRound = getRestActivePlayers();
+            int playersToAct = playersInThisRound.size();
+            if (playersToAct > 1) {
+                actorPosition = dealerPosition;
+                bet = 0;
 
-        List<Player> playersInThisRound = getRestActivePlayers();
-        int playersToAct = playersInThisRound.size();
-        actorPosition = dealerPosition;
-        bet = 0;
-
-        for (Player player : playersInThisRound) {
-            player.setBetThisRound(0);
-        }
-
-        while (playersToAct > 0 && !stop) {
-            //rotate the actor
-
-            playersToAct--;
-            rotateActor(playersInThisRound);
-            log.debug("playersToAct: " + playersToAct + " id: " + actor.getUdid() + " name: " + actor.getName());
-
-
-            Set<Action> allowedActions = getAllowedActions(actor);
-
-            List<Player> playersToForward = new ArrayList<>();
-            for (Player player : allPlayersInGame) {
-                if (player != actor) {
-                    playersToForward.add(player);
-                }
-            }
-
-
-            Action action = null;
-
-            if (preflop) {
-                if (actor.isSmallBlind()) {
-                    action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 1, gc.getSmallBlindAmount());
-                    actor.setSmallBlind(false);
-                    playersToAct++;
-                    log.debug("small blind playersToAct:" + playersToAct);
-                    // 再让小盲跟一次
-                } else if (actor.isBigBlind()) {
-                    action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 2, gc.getBigBlindAmount());
-                    actor.setBigBlind(false);
-                } else {
-                    NotificationCenter.otherPlayerStartAction(playersToForward, actor.getUdid());
-                    action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 0, 0);
-                }
-            } else {
-
-                if (allowedActions.size() == 1 && allowedActions.contains(Action.CONTINUE)) {
-                    action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 3, 0);
-                } else {
-                    NotificationCenter.otherPlayerStartAction(playersToForward, actor.getUdid());
-                    action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 0, 0);
+                for (Player player : playersInThisRound) {
+                    player.setBetThisRound(0);
                 }
 
-            }
+                while (playersToAct > 0 && !stop) {
+                    //rotate the actor
 
-            Record record = new Record(actor.getUdid(), action.getVerbType(), actor.getBetThisTime());
-            pot.addRecord(record);
+                    playersInThisRound = getRestActivePlayers();
+                    playersToAct--;
+                    rotateActor(playersInThisRound);
+                    log.debug("playersToAct: " + playersToAct + " id: " + actor.getUdid() + " name: " + actor.getName());
 
-            log.debug(" id: " + actor.getUdid() + " name: " + actor.getName() + " has " + action.getVerb());
 
-            switch (action) {
-                case CHECK:
-                    // do nothing
-                    break;
-                case CALL:
-                    moneyOnTable += actor.getBetThisTime();
-                    break;
-                case BET:
-                    bet = bet >= actor.getBetThisTime() ? bet : actor.getBetThisTime();
-                    moneyOnTable += actor.getBetThisTime();
-                    playersToAct = activePlayers.size() - 1;
-                    break;
-                case RAISE:
-                    bet = bet >= actor.getBetThisTime() ? bet : actor.getBetThisTime();
-                    moneyOnTable += actor.getBetThisTime();
-                    playersToAct = activePlayers.size() - 1;
-                    break;
-                case FOLD:
-                    actor.getHand().makeEmpty();
-                    this.activePlayers.remove(actor);
-                    this.waitingPlayers.put(actor.getUdid(), actor);
-                    actorPosition--;
-                    if (this.activePlayers.size() == 1) {
-                        log.debug(this.activePlayers.get(0).getName() + " win ...");
-                        playersToAct = 0;
+                    Set<Action> allowedActions = getAllowedActions(actor);
+
+                    List<Player> playersToForward = new ArrayList<>();
+                    for (Player player : allPlayersInGame) {
+                        if (player != actor) {
+                            playersToForward.add(player);
+                        }
                     }
 
-                    EventDao.insertWinOrLoseEvent(actor, gc.getName(), actor.getBetThisGame(), actor.getHand().getGIndexes(), false);
-                    PlayerDao.updateLoseCount(actor);
-                    break;
-                case SMALL_BLIND:
-                    bet = actor.getBetThisTime();
-                    moneyOnTable += actor.getBetThisTime();
-                    break;
-                case BIG_BLIND:
-                    bet = actor.getBetThisTime();
-                    moneyOnTable += actor.getBetThisTime();
-                    break;
-                case ALLIN:
-                    if (actor.getBetThisTime() > bet) {
-                        playersToAct = activePlayers.size() - 1;
-                        bet = actor.getBetThisTime();
+
+                    Action action = null;
+
+                    if (preflop) {
+                        if (actor.isSmallBlind()) {
+                            action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 1, gc.getSmallBlindAmount());
+                            actor.setSmallBlind(false);
+                            playersToAct++;
+                            log.debug("small blind playersToAct:" + playersToAct);
+                            // 再让小盲跟一次
+                        } else if (actor.isBigBlind()) {
+                            action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 2, gc.getBigBlindAmount());
+                            actor.setBigBlind(false);
+                        } else {
+                            NotificationCenter.otherPlayerStartAction(playersToForward, actor.getUdid());
+                            action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 0, 0);
+                        }
+                    } else {
+
+                        if (allowedActions.size() == 1 && allowedActions.contains(Action.CONTINUE)) {
+                            action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 3, 0);
+                        } else {
+                            NotificationCenter.otherPlayerStartAction(playersToForward, actor.getUdid());
+                            action = actor.act(allowedActions, bet, moneyOnTable, gc.getBettingDuration(), gc.getInactivityCheckInterval(), 0, 0);
+                        }
+
                     }
-                    moneyOnTable += actor.getBetThisTime();
-                    break;
-                case CONTINUE:
-                    break;
 
+                    Record record = new Record(actor.getUdid(), action.getVerbType(), actor.getBetThisTime());
+                    pot.addRecord(record);
+
+                    log.debug(" id: " + actor.getUdid() + " name: " + actor.getName() + " has " + action.getVerb() + " " + actor.getBetThisTime());
+
+                    switch (action) {
+                        case CHECK:
+                            // do nothing
+                            break;
+                        case CALL:
+                            moneyOnTable += actor.getBetThisTime();
+                            break;
+                        case BET:
+                            bet = bet >= actor.getBetThisTime() ? bet : actor.getBetThisTime();
+                            moneyOnTable += actor.getBetThisTime();
+                            playersToAct = activePlayers.size() - 1;
+                            break;
+                        case RAISE:
+                            bet = bet >= actor.getBetThisTime() ? bet : actor.getBetThisTime();
+                            moneyOnTable += actor.getBetThisTime();
+                            playersToAct = activePlayers.size() - 1;
+                            break;
+                        case FOLD:
+                            actor.getHand().makeEmpty();
+                            this.activePlayers.remove(actor);
+                            this.waitingPlayers.put(actor.getUdid(), actor);
+                            actorPosition--;
+                            if (this.activePlayers.size() == 1) {
+                                log.debug(this.activePlayers.get(0).getName() + " win ...");
+                                playersToAct = 0;
+                            }
+
+                            EventDao.insertWinOrLoseEvent(actor, gc.getName(), actor.getBetThisGame(), actor.getHand().getGIndexes(), false);
+                            PlayerDao.updateLoseCount(actor);
+                            break;
+                        case SMALL_BLIND:
+                            bet = bet >= actor.getBetThisTime() ? bet : actor.getBetThisTime();
+                            moneyOnTable += actor.getBetThisTime();
+                            break;
+                        case BIG_BLIND:
+                            bet = bet >= actor.getBetThisTime() ? bet : actor.getBetThisTime();
+                            moneyOnTable += actor.getBetThisTime();
+                            break;
+                        case ALLIN:
+                            if (actor.getBetThisTime() > bet) {
+                                playersToAct = activePlayers.size() - 1;
+                                bet = actor.getBetThisTime();
+                            }
+                            moneyOnTable += actor.getBetThisTime();
+                            break;
+                        case CONTINUE:
+                            break;
+
+                    }
+
+                    //扣钱
+
+                    String info = actor.getUdid() + "," + action.getVerb() + ":" + actor.getBetThisTime() + "," + moneyOnTable;
+
+                    if (action.getName().equals(Action.SMALL_BLIND.getName())) {
+                        NotificationCenter.paySmallBlind(allPlayersInGame, info);
+                    } else if (action.getName().equals(Action.BIG_BLIND.getName())) {
+                        NotificationCenter.payBigBlind(allPlayersInGame, info);
+                    } else {
+                        NotificationCenter.forwardAction(allPlayersInGame, info);
+                        playersToForward.clear();
+                        playersToForward = null;
+                    }
+
+                    //reset actor's bet
+                    actor.setBetThisTime(0);
+
+
+                }
+
+                pot.buildPotList();
             }
-
-            //扣钱
-
-            String info = actor.getUdid() + "," + action.getVerb() + ":" + actor.getBetThisTime() + "," + moneyOnTable;
-
-            if (action.getName().equals(Action.SMALL_BLIND.getName())) {
-                NotificationCenter.paySmallBlind(allPlayersInGame, info);
-            } else if (action.getName().equals(Action.BIG_BLIND.getName())) {
-                NotificationCenter.payBigBlind(allPlayersInGame, info);
-            } else {
-                NotificationCenter.forwardAction(playersToForward, info);
-                playersToForward.clear();
-                playersToForward = null;
-            }
-
-            //reset actor's bet
-            actor.setBetThisTime(0);
-
-
+        } catch (Exception e) {
+            log.error(e);
         }
 
-        pot.buildPotList();
+
     }
 
 
@@ -665,7 +688,6 @@ public class Game implements Runnable {
         }
     }
 
-
     private void sayHello() {
         gaming = true;
         for (String s : waitingPlayers.keySet()) {
@@ -684,12 +706,10 @@ public class Game implements Runnable {
             }
         }
 
-
         waitingPlayers.clear();
 
         NotificationCenter.sayHello(allPlayersInGame, DTOUtil.writeValue(DTOUtil.getPlayerDTOList(activePlayers, Config.GAMESTATUS_ACTIVE)));
         log.debug(DTOUtil.writeValue(DTOUtil.getPlayerDTOList(activePlayers, Config.GAMESTATUS_ACTIVE)));
-
 
     }
 
@@ -844,7 +864,6 @@ public class Game implements Runnable {
                 NotificationCenter.leaveRoom(allPlayersInGame, player.getUdid());
             }
 
-
         }
 
         allPlayersInGame.remove(player);
@@ -864,7 +883,7 @@ public class Game implements Runnable {
         return randomChairIndex;
     }
 
-    // 游戏中站起，换座位
+    // 游戏中站起，离开现有座位
     public void standUp(Player player) {
 
         if (activePlayers.contains(player) || waitingPlayers.containsKey(player.getUdid())) {
@@ -872,22 +891,16 @@ public class Game implements Runnable {
             if (player.getSeatIndex() != Config.SEAT_INDEX_NOTSITTED) {
                 table.put(player.getSeatIndex(), Config.EMPTY_SEAT);
             }
-            if (gaming) {
-                if (waitingPlayers.containsKey(player.getUdid())) {
-                    log.debug(player.getName() + " stands up from waiting players");
-                    waitingPlayers.remove(player.getUdid());
-                } else if (activePlayers.contains(player)) {
-                    if (actor == player) {
-                        player.setInput("f");
-                    }
-                    log.debug(player.getName() + " stands up from active players");
-                    activePlayers.remove(player);
+
+            if (waitingPlayers.containsKey(player.getUdid())) {
+                log.debug(player.getName() + " stands up from waiting players");
+                waitingPlayers.remove(player.getUdid());
+            } else if (activePlayers.contains(player)) {
+                if (actor == player) {
+                    player.setInput("f");
                 }
-            } else {
-                if (waitingPlayers.containsKey(player.getUdid())) {
-                    log.debug(player.getName() + " stands up from waiting players");
-                    waitingPlayers.remove(player.getUdid());
-                }
+                log.debug(player.getName() + " stands up from active players");
+                activePlayers.remove(player);
             }
 
 
@@ -904,15 +917,8 @@ public class Game implements Runnable {
 
     public void chat(Player player, String content) {
         log.debug(player.getName() + " says:[" + content + "]");
-        List<Player> players = new ArrayList<>();
-        for (Player p : allPlayersInGame) {
-            if (!p.getUdid().equals(player.getUdid())) {
-                players.add(p);
-            }
-        }
-        NotificationCenter.chat(players, player.getUdid() + ": " + content);
-        players.clear();
-        players = null;
+        ChatThreadWorker ctw = new ChatThreadWorker(player, content, allPlayersInGame);
+        pool.submit(ctw);
     }
 
     public void printUserList() {
@@ -925,26 +931,30 @@ public class Game implements Runnable {
             playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_WAITING));
         }
         log.debug(DTOUtil.writeValue(playerDTOs));
+        log.debug(table);
     }
 
     //当部分人allin时，可能有玩家还存活着并且有余力进行下一轮下注，那则需要继续是否还有人有钱可以继续下注。
     public List<Player> getRestActivePlayers() {
         List<Player> players = new ArrayList<>();
-        for (Player player : activePlayers) {
-            if (player.getMoneyInGame() > 0) {
-                players.add(player);
+        for (int i = 1; i <= gc.getMaxPlayersCount(); i++) {
+            String udid = table.get(i);
+            if (!udid.equals(Config.EMPTY_SEAT)) {
+                for (Player player : activePlayers) {
+                    if (player.getUdid().equals(udid) && player.getMoneyInGame() > 0) {
+                        players.add(player);
+                        break;
+                    }
+                }
             }
         }
+
         return players;
     }
 
     //参考博雅，只有坐下的人能互加好友
     public void forwardAddFriendRequest(Player fromPlayer, Player toPlayer) {
-        boolean fromPlayerIsOnSeat = waitingPlayers.keySet().contains(fromPlayer.getUdid()) || activePlayers.contains(fromPlayer);
-        boolean toPlayerIsOnSeat = waitingPlayers.keySet().contains(toPlayer.getUdid()) || activePlayers.contains(toPlayer);
-        if (fromPlayerIsOnSeat && toPlayerIsOnSeat) {
-            log.debug(fromPlayer.getName() + " wants to add " + toPlayer.getName() + " as his friend.");
-            NotificationCenter.forwardAddFriendRequest(toPlayer, fromPlayer.getName() + "," + fromPlayer.getUdid());
-        }
+        AddFriendRequestWorker afrw = new AddFriendRequestWorker(waitingPlayers, activePlayers, fromPlayer, toPlayer);
+        pool.submit(afrw);
     }
 }

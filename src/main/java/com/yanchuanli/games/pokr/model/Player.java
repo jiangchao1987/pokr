@@ -56,6 +56,7 @@ public class Player {
     private int elapsedTimeToday;    //当日游戏时间
     private int timeLevelToday;      //当日已经加过经验值的level
     private int seatIndex;    //座位下标, 不持久化
+    private String roomName;
 
     public Player() {
         hand = new Hand();
@@ -228,11 +229,16 @@ public class Player {
             log.debug("allowed actions for " + getUdid() + ":" + getName() + " :" + actionStr);
 
             // notify this user for allowed actions
-            NotificationCenter.act(this.getSession(), this.getUdid() + "," + this.getName() + "," + actionStr + "," + moneyOnTable);
             if (Config.offlineDebug) {
                 Scanner scanner = new Scanner(System.in);
                 input = scanner.nextLine();
             } else {
+
+                if (actions.size() == 1 && actionStr.equals("con_")) {
+                    input = "co";
+                } else {
+                    NotificationCenter.act(this.getSession(), this.getUdid() + "," + this.getName() + "," + actionStr + "," + moneyOnTable);
+                }
                 while (getInput() == null && counter < sleepCount && isOnline()) {
                     try {
                         Thread.sleep(inactivityCheckInterval.inMillis());
@@ -260,6 +266,7 @@ public class Player {
                 setBetThisTime(0);
                 result = Action.CONTINUE;
             } else if (input.startsWith("ca")) {
+
                 int diff = currentBet - betThisRound;
                 diff = diff > moneyInGame ? moneyInGame : diff;
                 setBetThisTime(diff);
@@ -537,5 +544,13 @@ public class Player {
 
     public void setBetThisGame(int betThisGame) {
         this.betThisGame = betThisGame;
+    }
+
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
     }
 }

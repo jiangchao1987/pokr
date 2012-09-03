@@ -14,6 +14,10 @@ import java.util.List;
 public class NotificationCenter {
 
 
+    public static void notifyUserForNewLogin(Player player) {
+        notifySpecificOnTable(player.getSession(), "", Config.TYPE_YOUAREDISCONNECTEDBYNEWLOGIN);
+    }
+
     /**
      * 从总资产中扣去相应钱数用于继续游戏
      *
@@ -216,6 +220,10 @@ public class NotificationCenter {
 
     public static void forwardAddFriendRequest(Player player, String info) {
         notifySpecificOnTable(player.getSession(), info, Config.TYPE_ADDFRIENDREQUEST);
+    }
+
+    public static void notifyUserAboutGameStatus(IoSession session, String info) {
+        notifySpecificOnTable(session, info, Config.TYPE_GAMESTATUS_INGAME);
     }
 
 

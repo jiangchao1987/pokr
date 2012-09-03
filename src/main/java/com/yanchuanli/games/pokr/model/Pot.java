@@ -52,6 +52,13 @@ public class Pot {
         } else if (record.getActionType() == Config.ACTION_TYPE_FOLD) {
             int hisBet = currentPot.get(record.getUdid());
             currentPot.remove(record.getUdid());
+            Iterator<Record> it = currentAllInPlayers.iterator();
+            while (it.hasNext()) {
+                Record re = it.next();
+                if (re.getUdid().equals(record.getUdid())) {
+                   it.remove();
+                }
+            }
             currentFoldPlayers.put(record.getUdid(), hisBet);
 
 
@@ -217,6 +224,7 @@ public class Pot {
         currentPot.clear();
         currentAllInPlayers.clear();
         currentFoldPlayers.clear();
+
     }
 
     public void takeMoneyAway(int amount) {

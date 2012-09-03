@@ -41,6 +41,8 @@ public class Config {
     public static final int TYPE_YOUAREBROKE_INGAME = 24;
     public static final int TYPE_ADDFRIENDREQUEST = 25;
     public static final int TYPE_SHOWDOWN_INGAME = 26;
+    public static final int TYPE_YOUAREDISCONNECTEDBYNEWLOGIN = 27;
+    public static final int TYPE_GAMESTATUS_INGAME=28;
 
 
 

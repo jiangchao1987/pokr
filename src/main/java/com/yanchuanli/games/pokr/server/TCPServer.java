@@ -42,35 +42,40 @@ public class TCPServer {
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
         while (!input.equalsIgnoreCase("quit")) {
-
-            if (input.startsWith("list")) {
-                String[] cmds = input.split(":");
-                String roomid = cmds[1];
-                Game game = GameEngine.getGame(Integer.parseInt(roomid));
-                game.printUserList();
-            } else if (input.startsWith("kick")) {
-                String[] cmds = input.split(":");
-                String udid = cmds[1];
-                Player player = Memory.playersOnServer.get(udid);
-                if (player != null && player.isOnline()) {
-                    Util.disconnectUser(player.getSession());
-                }
-            } else if (input.startsWith("users")) {
-                for (String udid : Memory.playersOnServer.keySet()) {
+            log.info("cmd:" + input);
+            try {
+                if (input.startsWith("list")) {
+                    String[] cmds = input.split(":");
+                    String roomid = cmds[1];
+                    Game game = GameEngine.getGame(Integer.parseInt(roomid));
+                    game.printUserList();
+                } else if (input.startsWith("kick")) {
+                    String[] cmds = input.split(":");
+                    String udid = cmds[1];
                     Player player = Memory.playersOnServer.get(udid);
-                    log.debug(player.getName() + " is sitting at " + player.getSeatIndex() + " in Room " + player.getRoomId() + " with " + player.getMoneyInGame() + " on table!");
+                    if (player != null && player.isOnline()) {
+                        Util.disconnectUser(player.getSession());
+                    }
+                } else if (input.startsWith("users")) {
+                    for (String udid : Memory.playersOnServer.keySet()) {
+                        Player player = Memory.playersOnServer.get(udid);
+
+                        log.debug(player.getName() + "[" + player.getUdid() + "]" + " is sitting at " + player.getSeatIndex() + " in Room " + player.getRoomId() + " with " + player.getMoneyInGame() + " on table!");
+                    }
+                } else {
+                    log.info("INPUT:" + input);
+                    for (String s : Memory.playersOnServer.keySet()) {
+                        Player player = Memory.playersOnServer.get(s);
+
+
+                        List<Player> players = new ArrayList<>();
+                        players.add(player);
+                        NotificationCenter.chat(players, s);
+
+                    }
                 }
-            } else {
-                log.info("INPUT:" + input);
-                for (String s : Memory.sessionsOnServer.keySet()) {
-                    Player player = Memory.sessionsOnServer.get(s);
-
-
-                    List<Player> players = new ArrayList<>();
-                    players.add(player);
-                    NotificationCenter.chat(players, s);
-
-                }
+            } catch (java.lang.ArrayIndexOutOfBoundsException e) {
+                log.error(e);
             }
 
 

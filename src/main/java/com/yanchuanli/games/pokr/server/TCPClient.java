@@ -62,12 +62,12 @@ public class TCPClient {
             } else if (input.startsWith("sb")) {
                 sendToServer(roomname + ",0", Config.TYPE_USERSTANDBY_INGAME);
             } else if (input.startsWith("li")) {
-                sendToServer(String.valueOf(Config.NORMAL_ROOM_LEVEL_BEGINNER), 2);
+                sendToServer(String.valueOf(Config.NORMAL_ROOM_LEVEL_BEGINNER), Config.TYPE_LIST_INGAME);
             } else if (input.startsWith("l")) {
                 //login
                 String[] cmds = input.split(":");
                 username = cmds[1];
-                sendToServer(username + "," + username + "123," + Config.SRC_IPHONE_GUEST, 0);
+                sendToServer(username + "," + username + "123," + Config.SRC_IPHONE_GUEST, Config.TYPE_LOGIN_INGAME);
 
             } else if (input.startsWith("s")) {
                 // eg: s:jiangchao

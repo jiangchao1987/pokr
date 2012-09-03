@@ -181,8 +181,12 @@ public class ServiceCenter {
      */
     private void join(IoSession session, String info) {
         Game game = GameEngine.getGame(Integer.parseInt(info));
-        Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
-        game.enterRoom(newplayer);
+        if (game != null) {
+            Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
+            game.enterRoom(newplayer);
+        } else {
+            log.error("Room " + String.valueOf(session.getId()) + " doesn't exist ...");
+        }
     }
 
     /**
@@ -241,18 +245,21 @@ public class ServiceCenter {
             String[] msgs = info.split(",");
             String udid = String.valueOf(msgs[0]);
 
-            Player player;
-            if (Memory.playersOnServer.containsKey(udid)) {
-                player = Memory.playersOnServer.get(udid);
-                Util.disconnectUser(player.getSession());
-            }
+            Player player = PlayerDao.getPlayer(udid, msgs[1], Integer.parseInt(msgs[2]));
 
-            player = PlayerDao.getPlayer(udid, msgs[1], Integer.parseInt(msgs[2]));
             if (player != null) {
+
+                if (Memory.playersOnServer.containsKey(udid)) {
+                    Player oldplayer = Memory.playersOnServer.get(udid);
+                    log.debug(oldplayer.getName() + " was kicked out because of new logins ");
+                    log.debug(oldplayer.getSession());
+                    NotificationCenter.notifyUserForNewLogin(oldplayer);
+                    Util.disconnectUser(oldplayer.getSession());
+
+                }
+
+
                 Memory.playersOnServer.put(udid, player);
-            }
-
-            if (player != null) {
                 log.debug(player.getName() + " has logged in ...");
                 player.setSession(session);
                 player.setOnline(true);
@@ -263,7 +270,7 @@ public class ServiceCenter {
 
                 EventDao.insertLoginEvent(player);
 
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 sb.append(player.getUdid()).append(",").append(player.getName()).append(",").append(
                         player.getMoney()).append(",").append(player.getExp() + ","
                         + player.getWinCount() + "," + player.getLoseCount() + ","
@@ -276,6 +283,7 @@ public class ServiceCenter {
                 // 用户名密码验证失败则断掉连接
                 session.close(true);
             }
+
 
         } catch (Exception e) {
             //对于非法连接，立刻断掉。

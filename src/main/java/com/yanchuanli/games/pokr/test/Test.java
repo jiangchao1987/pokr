@@ -51,7 +51,52 @@ public class Test {
 //        testPot3();
 
 //        testPot4();
-        testEvent();
+//        testEvent();
+//        testPot5();
+        testPot6();
+    }
+
+
+    public static void testPot6() {
+        String a = "a";
+        String b = "b";
+        String c = "c";
+        Record record1 = new Record(a, Config.ACTION_TYPE_SMALL_BLIND, 50);
+        Record record2 = new Record(b, Config.ACTION_TYPE_BIG_BLIND, 100);
+        Record record3 = new Record(c, Config.ACTION_TYPE_ALL_IN, 10000);
+        Record record4 = new Record(a, Config.ACTION_TYPE_ALL_IN, 500);
+        Record record5 = new Record(b, Config.ACTION_TYPE_ALL_IN, 10000);
+        Pot pot = new Pot();
+        pot.addRecord(record1);
+        pot.addRecord(record2);
+        pot.addRecord(record3);
+        pot.addRecord(record4);
+        pot.addRecord(record5);
+        pot.buildPotList();
+    }
+
+    public static void testPot5() {
+        String a = "a";
+        String b = "b";
+        String c = "c";
+        String d = "d";
+        String e = "e";
+        Record record1 = new Record(a, Config.ACTION_TYPE_SMALL_BLIND, 50);
+        Record record2 = new Record(b, Config.ACTION_TYPE_BIG_BLIND, 100);
+
+        Record record3 = new Record(c, Config.ACTION_TYPE_ALL_IN, 10000);
+        Record record4 = new Record(d, Config.ACTION_TYPE_ALL_IN, 9000);
+        Record record5 = new Record(e, Config.ACTION_TYPE_ALL_IN, 8000);
+        Record record6 = new Record(e, Config.ACTION_TYPE_FOLD, 0);
+        Pot pot = new Pot();
+        pot.addRecord(record1);
+        pot.addRecord(record2);
+        pot.addRecord(record3);
+        pot.addRecord(record4);
+        pot.addRecord(record5);
+        pot.addRecord(record6);
+        pot.buildPotList();
+
     }
 
     public static void testEvent() {
