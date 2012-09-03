@@ -184,6 +184,7 @@ public class ServiceCenter {
         if (game != null) {
             Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
             game.enterRoom(newplayer);
+            log.info(String.format("%s 进入了 %s 号房间", newplayer.getName(), info));
         } else {
             log.error("Room " + String.valueOf(session.getId()) + " doesn't exist ...");
         }
@@ -200,6 +201,7 @@ public class ServiceCenter {
         Game game = GameEngine.getGame(Integer.parseInt(cmds[0]));
         Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
         log.debug("user" + newplayer.getName() + "stand by");
+        log.info(String.format("%s 就坐成功", newplayer.getName()));
         game.sitDown(newplayer, Integer.parseInt(cmds[1]));
     }
 
@@ -261,6 +263,7 @@ public class ServiceCenter {
 
                 Memory.playersOnServer.put(udid, player);
                 log.debug(player.getName() + " has logged in ...");
+                log.info(String.format("%s 已经登录", player.getName()));
                 player.setSession(session);
                 player.setOnline(true);
                 Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);

@@ -200,9 +200,11 @@ public class PlayerDao {
         if (player.getMoney() >= buyIn) {
             player.setMoneyInGame(buyIn);
             log.debug(player.getName() + " has buyed in " + player.getMoneyInGame());
+            log.info(String.format("%s 已经买入了 %d", player.getName(), player.getMoneyInGame()));
             result = true;
         } else {
             log.debug(player.getName() + " hasnot enough money:" + player.getMoney() + " to buyin:" + buyIn);
+            log.info(String.format("%s 的资产数为 %d, 不够买入 %d", player.getName(), player.getMoney(), player.getMoneyInGame()));
         }
         return result;
     }

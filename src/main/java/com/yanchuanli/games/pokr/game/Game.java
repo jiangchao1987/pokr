@@ -317,6 +317,7 @@ public class Game implements Runnable {
             cardsOnTable.add(card);
         }
         log.debug("OnTable:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
+        log.info(String.format("#已出第三张牌#当前桌上牌:%s 当前桌上注:%d 当前奖池的钱数:%d", Util.cardsToString(cardsOnTable), bet, moneyOnTable));
         NotificationCenter.deal3FlipCards(allPlayersInGame, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
     }
 
@@ -324,6 +325,7 @@ public class Game implements Runnable {
         Card card = deck.dealCard();
         cardsOnTable.add(card);
         log.debug("OnTable-Turn:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
+        log.info(String.format("#已出第四张牌#当前桌上牌:%s 当前桌上注:%d 当前奖池的钱数:%d", Util.cardsToString(cardsOnTable), bet, moneyOnTable));
         NotificationCenter.dealTurnCard(allPlayersInGame, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
     }
 
@@ -331,6 +333,7 @@ public class Game implements Runnable {
         Card card = deck.dealCard();
         cardsOnTable.add(card);
         log.debug("OnTable-River:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
+        log.info(String.format("#已出第五张牌#当前桌上牌:%s 当前桌上注:%d 当前奖池的钱数:%d", Util.cardsToString(cardsOnTable), bet, moneyOnTable));
         NotificationCenter.dealRiverCard(allPlayersInGame, Util.cardsToGIndexes(cardsOnTable) + "," + bet + "," + moneyOnTable);
     }
 
@@ -527,7 +530,7 @@ public class Game implements Runnable {
                     playersToAct--;
                     rotateActor(playersInThisRound);
                     log.debug("playersToAct: " + playersToAct + " id: " + actor.getUdid() + " name: " + actor.getName());
-
+                    log.info(String.format("现在轮到 %s 出牌了", actor.getName()));
 
                     Set<Action> allowedActions = getAllowedActions(actor);
 
@@ -595,6 +598,7 @@ public class Game implements Runnable {
                             actorPosition--;
                             if (this.activePlayers.size() == 1) {
                                 log.debug(this.activePlayers.get(0).getName() + " win ...");
+                                log.info(this.activePlayers.get(0).getName() + " 赢得了本局比赛");
                                 playersToAct = 0;
                             }
 
@@ -730,11 +734,11 @@ public class Game implements Runnable {
                 checkAvailablePlayers();
                 if (activePlayers.size() + waitingPlayers.size() >= 2) {
                     try {
-                        log.debug("game will start in 3 seconds ...");
+                        log.info("game will start in 3 seconds ...");
                         Thread.sleep(Duration.seconds(1).inMillis());
-                        log.debug("game will start in 2 seconds ...");
+                        log.info("game will start in 2 seconds ...");
                         Thread.sleep(Duration.seconds(1).inMillis());
-                        log.debug("game will start in 1 seconds ...");
+                        log.info("game will start in 1 seconds ...");
                         Thread.sleep(Duration.seconds(1).inMillis());
                     } catch (InterruptedException e) {
                         log.error(ExceptionUtils.getStackTrace(e));

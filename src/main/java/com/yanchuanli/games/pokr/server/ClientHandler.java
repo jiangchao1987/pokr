@@ -20,6 +20,8 @@ import java.util.Map;
 public class ClientHandler extends IoHandlerAdapter {
 
     private static Logger log = Logger.getLogger(ClientHandler.class);
+    
+    private boolean hasLoginedIn = false;
 
     public ClientHandler() {
 
@@ -50,6 +52,7 @@ public class ClientHandler extends IoHandlerAdapter {
                             String[] infos = info.split(",");
                             String username = infos[1];
                             log.debug(username + ":" + infos[2]);
+                            log.info(String.format("%s 可使用的操作: %s", username, Util.parseCmdsInGame(infos[2])));
                             break;
                         case Config.TYPE_HOLE_INGAME:
                             infos = info.split(",");
@@ -61,9 +64,14 @@ public class ClientHandler extends IoHandlerAdapter {
                                 debuginfo = debuginfo + " " + c.toChineseString();
                             }
                             log.debug(username + ":" + debuginfo);
+                            log.info(String.format("%s 收到的牌: %s", username, debuginfo));
                             break;
-                        case Config.TYPE_JOIN_INGAME:
-
+                        case Config.TYPE_JOIN_INGAME:	//3
+                        	if (!hasLoginedIn) {
+                        		log.info("进入游戏房间成功");
+                            	log.info("请输入携带的金币");
+                            	hasLoginedIn = true;
+                        	}
                             break;
                         case Config.TYPE_CARD_INGAME:
                             infos = info.split(",");
@@ -74,10 +82,26 @@ public class ClientHandler extends IoHandlerAdapter {
                                 debuginfo = debuginfo + " " + c.toChineseString();
                             }
                             log.debug("ontable" + ":" + debuginfo);
+                            log.info("桌子上的牌" + ":" + debuginfo);
                             break;
                         case Config.TYPE_CHAT_INGAME:
                             log.debug(info);
                             break;
+                        case Config.TYPE_LOGIN_INGAME:	//1
+                        	log.info("登录成功");
+                        	log.info("请加入某个房间");
+                        	break;
+                        case Config.TYPE_BUYIN_INGAME: //22
+                        	if (info.trim().equals("1")) {
+                        		log.info("操作成功");
+                        		log.info("请就坐");
+                        	} else {
+                        		log.info("操作失败");
+                        	}
+                        	break;
+                        case Config.TYPE_WINORLOSE_INGAME:
+                        	log.info(String.format("本轮游戏结束  %s", info));
+                        	break;
                     }
                 }
             }
@@ -93,4 +117,5 @@ public class ClientHandler extends IoHandlerAdapter {
         Memory.sessionsOnClient.remove(String.valueOf(session.getId()));
         System.exit(1);
     }
+    
 }

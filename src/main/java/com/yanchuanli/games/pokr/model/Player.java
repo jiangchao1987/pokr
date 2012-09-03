@@ -5,6 +5,8 @@ import com.yanchuanli.games.pokr.basic.Hand;
 import com.yanchuanli.games.pokr.dao.PlayerDao;
 import com.yanchuanli.games.pokr.util.Config;
 import com.yanchuanli.games.pokr.util.NotificationCenter;
+import com.yanchuanli.games.pokr.util.Util;
+
 import org.apache.log4j.Logger;
 import org.apache.mina.core.session.IoSession;
 
@@ -227,6 +229,7 @@ public class Player {
                 actionStr = actionStr + action.getVerb() + "_";
             }
             log.debug("allowed actions for " + getUdid() + ":" + getName() + " :" + actionStr);
+            log.info(String.format("%s 允许的操作是 %s", getName(), Util.parseCmdsInGame(actionStr)));
 
             // notify this user for allowed actions
             if (Config.offlineDebug) {
@@ -262,6 +265,7 @@ public class Player {
             result = Action.FOLD;
         } else {
             log.debug(name + " input:[" + input + "]");
+            log.info(String.format("%s 刚刚的操作是(%s)", name, input));
             if (input.startsWith("co")) {
                 setBetThisTime(0);
                 result = Action.CONTINUE;

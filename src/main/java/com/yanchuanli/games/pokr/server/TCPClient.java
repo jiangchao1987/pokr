@@ -34,6 +34,7 @@ public class TCPClient {
         //等待连接成功
         connFuture.awaitUninterruptibly();
         log.debug("connected ...");
+        log.info("请登入游戏服务器");
         Scanner scanner = new Scanner(System.in);
         String input = "";
         String username = "";
@@ -43,7 +44,7 @@ public class TCPClient {
         while (connFuture.isConnected() && connFuture.getSession().isConnected()) {
             input = scanner.nextLine();
 
-            log.info("INPUT:" + input);
+            log.debug("INPUT:" + input);
 
             if (input.startsWith("c")) {
                 sendToServer(input, Config.TYPE_ACTION_INGAME);
@@ -84,7 +85,7 @@ public class TCPClient {
 
     private static void sendToServer(String msg, int status) {
         for (String s : Memory.sessionsOnClient.keySet()) {
-            log.info("session:" + s + " status:" + status);
+            log.debug("session:" + s + " status:" + status);
             Util.sendMsg(Memory.sessionsOnClient.get(s), msg, status);
         }
     }

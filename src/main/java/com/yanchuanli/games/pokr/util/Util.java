@@ -197,5 +197,11 @@ public class Util {
             answer.free();
         }
     }
+    
+    public static String parseCmdsInGame(String original) {
+		String cmds = original.replace("ca_", "跟注(ca)").replace("c_", "过牌(c)").replace("a_", "全下(a)")
+				.replace("f_", "弃牌(f)").replace("r_", "加注(r:amountOfMoney)");
+		return cmds;
+	}
 
 }
