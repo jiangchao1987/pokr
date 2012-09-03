@@ -95,6 +95,8 @@ public class TCPServer {
         DefaultIoFilterChainBuilder chain = acceptor.getFilterChain();
         chain.addLast("threadPool", new ExecutorFilter(Executors.newCachedThreadPool()));
         SocketSessionConfig dcfg = acceptor.getSessionConfig();
+        dcfg.setTcpNoDelay(true);
+        dcfg.setKeepAlive(true);
         dcfg.setReuseAddress(true);
 
         try {
