@@ -197,7 +197,7 @@ public class PlayerDao {
 
     public static boolean buyIn(Player player, int buyIn) {
         boolean result = false;
-        if (player.getMoney() > buyIn) {
+        if (player.getMoney() >= buyIn) {
             player.setMoneyInGame(buyIn);
             log.debug(player.getName() + " has buyed in " + player.getMoneyInGame());
             result = true;
