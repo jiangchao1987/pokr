@@ -9,6 +9,7 @@ import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,9 @@ public class ClientHandler extends IoHandlerAdapter {
     private static Logger log = Logger.getLogger(ClientHandler.class);
     
     private boolean hasLoginedIn = false;
+    private List<String> cardsOnTable = null;
+    private String holeCardsStr = null;
+    private int counter = 0;
 
     public ClientHandler() {
 
@@ -52,7 +56,7 @@ public class ClientHandler extends IoHandlerAdapter {
                             String[] infos = info.split(",");
                             String username = infos[1];
                             log.debug(username + ":" + infos[2]);
-                            log.info(String.format("%s 可使用的操作: %s", username, Util.parseCmdsInGame(infos[2])));
+                            log.info(String.format("%s 可使用的操作: %s 奖池: %s", username, Util.parseCmdsInGame(infos[2]), infos[3]));
                             break;
                         case Config.TYPE_HOLE_INGAME:
                             infos = info.split(",");
@@ -83,6 +87,11 @@ public class ClientHandler extends IoHandlerAdapter {
                             }
                             log.debug("ontable" + ":" + debuginfo);
                             log.info("桌子上的牌" + ":" + debuginfo);
+                            
+                            counter++;
+                            if (counter == 3) {
+                            	cardsOnTable = Util.parseCardsInGame(debuginfo.trim());
+                            }
                             break;
                         case Config.TYPE_CHAT_INGAME:
                             log.debug(info);
@@ -99,8 +108,14 @@ public class ClientHandler extends IoHandlerAdapter {
                         		log.info("操作失败");
                         	}
                         	break;
-                        case Config.TYPE_WINORLOSE_INGAME:
-                        	log.info(String.format("本轮游戏结束  %s", info));
+                        case Config.TYPE_WINORLOSE_INGAME:	//9
+                        	log.info(String.format("本轮游戏结束\n %s", Util.parseCardsGameOver(info, cardsOnTable, holeCardsStr)));
+                        	cardsOnTable = null;
+                            holeCardsStr = null;
+                            counter = 0;
+                        	break;
+                        case Config.TYPE_SHOW2CARDS:	//20
+                        	holeCardsStr = info;
                         	break;
                     }
                 }
