@@ -29,9 +29,8 @@ public class AddFriendRequestWorker implements Runnable {
 
     @Override
     public void run() {
-        boolean fromPlayerIsOnSeat = waitingPlayers.keySet().contains(fromPlayer.getUdid()) || activePlayers.contains(fromPlayer);
         boolean toPlayerIsOnSeat = waitingPlayers.keySet().contains(toPlayer.getUdid()) || activePlayers.contains(toPlayer);
-        if (fromPlayerIsOnSeat && toPlayerIsOnSeat) {
+        if (toPlayerIsOnSeat) {
             log.debug(fromPlayer.getName() + " wants to add " + toPlayer.getName() + " as his friend.");
             NotificationCenter.forwardAddFriendRequest(toPlayer, fromPlayer.getName() + "," + fromPlayer.getUdid());
         }

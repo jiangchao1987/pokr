@@ -113,7 +113,7 @@ public class Game implements Runnable {
         NotificationCenter.respondToPrepareToEnter(player.getSession(), DTOUtil.writeValue(playerDTOs));
 
 
-        log.debug(DTOUtil.writeValue(playerDTOs));
+        log.debug(gc.getId() + "房间内已坐下的玩家：" + DTOUtil.writeValue(playerDTOs));
 
         if (gaming) {
             log.debug("for NewComer:" + Util.cardsToString(cardsOnTable) + " bet:" + bet + " MoneyOnTable:" + moneyOnTable);
@@ -451,6 +451,7 @@ public class Game implements Runnable {
         } else {
             if (results.size() == 1) {
                 Player player1 = results.get(0);
+                log.debug(player1.getName() + " is the only left player ...");
                 StringBuilder sb = new StringBuilder();
                 player1.addMoney(pot.getMoney());
                 PlayerDao.cashBack(player1, pot.getMoney());
@@ -464,6 +465,8 @@ public class Game implements Runnable {
                 } catch (InterruptedException e) {
                     log.error(ExceptionUtils.getStackTrace(e));
                 }
+            } else {
+                log.debug("no player left ...");
             }
         }
 
@@ -492,6 +495,7 @@ public class Game implements Runnable {
 
         results.clear();
         gaming = false;
+        log.debug("gameover ...");
     }
 
     private void reset() {
@@ -593,8 +597,14 @@ public class Game implements Runnable {
                             break;
                         case FOLD:
                             actor.getHand().makeEmpty();
-                            this.activePlayers.remove(actor);
-                            this.waitingPlayers.put(actor.getUdid(), actor);
+
+                            if (activePlayers.contains(actor)) {
+                                this.activePlayers.remove(actor);
+                                this.waitingPlayers.put(actor.getUdid(), actor);
+                            } else {
+                                //如果因为站起而Fold，则不把这人加入等待列表了。
+                            }
+
                             actorPosition--;
                             if (this.activePlayers.size() == 1) {
                                 log.debug(this.activePlayers.get(0).getName() + " win ...");
@@ -694,6 +704,7 @@ public class Game implements Runnable {
 
     private void sayHello() {
         gaming = true;
+
         for (String s : waitingPlayers.keySet()) {
             Player player = waitingPlayers.get(s);
             if (player.isOnline() && player.inRoom(gc.getId())) {

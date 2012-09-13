@@ -1,17 +1,11 @@
 package com.yanchuanli.games.pokr.util;
 
+import com.mongodb.*;
+import org.apache.log4j.Logger;
+
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.log4j.Logger;
-
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.Mongo;
-import com.mongodb.MongoException;
-import com.mongodb.ReadPreference;
-import com.mongodb.ServerAddress;
 
 public class MongoDBFactory {
 	protected static Logger logger = Logger.getLogger(MongoDBFactory.class);
@@ -35,8 +29,12 @@ public class MongoDBFactory {
 				e.printStackTrace();
 			}
 
-			m = new Mongo(servers);
-			m.setReadPreference(ReadPreference.SECONDARY);
+            try {
+                m = new Mongo("127.0.0.1", Integer.parseInt("27017"));
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+//			m.setReadPreference(ReadPreference.SECONDARY);
 		}
 
 		return m;

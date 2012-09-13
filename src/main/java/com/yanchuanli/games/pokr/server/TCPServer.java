@@ -34,7 +34,7 @@ public class TCPServer {
     private static NioSocketAcceptor acceptor;
 
     public static void main(String[] args) throws IOException {
-
+        System.out.println("hallo world ...");
 
         GameEngine.start();
         start();
@@ -122,7 +122,6 @@ public class TCPServer {
             InetAddress addrs[] = InetAddress.getAllByName(hostName);
 
             for (InetAddress addr : addrs) {
-
                 if (!addr.isLoopbackAddress() && addr.isSiteLocalAddress()) {
                     myIp = addr.getHostAddress();
                 }
