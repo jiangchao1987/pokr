@@ -81,6 +81,8 @@ public class RoomDao {
             doc.put("bettingDuration", 30000);
             doc.put("inactivityCheckInterval", 500);
             doc.put("gameCheckInterval", 3000);
+            doc.put("serverIp", "192.168.1.177");
+            doc.put("serverPort", 9999);
             coll.insert(doc);
         }
     }
@@ -115,6 +117,8 @@ public class RoomDao {
             doc.put("bettingDuration", 15000);
             doc.put("inactivityCheckInterval", 500);
             doc.put("gameCheckInterval", 3000);
+            doc.put("serverIp", "192.168.1.166");
+            doc.put("serverPort", 9999);
             coll.insert(doc);
         }
     }
