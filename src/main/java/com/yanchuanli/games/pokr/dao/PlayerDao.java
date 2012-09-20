@@ -1,19 +1,27 @@
 package com.yanchuanli.games.pokr.dao;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.NullNode;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.yanchuanli.games.pokr.model.Player;
-import com.yanchuanli.games.pokr.util.*;
-import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import com.yanchuanli.games.pokr.util.Config;
+import com.yanchuanli.games.pokr.util.Level;
+import com.yanchuanli.games.pokr.util.MongoDB;
+import com.yanchuanli.games.pokr.util.MongoDBFactory;
+import com.yanchuanli.games.pokr.util.ServerConfig;
+import com.yanchuanli.games.pokr.util.TimeUtil;
+import com.yanchuanli.games.pokr.util.URLFetchUtil;
 
 /**
  * Copyright Candou.com
@@ -26,9 +34,11 @@ public class PlayerDao {
     private static Map<String, Player> players;
     private static int globalid = 0;
     private static Logger log = Logger.getLogger(PlayerDao.class);
+    private static ObjectMapper mapper;
 
     static {
         players = new HashMap<>();
+        mapper = new ObjectMapper();
     }
 
     /**
@@ -52,9 +62,6 @@ public class PlayerDao {
             if (json.contains("{\"user\":null}") || json.contains("\"stat\": 0")) {
                 return null;
             } else {
-                json = json.replace(
-                        "{\"message\":\"登录成功\",\"stat\":1,\"user\":{", "{")
-                        .replace("}}", "}");
                 Player player = parsePlayer(json);
                 if (player == null) {
                     return null;
@@ -66,17 +73,42 @@ public class PlayerDao {
     }
 
     public static Player parsePlayer(String json) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.readValue(json, Player.class);
-        } catch (JsonParseException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+    	Player player;
+    	JsonNode root;
+		try {
+			root = mapper.readTree(json);
+			JsonNode content = root.get("user");
+			
+			player = new Player();
+			player.setAddress(content.get("address").getTextValue());
+			player.setAvatar(content.get("avatar").getTextValue());
+			player.setCustomAvatar(content.get("customAvatar").getIntValue());
+			player.setExp(content.get("exp").getIntValue());
+			player.setHistoricalBestHand(content.get("historicalBestHand").getTextValue());
+			player.setHistoricalBestHandRank(content.get("historicalBestHandRank").getIntValue());
+			player.setLevel(content.get("level").getIntValue());
+			player.setLoseCount(content.get("loseCount").getIntValue());
+			player.setMaxWin(content.get("maxWin").getIntValue());
+			player.setMoney(content.get("money").getIntValue());
+			player.setName(content.get("name").getTextValue());
+			player.setOnline(content.get("online").getBooleanValue());
+			JsonNode node = content.get("room");
+			if (!(node instanceof NullNode)) {
+				player.setRoomId(node.get("id").getIntValue());
+				player.setRoomName(node.get("name").getTextValue());
+			}
+			player.setSex(content.get("sex").getIntValue());
+			player.setTimeLevelToday(content.get("timeLevelToday").getIntValue());
+			player.setUdid(content.get("udid").getTextValue());
+			player.setWinCount(content.get("winCount").getIntValue());
+			
+			return player;
+		} catch (IOException e) {
+			e.printStackTrace();
+			player = null;
+		}
+		
+        return player;
     }
 
     /**
