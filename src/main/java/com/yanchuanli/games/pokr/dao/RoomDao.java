@@ -8,6 +8,7 @@ import com.yanchuanli.games.pokr.model.Room;
 import com.yanchuanli.games.pokr.util.Config;
 import com.yanchuanli.games.pokr.util.MongoDB;
 import com.yanchuanli.games.pokr.util.MongoDBFactory;
+import com.yanchuanli.games.pokr.util.ServerConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,8 +82,8 @@ public class RoomDao {
             doc.put("bettingDuration", 30000);
             doc.put("inactivityCheckInterval", 500);
             doc.put("gameCheckInterval", 3000);
-            doc.put("serverIp", "192.168.1.177");
-            doc.put("serverPort", 9999);
+            doc.put("serverIp", ServerConfig.gameServerAddress);
+            doc.put("serverPort", ServerConfig.gameServerPort);
             coll.insert(doc);
         }
     }
@@ -117,8 +118,8 @@ public class RoomDao {
             doc.put("bettingDuration", 15000);
             doc.put("inactivityCheckInterval", 500);
             doc.put("gameCheckInterval", 3000);
-            doc.put("serverIp", "192.168.1.166");
-            doc.put("serverPort", 9999);
+            doc.put("serverIp", ServerConfig.gameServerAddress);
+            doc.put("serverPort", ServerConfig.gameServerPort);
             coll.insert(doc);
         }
     }
