@@ -194,6 +194,10 @@ public class NotificationCenter {
         notifySpecificOnTable(player.getSession(), "", Config.TYPE_SITDOWNFAILED);
     }
 
+    public static void dealerSays(List<Player> players, String info) {
+         notifyAllOnTable(players, info, Config.TYPE_DEALERSAYS_INGAME);
+     }
+
     /**
      * 通知桌面上所有玩家。
      */

@@ -34,8 +34,6 @@ public class TCPServer {
     private static NioSocketAcceptor acceptor;
 
     public static void main(String[] args) throws IOException {
-        System.out.println("hallo world ...");
-
         GameEngine.start();
         start();
 
@@ -59,9 +57,17 @@ public class TCPServer {
                 } else if (input.startsWith("users")) {
                     for (String udid : Memory.playersOnServer.keySet()) {
                         Player player = Memory.playersOnServer.get(udid);
-
                         log.debug(player.getName() + "[" + player.getUdid() + "]" + " is sitting at " + player.getSeatIndex() + " in Room " + player.getRoomId() + " with " + player.getMoneyInGame() + " on table!");
                     }
+                } else if (input.startsWith("dealer")) {
+                    String[] cmds = input.split(":");
+                    String roomid = cmds[1];
+                    String content = cmds[2];
+                    Game game = GameEngine.getGame(Integer.parseInt(roomid));
+                    if (game != null) {
+                        game.dealerSays(content);
+                    }
+
                 } else {
                     log.info("INPUT:" + input);
                     for (String s : Memory.playersOnServer.keySet()) {

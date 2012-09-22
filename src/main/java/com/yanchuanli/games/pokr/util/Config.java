@@ -43,6 +43,7 @@ public class Config {
     public static final int TYPE_SHOWDOWN_INGAME = 26;
     public static final int TYPE_YOUAREDISCONNECTEDBYNEWLOGIN = 27;
     public static final int TYPE_GAMESTATUS_INGAME=28;
+    public static final int TYPE_DEALERSAYS_INGAME=29;
 
 
 

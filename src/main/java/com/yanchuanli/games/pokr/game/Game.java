@@ -11,6 +11,7 @@ import com.yanchuanli.games.pokr.dao.RoomDao;
 import com.yanchuanli.games.pokr.dto.PlayerDTO;
 import com.yanchuanli.games.pokr.game.workers.AddFriendRequestWorker;
 import com.yanchuanli.games.pokr.game.workers.ChatThreadWorker;
+import com.yanchuanli.games.pokr.game.workers.DealerSaysWorker;
 import com.yanchuanli.games.pokr.model.Action;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.model.Pot;
@@ -928,6 +929,13 @@ public class Game implements Runnable {
         }
 
 
+    }
+
+
+    public void dealerSays(String content) {
+        log.debug("Dealer in Room " + gc.getId() + " says:[" + content + "]");
+        DealerSaysWorker dsw = new DealerSaysWorker(content, allPlayersInGame);
+        pool.submit(dsw);
     }
 
     public void chat(Player player, String content) {
