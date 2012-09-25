@@ -1,5 +1,7 @@
 package com.yanchuanli.games.pokr.util;
 
+import com.yanchuanli.games.pokr.conf.Configure;
+
 /**
  * Copyright Candou.com
  * Author: Yanchuan Li
@@ -8,8 +10,9 @@ package com.yanchuanli.games.pokr.util;
  */
 public class ServerConfig {
 
-    public static final int gameServerPort = 9999;
-    public static final String gameServerAddress = "192.168.1.177";
-    public static final String webServerBase = "http://192.168.1.177:8080/texasbackend/";
-    public static final String rabbitMQServerAddress = "192.168.1.177";
+    public static final int gameServerPort = Integer.parseInt(Configure.getProperty("game_server_port"));
+    public static final String gameServerAddress = Configure.getProperty("game_server_address");
+    public static final String webServerBase = Configure.getProperty("webserver_base");
+    public static final String rabbitMQServerAddress = Configure.getProperty("rabbitmq_server_address");
+
 }
