@@ -263,7 +263,7 @@ public class ServiceCenter {
 
                 Memory.playersOnServer.put(udid, player);
                 log.debug(player.getName() + " has logged in ...");
-                log.info(String.format("%s 已经登录", player.getName()));
+                log.info(String.format("%s 登录成功", player.getName()));
                 player.setSession(session);
                 player.setOnline(true);
                 Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);
