@@ -46,10 +46,8 @@ public class RoomDao {
         insertFast(Config.FAST_ROOM_LEVEL_VIP);
     }
 
-    private static void delete() {
-        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_ROOM);
-
-        coll.remove(new BasicDBObject());
+    public static void delete() {
+    	deleteByIp(ServerConfig.gameServerAddress, ServerConfig.gameServerPort);
     }
     
     public static void deleteByIp(String ip, int port) {
