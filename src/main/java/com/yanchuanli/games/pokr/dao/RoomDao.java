@@ -34,7 +34,7 @@ public class RoomDao {
     }
 
     public static void init() {
-        delete();
+//        delete();
         insertNormal(Config.NORMAL_ROOM_LEVEL_BEGINNER);
         insertNormal(Config.NORMAL_ROOM_LEVEL_MASTER);
         insertNormal(Config.NORMAL_ROOM_LEVEL_PROFESSIONAL);
@@ -50,6 +50,13 @@ public class RoomDao {
         DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_ROOM);
 
         coll.remove(new BasicDBObject());
+    }
+    
+    public static void deleteByIp(String ip, int port) {
+    	DBCollection coll = 
+    			MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_ROOM);
+
+        coll.remove(new BasicDBObject("serverIp", ip).append("serverPort", port));
     }
 
     private static void insertNormal(int level) {
