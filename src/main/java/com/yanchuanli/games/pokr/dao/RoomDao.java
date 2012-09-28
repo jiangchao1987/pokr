@@ -9,9 +9,11 @@ import com.yanchuanli.games.pokr.util.Config;
 import com.yanchuanli.games.pokr.util.MongoDB;
 import com.yanchuanli.games.pokr.util.MongoDBFactory;
 import com.yanchuanli.games.pokr.util.ServerConfig;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Copyright Candou.com
@@ -21,7 +23,11 @@ import java.util.List;
  */
 public class RoomDao {
 
-    public static void updateCurrentPlayerCount(int roomId, int currentPlayerCount) {
+    private static Logger log = Logger.getLogger(RoomDao.class);
+    private static Random ran = new Random();
+    private static int roomid;
+
+    public static void updateCurrentPlayerCount(long roomId, int currentPlayerCount) {
         DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME,
                 MongoDB.COLL_ROOM);
 
@@ -39,7 +45,7 @@ public class RoomDao {
         insertNormal(Config.NORMAL_ROOM_LEVEL_MASTER);
         insertNormal(Config.NORMAL_ROOM_LEVEL_PROFESSIONAL);
         insertNormal(Config.NORMAL_ROOM_LEVEL_VIP);
-        
+
         insertFast(Config.FAST_ROOM_LEVEL_BEGINNER);
         insertFast(Config.FAST_ROOM_LEVEL_MASTER);
         insertFast(Config.FAST_ROOM_LEVEL_PROFESSIONAL);
@@ -47,12 +53,12 @@ public class RoomDao {
     }
 
     public static void delete() {
-    	deleteByIp(ServerConfig.gameServerAddress, ServerConfig.gameServerPort);
+        deleteByIp(ServerConfig.gameServerAddress, ServerConfig.gameServerPort);
     }
-    
+
     public static void deleteByIp(String ip, int port) {
-    	DBCollection coll = 
-    			MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_ROOM);
+        DBCollection coll =
+                MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_ROOM);
 
         coll.remove(new BasicDBObject("serverIp", ip).append("serverPort", port));
     }
@@ -62,17 +68,20 @@ public class RoomDao {
 
         for (int i = 1; i < 4; i++) {
             DBObject doc = new BasicDBObject();
-            int roomId = Integer.parseInt(level + "000") + i;
-            doc.put("id", roomId);
+            String sa = ServerConfig.gameServerAddress.replaceAll("\\.", "");
+            String sid = sa.substring(sa.length() - 8);
+            int id = Integer.parseInt(sid) + i + ran.nextInt(1000);
+            doc.put("id", id);
+            log.info(id + ":" + id);
             switch (i) {
                 case 1:
-                    doc.put("name", "锦衣玉食");
+                    doc.put("name", "锦衣玉食" + i);
                     break;
                 case 2:
-                    doc.put("name", "点石成金");
+                    doc.put("name", "点石成金" + i);
                     break;
                 default:
-                    doc.put("name", "财源滚滚");
+                    doc.put("name", "财源滚滚" + i);
                     break;
             }
 
@@ -80,7 +89,7 @@ public class RoomDao {
             doc.put("smallBlindAmount", 100 * level);
             doc.put("bigBlindAmount", 200 * level);
             doc.put("minHolding", 1000 * level);
-            doc.put("maxHolding", 10000  * level);
+            doc.put("maxHolding", 10000 * level);
             doc.put("maxPlayersCount", 9);
             doc.put("currentPlayerCount", 0);
             doc.put("level", level);
@@ -92,23 +101,26 @@ public class RoomDao {
             coll.insert(doc);
         }
     }
-    
+
     private static void insertFast(int level) {
         DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_ROOM);
 
         for (int i = 1; i < 4; i++) {
             DBObject doc = new BasicDBObject();
-            int roomId = Integer.parseInt(level + "000") + i;
-            doc.put("id", roomId);
+            String sa = ServerConfig.gameServerAddress.replaceAll("\\.", "");
+            String sid = sa.substring(sa.length() - 8);
+            int id = Integer.parseInt(sid) + i + ran.nextInt(1000);
+            doc.put("id", id);
+
             switch (i) {
                 case 1:
-                    doc.put("name", "锦衣玉食");
+                    doc.put("name", "锦衣玉食" + i);
                     break;
                 case 2:
-                    doc.put("name", "点石成金");
+                    doc.put("name", "点石成金" + i);
                     break;
                 default:
-                    doc.put("name", "财源滚滚");
+                    doc.put("name", "财源滚滚" + i);
                     break;
             }
 
@@ -116,7 +128,7 @@ public class RoomDao {
             doc.put("smallBlindAmount", 100 * (level - 4));
             doc.put("bigBlindAmount", 200 * (level - 4));
             doc.put("minHolding", 100 * (level - 4));
-            doc.put("maxHolding", 10000  * (level - 4));
+            doc.put("maxHolding", 10000 * (level - 4));
             doc.put("maxPlayersCount", 9);
             doc.put("currentPlayerCount", 0);
             doc.put("level", level);
