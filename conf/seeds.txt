@@ -1,0 +1,2 @@
+#示例
+dummy00001|dummy00001|dummy00001123|30000|32762|22_33_43_12_22|shanghai|12|conf/configure.properties

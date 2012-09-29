@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.NullNode;
 
@@ -14,6 +13,8 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.mongodb.MongoException;
+import com.yanchuanli.games.pokr.model.Dummy;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.util.Config;
 import com.yanchuanli.games.pokr.util.Level;
@@ -380,5 +381,43 @@ public class PlayerDao {
         DBObject setQuery = new BasicDBObject("$set", new BasicDBObject("roomId", player.getRoomId()));
         coll.update(searchQuery, setQuery, true, true);
     }
+    
+    public static boolean insert(Dummy dummy) {
+		boolean result = true;
+		try {
+			DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME,
+					MongoDB.COLL_USER);
+
+			DBObject doc = new BasicDBObject();
+			doc.put("udid", dummy.getUdid());
+			doc.put("pwd", dummy.getPassword());
+			doc.put("source", dummy.getSource());
+			doc.put("name", dummy.getName());
+			doc.put("money", dummy.getMoney());
+			doc.put("exp", dummy.getExp());
+			doc.put("win", dummy.getWinCount());
+			doc.put("lose", dummy.getLoseCount());
+			doc.put("br", dummy.getHistoricalBestHandRank());
+			doc.put("best", dummy.getHistoricalBestHand());
+			doc.put("max", dummy.getMaxWin());
+			doc.put("face", dummy.getAvatar());
+			doc.put("create", TimeUtil.unixtime());
+			doc.put("update", TimeUtil.unixtime());
+			doc.put("customAvatar", dummy.getCustomAvatar());
+			doc.put("sex", dummy.getSex());
+			doc.put("address", dummy.getAddress());
+			doc.put("level", dummy.getLevel());
+			doc.put("online", dummy.getOnline());
+			doc.put("elapsedTimeToday", dummy.getElapsedTimeToday());
+			doc.put("timeLevelToday", dummy.getTimeLevelToday());
+			doc.put("roomId", dummy.getRoomId());
+
+			coll.insert(doc);
+		} catch (MongoException me) {
+			me.printStackTrace();
+			result = false;
+		}
+		return result;
+	}
 
 }
