@@ -7,6 +7,7 @@ import com.yanchuanli.games.pokr.model.Table;
 import com.yanchuanli.games.pokr.model.event.Event;
 import com.yanchuanli.games.pokr.model.event.LoginEvent;
 import com.yanchuanli.games.pokr.util.Config;
+import com.yanchuanli.games.pokr.util.ServerConfig;
 import org.apache.log4j.Logger;
 import sun.misc.BASE64Encoder;
 
@@ -53,7 +54,9 @@ public class Test {
 //        testPot4();
 //        testEvent();
 //        testPot5();
-        testPot6();
+//        testPot6();
+        String s=ServerConfig.gameServerAddress.replaceAll("\\.", "");
+        log.info(Integer.MAX_VALUE);
     }
 
 
