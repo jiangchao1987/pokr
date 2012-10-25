@@ -9,7 +9,7 @@ import com.yanchuanli.games.pokr.ai.bot.Bot;
  */
 public class TestBot {
     public static void main(String[] args) {
-        Bot bot = new Bot("d", "d123", 21689093);
+        Bot bot = new Bot("d", "d123", 21688934);
         Thread botThread = new Thread(bot);
         botThread.start();
     }

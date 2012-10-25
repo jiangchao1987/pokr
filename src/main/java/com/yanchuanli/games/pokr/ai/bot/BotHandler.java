@@ -1,5 +1,6 @@
 package com.yanchuanli.games.pokr.ai.bot;
 
+import com.yanchuanli.games.pokr.basic.Card;
 import com.yanchuanli.games.pokr.dao.RoomDao;
 import com.yanchuanli.games.pokr.dto.PlayerDTO;
 import com.yanchuanli.games.pokr.model.Player;
@@ -79,7 +80,7 @@ public class BotHandler extends IoHandlerAdapter {
                             while (room.getCurrentPlayerCount() >= room.getMaxPlayersCount()) {
                                 Thread.sleep(1000);
                             }
-                            int maxBuyinNum = room.getMaxHolding() >= player.getMoney() ? room.getMaxHolding() : player.getMoney();
+                            int maxBuyinNum = room.getMaxHolding() >= player.getMoney() ? player.getMoney() : room.getMaxHolding();
                             int buyinMoney = ran.nextInt(maxBuyinNum);
                             while (buyinMoney < room.getMinHolding()) {
                                 buyinMoney = ran.nextInt(maxBuyinNum);
@@ -107,13 +108,36 @@ public class BotHandler extends IoHandlerAdapter {
                                     player.setSeatIndex(aplayer.getSeatIndex());
                                     player.setMoney(aplayer.getMoney());
                                     player.setLevel(aplayer.getLevel());
-                                    log.debug(player);
+                                    break;
+                                }
+                            }
+                            break;
+                        case Config.TYPE_GAMEOVER_INGAME:
+                            ObjectMapper newmapper = new ObjectMapper();
+                            PlayerDTO[] newplayers = newmapper.readValue(info, PlayerDTO[].class);
+                            for (PlayerDTO aplayer : newplayers) {
+                                if (aplayer.getUdid().equals(player.getUdid())) {
+                                    player.setMoneyInGame(aplayer.getMoneyInGame());
+                                    player.setName(aplayer.getName());
+                                    player.setCustomAvatar(aplayer.getCustomAvatar());
+                                    player.setAvatar(aplayer.getAvatar());
+                                    player.setSex(aplayer.getSex());
+                                    player.setAddress(aplayer.getAddress());
+                                    player.setSeatIndex(aplayer.getSeatIndex());
+                                    player.setMoney(aplayer.getMoney());
+                                    player.setLevel(aplayer.getLevel());
                                     break;
                                 }
                             }
                             break;
                         case Config.TYPE_HOLE_INGAME:
-
+                            String[] cardsInfo = info.split(",");
+                            String[] cards = cardsInfo[2].split("_");
+                            if (cards.length == 2) {
+                                Card cardA = new Card(Integer.parseInt(cards[0]));
+                                Card cardB = new Card(Integer.parseInt(cards[1]));
+                                log.debug("I've got " + cardA.toChineseString() + " and " + cardB.toChineseString());
+                            }
                             break;
                         case Config.TYPE_OTHERSACTION_INGAME:
                             break;
@@ -127,21 +151,54 @@ public class BotHandler extends IoHandlerAdapter {
                             String[] actions = infos[2].split("_");
                             String action = actions[ran.nextInt(actions.length)];
                             String input = "";
-                            if (action.equals("f")) {
-                                input = "f";
-                                log.debug("I decide to fold ...");
-                            } else if (action.equals("c")) {
-                                input = "c";
-                                log.debug("I decide to check ...");
-                            } else if (action.equals("r")) {
-                                input = "r:100";
-                            } else if (action.equals("ca")) {
-                                input = "ca";
-                                log.debug("I decide to call ...");
+
+                            switch (action) {
+                                case "f":
+                                    input = "f";
+                                    log.debug("I decide to fold ...");
+                                    break;
+                                case "c":
+                                    input = "c";
+                                    log.debug("I decide to check ...");
+                                    break;
+                                case "r":
+                                    int a = (int) (Math.floor(player.getMoneyInGame() / 100) * 0.5);
+                                    int b = ran.nextInt(a);
+                                    if (b == 0) {
+                                        b = b + 1;
+                                    }
+                                    b = b * 100;
+                                    input = "r:" + String.valueOf(b);
+                                    log.debug("I decide to raise " + String.valueOf(b) + "...");
+                                    player.setMoneyInGame(player.getMoneyInGame() - b);
+                                    break;
+                                case "ca":
+                                    input = "ca";
+                                    log.debug("I decide to call ...");
+                                    break;
+                                case "a":
+                                    input = "a";
+                                    player.setMoneyInGame(0);
+                                    log.debug("I decide to all in ...");
+                                    break;
                             }
+
 
                             sendMsg(input, Config.TYPE_ACTION_INGAME);
                             break;
+                        case Config.TYPE_YOUAREBROKE_INGAME:
+                            break;
+                        case Config.TYPE_SMALLBLIND_INGAME:
+                            String[] smallBlindInfos = info.split(",");
+                            String[] smallBlindAction = smallBlindInfos[1].split(":");
+                            log.debug(smallBlindInfos[0] + " has given " + smallBlindAction[1] + " as SmallBlind");
+                            break;
+                        case Config.TYPE_BIGBLIND_INGAME:
+                            String[] bigBlindInfos = info.split(",");
+                            String[] bigBlindAction = bigBlindInfos[1].split(":");
+                            log.debug(bigBlindInfos[0] + " has given " + bigBlindAction[1] + " as BigBlind");
+                            break;
+
 
                     }
                 }

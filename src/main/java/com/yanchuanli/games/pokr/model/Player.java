@@ -240,7 +240,7 @@ public class Player {
                 if (actions.size() == 1 && actionStr.equals("con_")) {
                     input = "co";
                 } else {
-                    NotificationCenter.act(this.getSession(), this.getUdid() + "," + this.getName() + "," + actionStr + "," + moneyOnTable);
+                    NotificationCenter.act(this.getSession(), this.getUdid() + "," + this.getName() + "," + actionStr + "," + moneyOnTable + "," + currentBet);
                 }
                 while (getInput() == null && counter < sleepCount && isOnline()) {
                     try {
