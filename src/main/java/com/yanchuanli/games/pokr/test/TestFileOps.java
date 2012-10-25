@@ -2,7 +2,8 @@ package com.yanchuanli.games.pokr.test;
 
 import org.apache.log4j.Logger;
 
-import java.io.*;
+import java.io.IOException;
+import java.util.Random;
 
 /**
  * Author: Yanchuan Li
@@ -13,27 +14,11 @@ public class TestFileOps {
     private static Logger log = Logger.getLogger(TestFileOps.class);
 
     public static void main(String[] args) throws IOException {
-        File file = new File("/Users/gillbates/Desktop/163acc.txt");
-        BufferedReader br = new BufferedReader(new FileReader(file));
-        String line;
-        String content = "";
-        FileWriter fw = new FileWriter("/Users/gillbates/Desktop/new163acc.txt");
-
-        BufferedWriter bw = new BufferedWriter(fw);
-
-        while ((line = br.readLine()) != null) {
-            String[] infos = line.split("\t");
-            if (infos.length == 2) {
-                String username = infos[0];
-                String password = infos[1];
-                bw.write(username + " " + password + "\n");
-            } else {
-                log.info(line);
-            }
-
+        String[] acc = {"0", "1", "2"};
+        Random ran = new Random();
+        for (int i = 0; i < 10; i++) {
+            log.debug(acc[ran.nextInt(acc.length)]);
         }
-
-        bw.close();
 
     }
 }

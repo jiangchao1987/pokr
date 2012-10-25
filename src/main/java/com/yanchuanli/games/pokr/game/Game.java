@@ -128,7 +128,10 @@ public class Game implements Runnable {
     }
 
     public boolean buyIn(Player player, int amount) {
-        boolean result = PlayerDao.buyIn(player, amount);
+        boolean result = false;
+        if (amount >= gc.getMinHolding() && amount <= gc.getMaxHolding()) {
+            result = PlayerDao.buyIn(player, amount);
+        }
         return result;
     }
 
