@@ -63,7 +63,7 @@ public class BotHandler extends IoHandlerAdapter {
                 for (Integer key : map.keySet()) {
 
                     String info = map.get(key);
-                    log.debug("[messageReceived] status code: [" + key + "] " + info);
+                    log.debug("[" + key + "]" + info);
                     switch (key) {
                         case Config.TYPE_LOGIN_INGAME:
                             initPlayer(info);
@@ -94,7 +94,6 @@ public class BotHandler extends IoHandlerAdapter {
                             }
                             break;
                         case Config.TYPE_JOIN_INGAME:
-                            log.debug(info);
                             ObjectMapper mapper = new ObjectMapper();
                             PlayerDTO[] players = mapper.readValue(info, PlayerDTO[].class);
                             for (PlayerDTO aplayer : players) {
@@ -108,6 +107,7 @@ public class BotHandler extends IoHandlerAdapter {
                                     player.setSeatIndex(aplayer.getSeatIndex());
                                     player.setMoney(aplayer.getMoney());
                                     player.setLevel(aplayer.getLevel());
+                                    log.debug("Player data updated ...");
                                     break;
                                 }
                             }
@@ -126,6 +126,7 @@ public class BotHandler extends IoHandlerAdapter {
                                     player.setSeatIndex(aplayer.getSeatIndex());
                                     player.setMoney(aplayer.getMoney());
                                     player.setLevel(aplayer.getLevel());
+                                    log.debug("Player data updated ...");
                                     break;
                                 }
                             }
@@ -174,6 +175,8 @@ public class BotHandler extends IoHandlerAdapter {
                                     break;
                                 case "ca":
                                     input = "ca";
+                                    String[] cainfos = info.split(",");
+                                    player.setMoneyInGame(player.getMoneyInGame() - Integer.parseInt(cainfos[4]));
                                     log.debug("I decide to call ...");
                                     break;
                                 case "a":
@@ -187,16 +190,25 @@ public class BotHandler extends IoHandlerAdapter {
                             sendMsg(input, Config.TYPE_ACTION_INGAME);
                             break;
                         case Config.TYPE_YOUAREBROKE_INGAME:
+                            sendMsg(String.valueOf(room.getId()) + "," + player.getUdid() + "," + player.getName(), Config.TYPE_LEAVEROOM_INGAME);
+                            Thread.sleep(5000);
+                            listRooms();
                             break;
                         case Config.TYPE_SMALLBLIND_INGAME:
                             String[] smallBlindInfos = info.split(",");
                             String[] smallBlindAction = smallBlindInfos[1].split(":");
                             log.debug(smallBlindInfos[0] + " has given " + smallBlindAction[1] + " as SmallBlind");
+                            if (smallBlindInfos[0].equals(player.getUdid())) {
+                                player.setMoneyInGame(player.getMoneyInGame() - Integer.parseInt(smallBlindAction[1]));
+                            }
                             break;
                         case Config.TYPE_BIGBLIND_INGAME:
                             String[] bigBlindInfos = info.split(",");
                             String[] bigBlindAction = bigBlindInfos[1].split(":");
                             log.debug(bigBlindInfos[0] + " has given " + bigBlindAction[1] + " as BigBlind");
+                            if (bigBlindInfos[0].equals(player.getUdid())) {
+                                player.setMoneyInGame(player.getMoneyInGame() - Integer.parseInt(bigBlindInfos[1]));
+                            }
                             break;
 
 
