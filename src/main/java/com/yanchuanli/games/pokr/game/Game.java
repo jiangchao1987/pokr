@@ -589,19 +589,13 @@ public class Game implements Runnable {
                         case CALL:
                             moneyOnTable += actor.getBetThisTime();
                             break;
-                        case BET:
-                            bet = bet >= actor.getBetThisTime() ? bet : actor.getBetThisTime();
-                            moneyOnTable += actor.getBetThisTime();
-                            playersToAct = activePlayers.size() - 1;
-                            break;
                         case RAISE:
-                            bet = bet >= actor.getBetThisTime() ? bet : actor.getBetThisTime();
+                            bet = bet >= actor.getBetThisRound() ? bet : actor.getBetThisRound();
                             moneyOnTable += actor.getBetThisTime();
                             playersToAct = activePlayers.size() - 1;
                             break;
                         case FOLD:
                             actor.getHand().makeEmpty();
-
                             if (activePlayers.contains(actor)) {
                                 this.activePlayers.remove(actor);
                                 this.waitingPlayers.put(actor.getUdid(), actor);
@@ -620,17 +614,17 @@ public class Game implements Runnable {
                             PlayerDao.updateLoseCount(actor);
                             break;
                         case SMALL_BLIND:
-                            bet = bet >= actor.getBetThisTime() ? bet : actor.getBetThisTime();
+                            bet = bet >= actor.getBetThisRound() ? bet : actor.getBetThisRound();
                             moneyOnTable += actor.getBetThisTime();
                             break;
                         case BIG_BLIND:
-                            bet = bet >= actor.getBetThisTime() ? bet : actor.getBetThisTime();
+                            bet = bet >= actor.getBetThisRound() ? bet : actor.getBetThisRound();
                             moneyOnTable += actor.getBetThisTime();
                             break;
                         case ALLIN:
                             if (actor.getBetThisTime() > bet) {
                                 playersToAct = activePlayers.size() - 1;
-                                bet = actor.getBetThisTime();
+                                bet = bet >= actor.getBetThisRound() ? bet : actor.getBetThisRound();
                             }
                             moneyOnTable += actor.getBetThisTime();
                             break;

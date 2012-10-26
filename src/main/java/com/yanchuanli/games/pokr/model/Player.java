@@ -272,7 +272,7 @@ public class Player {
             } else if (input.startsWith("ca")) {
 
                 int diff = currentBet - betThisRound;
-                diff = diff > moneyInGame ? moneyInGame : diff;
+
                 setBetThisTime(diff);
                 betThisRound += betThisTime;
                 betThisGame += betThisTime;
@@ -280,6 +280,7 @@ public class Player {
             } else if (input.startsWith("c")) {
                 result = Action.CHECK;
             } else if (input.startsWith("f")) {
+                setBetThisTime(0);
                 result = Action.FOLD;
             } else if (input.startsWith("r")) {
                 String[] inputs = input.split(":");
