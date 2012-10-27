@@ -107,7 +107,7 @@ public class TCPServer {
 
         try {
             acceptor.bind(new InetSocketAddress(ServerConfig.gameServerPort));
-            log.info("TCPServer is listening on " + getIPAddress() + ":" + ServerConfig.gameServerPort);
+            log.info("TCPServer is listening on " + ServerConfig.gameServerAddress + ":" + ServerConfig.gameServerPort);
         } catch (IOException e) {
             log.error(e);
             System.exit(1);

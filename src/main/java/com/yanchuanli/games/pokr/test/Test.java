@@ -20,6 +20,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -53,7 +54,18 @@ public class Test {
 //        testPot4();
 //        testEvent();
 //        testPot5();
-        testPot6();
+//        testPot6();
+
+
+        int a = 8385;
+        int b = (int) Math.floor(a / 100);
+        Random ran = new Random();
+        int c = ran.nextInt(b);
+        if (c == 0) {
+            c = c + 1;
+        }
+        c = c * 100;
+        log.debug(b + " " + c);
     }
 
 

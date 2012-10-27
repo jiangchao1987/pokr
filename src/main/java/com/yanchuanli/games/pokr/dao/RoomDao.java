@@ -176,4 +176,32 @@ public class RoomDao {
         return query(level);
     }
 
+    public static Room getRoom(int id) {
+        Room room = new Room();
+        DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME,
+                MongoDB.COLL_ROOM);
+        BasicDBObject query = new BasicDBObject();
+        query.put("id", id);
+        DBCursor cur = coll.find(query);
+
+        while (cur.hasNext()) {
+            DBObject obj = cur.next();
+            room = new Room();
+            room.setId((Integer) obj.get("id"));
+            room.setName((String) obj.get("name"));
+            room.setSmallBlindAmount((Integer) obj.get("smallBlindAmount"));
+            room.setBigBlindAmount((Integer) obj.get("bigBlindAmount"));
+            room.setMinHolding((Integer) obj.get("minHolding"));
+            room.setMaxHolding((Integer) obj.get("maxHolding"));
+            room.setMaxPlayersCount((Integer) obj.get("maxPlayersCount"));
+            room.setCurrentPlayerCount((Integer) obj.get("currentPlayerCount"));
+            room.setLevel((Integer) obj.get("level"));
+            room.setBettingDuration((Integer) obj.get("bettingDuration"));
+            room.setInactivityCheckInterval((Integer) obj.get("inactivityCheckInterval"));
+            room.setGameCheckInterval((Integer) obj.get("gameCheckInterval"));
+
+        }
+        return room;
+    }
+
 }

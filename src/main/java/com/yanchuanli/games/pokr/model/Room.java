@@ -133,4 +133,22 @@ public class Room {
 		this.gameCheckInterval = gameCheckInterval;
 	}
 
+    @Override
+    public String toString() {
+        return "Room{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", smallBlindAmount=" + smallBlindAmount +
+                ", bigBlindAmount=" + bigBlindAmount +
+                ", minHolding=" + minHolding +
+                ", maxHolding=" + maxHolding +
+                ", maxPlayersCount=" + maxPlayersCount +
+                ", currentPlayerCount=" + currentPlayerCount +
+                ", level=" + level +
+                ", bettingDuration=" + bettingDuration +
+                ", inactivityCheckInterval=" + inactivityCheckInterval +
+                ", gameCheckInterval=" + gameCheckInterval +
+                ", players=" + players +
+                '}';
+    }
 }

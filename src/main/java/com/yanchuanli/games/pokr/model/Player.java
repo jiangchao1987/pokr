@@ -240,7 +240,7 @@ public class Player {
                 if (actions.size() == 1 && actionStr.equals("con_")) {
                     input = "co";
                 } else {
-                    NotificationCenter.act(this.getSession(), this.getUdid() + "," + this.getName() + "," + actionStr + "," + moneyOnTable);
+                    NotificationCenter.act(this.getSession(), this.getUdid() + "," + this.getName() + "," + actionStr + "," + moneyOnTable + "," + currentBet);
                 }
                 while (getInput() == null && counter < sleepCount && isOnline()) {
                     try {
@@ -272,7 +272,7 @@ public class Player {
             } else if (input.startsWith("ca")) {
 
                 int diff = currentBet - betThisRound;
-                diff = diff > moneyInGame ? moneyInGame : diff;
+
                 setBetThisTime(diff);
                 betThisRound += betThisTime;
                 betThisGame += betThisTime;
@@ -280,6 +280,7 @@ public class Player {
             } else if (input.startsWith("c")) {
                 result = Action.CHECK;
             } else if (input.startsWith("f")) {
+                setBetThisTime(0);
                 result = Action.FOLD;
             } else if (input.startsWith("r")) {
                 String[] inputs = input.split(":");

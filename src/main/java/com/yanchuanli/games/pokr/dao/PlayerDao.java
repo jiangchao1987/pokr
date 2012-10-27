@@ -1,28 +1,17 @@
 package com.yanchuanli.games.pokr.dao;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.mongodb.*;
+import com.yanchuanli.games.pokr.model.Dummy;
+import com.yanchuanli.games.pokr.model.Player;
+import com.yanchuanli.games.pokr.util.*;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.NullNode;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
-import com.mongodb.MongoException;
-import com.yanchuanli.games.pokr.model.Dummy;
-import com.yanchuanli.games.pokr.model.Player;
-import com.yanchuanli.games.pokr.util.Config;
-import com.yanchuanli.games.pokr.util.Level;
-import com.yanchuanli.games.pokr.util.MongoDB;
-import com.yanchuanli.games.pokr.util.MongoDBFactory;
-import com.yanchuanli.games.pokr.util.ServerConfig;
-import com.yanchuanli.games.pokr.util.TimeUtil;
-import com.yanchuanli.games.pokr.util.URLFetchUtil;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Copyright Candou.com
@@ -51,8 +40,6 @@ public class PlayerDao {
      */
     public static Player getPlayer(String udid, String password,
                                    int source) {
-
-
         String json = URLFetchUtil.fetch(ServerConfig.webServerBase
                 + "login?udid=" + udid + "&password=" + password + "&source="
                 + source);
