@@ -231,7 +231,7 @@ public class BotHandler extends IoHandlerAdapter {
 
     private void login() {
         log.debug("tries login ...");
-        sendMsg(username + "," + password + "," + Config.SRC_BOT, Config.TYPE_LOGIN_INGAME);
+        sendMsg(username + "," + password + "," + Config.SRC_IPHONE_GUEST, Config.TYPE_LOGIN_INGAME);
     }
 
     private void buyin(int buyin) {
