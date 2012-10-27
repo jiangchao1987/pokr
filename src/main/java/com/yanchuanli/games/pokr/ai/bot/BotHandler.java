@@ -163,12 +163,14 @@ public class BotHandler extends IoHandlerAdapter {
                                     log.debug("I decide to check ...");
                                     break;
                                 case "r":
-                                    int a = (int) (Math.floor(player.getMoneyInGame() / 100) * 0.5);
+                                    int raiseMin = Integer.parseInt(infos[4]);
+                                    int a = (int) (Math.floor((player.getMoneyInGame() - raiseMin) / 100) * 0.5);
                                     int b = ran.nextInt(a);
                                     if (b == 0) {
                                         b = b + 1;
                                     }
                                     b = b * 100;
+                                    b = b + raiseMin;
                                     input = "r:" + String.valueOf(b);
                                     log.debug("I decide to raise " + String.valueOf(b) + "...");
                                     player.setMoneyInGame(player.getMoneyInGame() - b);
