@@ -211,10 +211,11 @@ public class Game implements Runnable {
                 playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_WAITING));
             }
             RoomDao.updateCurrentPlayerCount(gc.getId(), activePlayers.size() + waitingPlayers.size());
+            NotificationCenter.sitDownResult(player.getSession(), String.valueOf(Config.RESULT_SITDOWNSUCEESS));
             NotificationCenter.sayHello(allPlayersInGame, DTOUtil.writeValue(playerDTOs));
             log.debug(DTOUtil.writeValue(playerDTOs));
         } else {
-            NotificationCenter.sitDownFailed(player);
+            NotificationCenter.sitDownResult(player.getSession(), String.valueOf(Config.RESULT_SITDOWNFAILED));
         }
 
     }

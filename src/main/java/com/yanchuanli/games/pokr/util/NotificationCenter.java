@@ -190,13 +190,15 @@ public class NotificationCenter {
         notifySpecificOnTable(session, info, Config.TYPE_JOIN_INGAME);
     }
 
-    public static void sitDownFailed(Player player) {
-        notifySpecificOnTable(player.getSession(), "", Config.TYPE_SITDOWNFAILED);
+
+    public static void sitDownResult(IoSession session, String info) {
+        notifySpecificOnTable(session, info, Config.TYPE_SITDOWNFAILED);
     }
 
+
     public static void dealerSays(List<Player> players, String info) {
-         notifyAllOnTable(players, info, Config.TYPE_DEALERSAYS_INGAME);
-     }
+        notifyAllOnTable(players, info, Config.TYPE_DEALERSAYS_INGAME);
+    }
 
     /**
      * 通知桌面上所有玩家。
