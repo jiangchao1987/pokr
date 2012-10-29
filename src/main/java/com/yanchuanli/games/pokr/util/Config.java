@@ -54,7 +54,8 @@ public class Config {
 
     public static final int SRC_IPHONE_GUEST = 0;
     public static final int SRC_IPAD_GUEST = 1;
-    public static final int SRC_BOT = 4;
+    public static final int SRC_SINA_WEIBO = 2;
+    public static final int SRC_BOT = 3;
 
     public static final int NORMAL_ROOM_LEVEL_BEGINNER = 1;
     public static final int NORMAL_ROOM_LEVEL_PROFESSIONAL = 2;

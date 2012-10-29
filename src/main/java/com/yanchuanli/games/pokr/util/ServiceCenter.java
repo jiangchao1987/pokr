@@ -199,10 +199,13 @@ public class ServiceCenter {
     private void userStandBy(IoSession session, String info) {
         String[] cmds = info.split(",");
         Game game = GameEngine.getGame(Integer.parseInt(cmds[0]));
-        Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
-        log.debug("user" + newplayer.getName() + "stand by");
-        log.info(String.format("%s 就坐成功", newplayer.getName()));
-        game.sitDown(newplayer, Integer.parseInt(cmds[1]));
+        if (game != null) {
+            Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
+            log.debug("user" + newplayer.getName() + "stand by");
+            log.info(String.format("%s 就坐成功", newplayer.getName()));
+            game.sitDown(newplayer, Integer.parseInt(cmds[1]));
+        }
+
     }
 
     /**

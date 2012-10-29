@@ -10,7 +10,7 @@ import com.yanchuanli.games.pokr.conf.Configure;
  */
 public class TestBot {
     public static void main(String[] args) {
-        Bot bot = new Bot("e", "e123", Integer.parseInt(Configure.getProperty("room_bot")));
+        Bot bot = new Bot("f", "f123", Integer.parseInt(Configure.getProperty("room_bot")));
         Thread botThread = new Thread(bot);
         botThread.start();
     }
