@@ -202,7 +202,6 @@ public class Game implements Runnable {
                 table.put(index, player.getUdid());
             }
 
-
             List<PlayerDTO> playerDTOs = new ArrayList<>();
             for (Player aplayer : activePlayers) {
                 playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_ACTIVE));
@@ -214,8 +213,6 @@ public class Game implements Runnable {
             RoomDao.updateCurrentPlayerCount(gc.getId(), activePlayers.size() + waitingPlayers.size());
             NotificationCenter.sayHello(allPlayersInGame, DTOUtil.writeValue(playerDTOs));
             log.debug(DTOUtil.writeValue(playerDTOs));
-
-
         } else {
             NotificationCenter.sitDownFailed(player);
         }
