@@ -483,15 +483,10 @@ public class Game implements Runnable {
                 NotificationCenter.youAreBroke(aplayer);
                 activePlayers.remove(aplayer);
                 standingPlayers.put(aplayer.getUdid(), aplayer);
-            } else {
-                playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_ACTIVE));
+                playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_WAITING));
             }
+        }
 
-        }
-        for (String s : waitingPlayers.keySet()) {
-            Player aplayer = waitingPlayers.get(s);
-            playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_WAITING));
-        }
 
         NotificationCenter.gameover(allPlayersInGame, DTOUtil.writeValue(playerDTOs));
 
