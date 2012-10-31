@@ -474,25 +474,27 @@ public class Game implements Runnable {
 
         //eject user who's money is zero when game's over.
         List<PlayerDTO> playerDTOs = new ArrayList<>();
+        String brokenPlayersUDID = "";
         for (Player aplayer : activePlayers) {
             if (aplayer.getMoneyInGame() <= 0) {
                 log.debug(aplayer.getName() + " is rejected because of empty pocket");
                 if (aplayer.getSeatIndex() != 0) {
                     table.put(aplayer.getSeatIndex(), Config.EMPTY_SEAT);
                 }
-                NotificationCenter.youAreBroke(aplayer);
+//                NotificationCenter.youAreBroke(aplayer);
                 activePlayers.remove(aplayer);
                 standingPlayers.put(aplayer.getUdid(), aplayer);
                 playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_WAITING));
+                brokenPlayersUDID += aplayer.getUdid() + ";";
             }
         }
 
 
-        NotificationCenter.gameover(allPlayersInGame, DTOUtil.writeValue(playerDTOs));
+        NotificationCenter.showBrokenPlayers(allPlayersInGame, brokenPlayersUDID);
 
         results.clear();
         gaming = false;
-        log.debug("gameover ...");
+        log.debug("showBrokenPlayers ...");
     }
 
     private void reset() {

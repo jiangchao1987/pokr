@@ -112,7 +112,7 @@ public class BotHandler extends IoHandlerAdapter {
                                 }
                             }
                             break;
-                        case Config.TYPE_GAMEOVER_INGAME:
+                        case Config.TYPE_SHOWBROKENPLAYERS_INGAME:
                             ObjectMapper newmapper = new ObjectMapper();
                             PlayerDTO[] newplayers = newmapper.readValue(info, PlayerDTO[].class);
                             for (PlayerDTO aplayer : newplayers) {

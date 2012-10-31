@@ -145,8 +145,8 @@ public class NotificationCenter {
         notifyAllOnTable(players, info, Config.TYPE_WINORLOSE_INGAME);
     }
 
-    public static void gameover(List<Player> players, String info) {
-        notifyAllOnTable(players, info, Config.TYPE_GAMEOVER_INGAME);
+    public static void showBrokenPlayers(List<Player> players, String info) {
+        notifyAllOnTable(players, info, Config.TYPE_SHOWBROKENPLAYERS_INGAME);
     }
 
     public static void dealRiverCard(List<Player> players, String info) {
