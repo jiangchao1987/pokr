@@ -46,6 +46,7 @@ public class Config {
     public static final int TYPE_DEALERSAYS_INGAME = 29;
 
 
+
     public static final int RESULT_BUYINSUCCESS = 1;
     public static final int RESULT_SITDOWNSUCEESS = 1;
     public static final int RESULT_SITDOWNFAILED = 0;

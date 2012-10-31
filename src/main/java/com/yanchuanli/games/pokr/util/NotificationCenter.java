@@ -119,6 +119,9 @@ public class NotificationCenter {
         notifyAllOnTable(players, info, Config.TYPE_LEAVEROOM_INGAME);
     }
 
+    public static void standUp(List<Player> players, String info) {
+        notifyAllOnTable(players, info, Config.TYPE_STANDUP_INGAME);
+    }
     /*
     * sample msg: id,action:[bet],moneyontable
     */

@@ -910,7 +910,7 @@ public class Game implements Runnable {
             }
 
 
-            NotificationCenter.leaveRoom(allPlayersInGame, player.getUdid());
+            NotificationCenter.standUp(allPlayersInGame, player.getUdid());
 
             player.setSeatIndex(Config.SEAT_INDEX_NOTSITTED);
             standingPlayers.put(player.getUdid(), player);
