@@ -808,71 +808,23 @@ public class Game implements Runnable {
 
     public void removePlayer(Player player) {
 
-        boolean playerRemoved = false;
-        boolean activeOrWaitingPlayerLeft = false;
+
+        boolean activeOrWaitingPlayerLeft = standUp(player);
 
 
-        for (Player aplayer : activePlayers) {
-            if (aplayer.getUdid().equals(player.getUdid())) {
-                log.debug(player.getName() + " has left the room " + gc.getName() + " and free the chair " + player.getSeatIndex());
-                table.put(player.getSeatIndex(), Config.EMPTY_SEAT);
-
-                player.setRoomId(0);
-                PlayerDao.updateRoomId(player);
-                player.setSeatIndex(Config.SEAT_INDEX_NOTSITTED);
-                activePlayers.remove(aplayer);
-
-                playerRemoved = true;
-                activeOrWaitingPlayerLeft = true;
-                break;
-            }
-        }
-
-
-        if (!playerRemoved) {
+        if (!activeOrWaitingPlayerLeft) {
             for (String s : standingPlayers.keySet()) {
                 Player aplayer = standingPlayers.get(s);
                 if (aplayer.getUdid().equals(player.getUdid())) {
-                    log.debug(player.getName() + " has left the room " + gc.getName() + " and free the chair " + player.getSeatIndex());
-                    table.put(player.getSeatIndex(), Config.EMPTY_SEAT);
                     standingPlayers.remove(s);
-                    player.setRoomId(0);
-                    PlayerDao.updateRoomId(player);
-                    player.setSeatIndex(Config.SEAT_INDEX_NOTSITTED);
-                    playerRemoved = true;
                     break;
                 }
             }
         }
 
-        if (!playerRemoved) {
-            for (String s : waitingPlayers.keySet()) {
-                Player aplayer = waitingPlayers.get(s);
-                if (aplayer.getUdid().equals(player.getUdid())) {
-                    log.debug(player.getName() + " has left the room " + gc.getName() + " and free the chair " + player.getSeatIndex());
-                    table.put(player.getSeatIndex(), Config.EMPTY_SEAT);
-                    waitingPlayers.remove(s);
-                    player.setRoomId(0);
-                    PlayerDao.updateRoomId(player);
-                    player.setSeatIndex(Config.SEAT_INDEX_NOTSITTED);
-                    playerRemoved = true;
-                    activeOrWaitingPlayerLeft = true;
-                    break;
-                }
-            }
-        }
-
-
-        if (playerRemoved) {
-            RoomDao.updateCurrentPlayerCount(gc.getId(), activePlayers.size() + waitingPlayers.size());
-
-
-            if (activeOrWaitingPlayerLeft) {
-                log.debug("notify player leaving");
-                NotificationCenter.leaveRoom(allPlayersInGame, player.getUdid());
-            }
-
-        }
+        player.setRoomId(0);
+        PlayerDao.updateRoomId(player);
+        player.setSeatIndex(Config.SEAT_INDEX_NOTSITTED);
 
         allPlayersInGame.remove(player);
 
@@ -892,7 +844,9 @@ public class Game implements Runnable {
     }
 
     // 游戏中站起，离开现有座位
-    public void standUp(Player player) {
+    public boolean standUp(Player player) {
+
+        boolean result = false;
 
         if (activePlayers.contains(player) || waitingPlayers.containsKey(player.getUdid())) {
             log.debug(player.getName() + " stands up ...");
@@ -913,13 +867,14 @@ public class Game implements Runnable {
 
 
             NotificationCenter.standUp(allPlayersInGame, player.getUdid());
-
+            RoomDao.updateCurrentPlayerCount(gc.getId(), activePlayers.size() + waitingPlayers.size());
             player.setSeatIndex(Config.SEAT_INDEX_NOTSITTED);
             standingPlayers.put(player.getUdid(), player);
 
-
+            result = true;
         }
 
+        return result;
 
     }
 
