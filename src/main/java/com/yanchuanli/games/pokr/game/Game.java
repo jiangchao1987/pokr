@@ -73,6 +73,7 @@ public class Game implements Runnable {
     private Pot pot;
     private Random random;
     private ExecutorService pool;
+    private int playersToAct;
 
 
     public Game(GameConfig gc) {
@@ -517,7 +518,7 @@ public class Game implements Runnable {
     private void doBettingRound(boolean preflop) {
         try {
             List<Player> playersInThisRound = getRestActivePlayers();
-            int playersToAct = playersInThisRound.size();
+            playersToAct = playersInThisRound.size();
             if (playersToAct > 1) {
                 actorPosition = dealerPosition;
                 bet = 0;
@@ -858,11 +859,19 @@ public class Game implements Runnable {
                 log.debug(player.getName() + " stands up from waiting players");
                 waitingPlayers.remove(player.getUdid());
             } else if (activePlayers.contains(player)) {
+                activePlayers.remove(player);
                 if (actor == player) {
                     player.setInput("f");
+                } else {
+                    // 如果当前是A玩家在思考，B玩家站起，需变化该轮还剩下的步数。
+                    if (activePlayers.size() == 1) {
+                        log.debug(actor.getName()+" should be stopped now while he's the only player left ...");
+                        actor.stopNow();
+                    }
                 }
                 log.debug(player.getName() + " stands up from active players");
-                activePlayers.remove(player);
+
+
             }
 
 
