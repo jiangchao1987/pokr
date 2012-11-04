@@ -87,6 +87,9 @@ public class ServiceCenter {
                 case Config.TYPE_ADDFRIENDREQUEST:
                     addFriendRequest(session, map.get(key));
                     break;
+                case Config.TYPE_VOICECHAT_INGAME:
+                    voiceChat(session,map.get(key));
+                    break;
             }
         }
     }
@@ -298,6 +301,11 @@ public class ServiceCenter {
         }
 
 
+    }
+
+    private void voiceChat(IoSession session, String info) {
+        log.debug("voice chat:"+info);
+        //TODO: generate the caf audio file
     }
 
     private void createRoom() {
