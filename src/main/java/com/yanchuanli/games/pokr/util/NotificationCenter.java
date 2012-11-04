@@ -119,6 +119,9 @@ public class NotificationCenter {
         notifyAllOnTable(players, info, Config.TYPE_LEAVEROOM_INGAME);
     }
 
+    public static void standUp(List<Player> players, String info) {
+        notifyAllOnTable(players, info, Config.TYPE_STANDUP_INGAME);
+    }
     /*
     * sample msg: id,action:[bet],moneyontable
     */
@@ -142,8 +145,8 @@ public class NotificationCenter {
         notifyAllOnTable(players, info, Config.TYPE_WINORLOSE_INGAME);
     }
 
-    public static void gameover(List<Player> players, String info) {
-        notifyAllOnTable(players, info, Config.TYPE_GAMEOVER_INGAME);
+    public static void showBrokenPlayers(List<Player> players, String info) {
+        notifyAllOnTable(players, info, Config.TYPE_SHOWBROKENPLAYERS_INGAME);
     }
 
     public static void dealRiverCard(List<Player> players, String info) {
@@ -190,13 +193,15 @@ public class NotificationCenter {
         notifySpecificOnTable(session, info, Config.TYPE_JOIN_INGAME);
     }
 
-    public static void sitDownFailed(Player player) {
-        notifySpecificOnTable(player.getSession(), "", Config.TYPE_SITDOWNFAILED);
+
+    public static void sitDownResult(IoSession session, String info) {
+        notifySpecificOnTable(session, info, Config.TYPE_SITDOWNFAILED);
     }
 
+
     public static void dealerSays(List<Player> players, String info) {
-         notifyAllOnTable(players, info, Config.TYPE_DEALERSAYS_INGAME);
-     }
+        notifyAllOnTable(players, info, Config.TYPE_DEALERSAYS_INGAME);
+    }
 
     /**
      * 通知桌面上所有玩家。

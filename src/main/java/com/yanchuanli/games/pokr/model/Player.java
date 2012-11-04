@@ -59,6 +59,7 @@ public class Player {
     private int timeLevelToday;      //当日已经加过经验值的level
     private int seatIndex;    //座位下标, 不持久化
     private String roomName;
+    private boolean stopNow;
 
     public Player() {
         hand = new Hand();
@@ -218,6 +219,7 @@ public class Player {
 
     public Action act(Set<Action> actions, int currentBet, int moneyOnTable, Duration bettingDuration, Duration inactivityCheckInterval, int mode, int blindamount) {
         Action result;
+        stopNow = false;
         if (mode == 0) {
             int counter = 0;
             int sleepCount = (int) (bettingDuration.inMillis() / inactivityCheckInterval.inMillis());
@@ -236,13 +238,12 @@ public class Player {
                 Scanner scanner = new Scanner(System.in);
                 input = scanner.nextLine();
             } else {
-
                 if (actions.size() == 1 && actionStr.equals("con_")) {
                     input = "co";
                 } else {
                     NotificationCenter.act(this.getSession(), this.getUdid() + "," + this.getName() + "," + actionStr + "," + moneyOnTable + "," + currentBet);
                 }
-                while (getInput() == null && counter < sleepCount && isOnline()) {
+                while (getInput() == null && counter < sleepCount && isOnline() && !stopNow) {
                     try {
                         Thread.sleep(inactivityCheckInterval.inMillis());
                         counter++;
@@ -316,10 +317,15 @@ public class Player {
 
 
         input = null;
-
+        stopNow = false;
         return result;
 
 
+    }
+
+    public void stopNow() {
+        stopNow = true;
+        input = "co";
     }
 
     public int getBetThisTime() {

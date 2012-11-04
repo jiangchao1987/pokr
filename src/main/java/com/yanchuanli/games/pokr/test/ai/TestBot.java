@@ -1,6 +1,7 @@
 package com.yanchuanli.games.pokr.test.ai;
 
 import com.yanchuanli.games.pokr.ai.bot.Bot;
+import com.yanchuanli.games.pokr.conf.Configure;
 
 /**
  * Author: Yanchuan Li
@@ -9,7 +10,7 @@ import com.yanchuanli.games.pokr.ai.bot.Bot;
  */
 public class TestBot {
     public static void main(String[] args) {
-        Bot bot = new Bot("d", "d123", 21688272);
+        Bot bot = new Bot("f", "f123", Integer.parseInt(Configure.getProperty("room_bot")));
         Thread botThread = new Thread(bot);
         botThread.start();
     }

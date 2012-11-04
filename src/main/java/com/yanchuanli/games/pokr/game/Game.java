@@ -73,6 +73,7 @@ public class Game implements Runnable {
     private Pot pot;
     private Random random;
     private ExecutorService pool;
+    private int playersToAct;
 
 
     public Game(GameConfig gc) {
@@ -202,7 +203,6 @@ public class Game implements Runnable {
                 table.put(index, player.getUdid());
             }
 
-
             List<PlayerDTO> playerDTOs = new ArrayList<>();
             for (Player aplayer : activePlayers) {
                 playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_ACTIVE));
@@ -212,12 +212,11 @@ public class Game implements Runnable {
                 playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_WAITING));
             }
             RoomDao.updateCurrentPlayerCount(gc.getId(), activePlayers.size() + waitingPlayers.size());
+            NotificationCenter.sitDownResult(player.getSession(), String.valueOf(Config.RESULT_SITDOWNSUCEESS));
             NotificationCenter.sayHello(allPlayersInGame, DTOUtil.writeValue(playerDTOs));
             log.debug(DTOUtil.writeValue(playerDTOs));
-
-
         } else {
-            NotificationCenter.sitDownFailed(player);
+            NotificationCenter.sitDownResult(player.getSession(), String.valueOf(Config.RESULT_SITDOWNFAILED));
         }
 
     }
@@ -476,30 +475,27 @@ public class Game implements Runnable {
 
         //eject user who's money is zero when game's over.
         List<PlayerDTO> playerDTOs = new ArrayList<>();
+        String brokenPlayersUDID = "";
         for (Player aplayer : activePlayers) {
             if (aplayer.getMoneyInGame() <= 0) {
                 log.debug(aplayer.getName() + " is rejected because of empty pocket");
                 if (aplayer.getSeatIndex() != 0) {
                     table.put(aplayer.getSeatIndex(), Config.EMPTY_SEAT);
                 }
-                NotificationCenter.youAreBroke(aplayer);
+//                NotificationCenter.youAreBroke(aplayer);
                 activePlayers.remove(aplayer);
                 standingPlayers.put(aplayer.getUdid(), aplayer);
-            } else {
-                playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_ACTIVE));
+                playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_WAITING));
+                brokenPlayersUDID += aplayer.getUdid() + ";";
             }
-
-        }
-        for (String s : waitingPlayers.keySet()) {
-            Player aplayer = waitingPlayers.get(s);
-            playerDTOs.add(new PlayerDTO(aplayer, Config.GAMESTATUS_WAITING));
         }
 
-        NotificationCenter.gameover(allPlayersInGame, DTOUtil.writeValue(playerDTOs));
+
+        NotificationCenter.showBrokenPlayers(allPlayersInGame, brokenPlayersUDID);
 
         results.clear();
         gaming = false;
-        log.debug("gameover ...");
+        log.debug("showBrokenPlayers ...");
     }
 
     private void reset() {
@@ -522,7 +518,7 @@ public class Game implements Runnable {
     private void doBettingRound(boolean preflop) {
         try {
             List<Player> playersInThisRound = getRestActivePlayers();
-            int playersToAct = playersInThisRound.size();
+            playersToAct = playersInThisRound.size();
             if (playersToAct > 1) {
                 actorPosition = dealerPosition;
                 bet = 0;
@@ -813,71 +809,23 @@ public class Game implements Runnable {
 
     public void removePlayer(Player player) {
 
-        boolean playerRemoved = false;
-        boolean activeOrWaitingPlayerLeft = false;
+
+        boolean activeOrWaitingPlayerLeft = standUp(player);
 
 
-        for (Player aplayer : activePlayers) {
-            if (aplayer.getUdid().equals(player.getUdid())) {
-                log.debug(player.getName() + " has left the room " + gc.getName() + " and free the chair " + player.getSeatIndex());
-                table.put(player.getSeatIndex(), Config.EMPTY_SEAT);
-
-                player.setRoomId(0);
-                PlayerDao.updateRoomId(player);
-                player.setSeatIndex(Config.SEAT_INDEX_NOTSITTED);
-                activePlayers.remove(aplayer);
-
-                playerRemoved = true;
-                activeOrWaitingPlayerLeft = true;
-                break;
-            }
-        }
-
-
-        if (!playerRemoved) {
+        if (!activeOrWaitingPlayerLeft) {
             for (String s : standingPlayers.keySet()) {
                 Player aplayer = standingPlayers.get(s);
                 if (aplayer.getUdid().equals(player.getUdid())) {
-                    log.debug(player.getName() + " has left the room " + gc.getName() + " and free the chair " + player.getSeatIndex());
-                    table.put(player.getSeatIndex(), Config.EMPTY_SEAT);
                     standingPlayers.remove(s);
-                    player.setRoomId(0);
-                    PlayerDao.updateRoomId(player);
-                    player.setSeatIndex(Config.SEAT_INDEX_NOTSITTED);
-                    playerRemoved = true;
                     break;
                 }
             }
         }
 
-        if (!playerRemoved) {
-            for (String s : waitingPlayers.keySet()) {
-                Player aplayer = waitingPlayers.get(s);
-                if (aplayer.getUdid().equals(player.getUdid())) {
-                    log.debug(player.getName() + " has left the room " + gc.getName() + " and free the chair " + player.getSeatIndex());
-                    table.put(player.getSeatIndex(), Config.EMPTY_SEAT);
-                    waitingPlayers.remove(s);
-                    player.setRoomId(0);
-                    PlayerDao.updateRoomId(player);
-                    player.setSeatIndex(Config.SEAT_INDEX_NOTSITTED);
-                    playerRemoved = true;
-                    activeOrWaitingPlayerLeft = true;
-                    break;
-                }
-            }
-        }
-
-
-        if (playerRemoved) {
-            RoomDao.updateCurrentPlayerCount(gc.getId(), activePlayers.size() + waitingPlayers.size());
-
-
-            if (activeOrWaitingPlayerLeft) {
-                log.debug("notify player leaving");
-                NotificationCenter.leaveRoom(allPlayersInGame, player.getUdid());
-            }
-
-        }
+        player.setRoomId(0);
+        PlayerDao.updateRoomId(player);
+        player.setSeatIndex(Config.SEAT_INDEX_NOTSITTED);
 
         allPlayersInGame.remove(player);
 
@@ -897,7 +845,9 @@ public class Game implements Runnable {
     }
 
     // 游戏中站起，离开现有座位
-    public void standUp(Player player) {
+    public boolean standUp(Player player) {
+
+        boolean result = false;
 
         if (activePlayers.contains(player) || waitingPlayers.containsKey(player.getUdid())) {
             log.debug(player.getName() + " stands up ...");
@@ -909,22 +859,31 @@ public class Game implements Runnable {
                 log.debug(player.getName() + " stands up from waiting players");
                 waitingPlayers.remove(player.getUdid());
             } else if (activePlayers.contains(player)) {
+                activePlayers.remove(player);
                 if (actor == player) {
                     player.setInput("f");
+                } else {
+                    // 如果当前是A玩家在思考，B玩家站起，需变化该轮还剩下的步数。
+                    if (activePlayers.size() == 1) {
+                        log.debug(actor.getName()+" should be stopped now while he's the only player left ...");
+                        actor.stopNow();
+                    }
                 }
                 log.debug(player.getName() + " stands up from active players");
-                activePlayers.remove(player);
+
+
             }
 
 
-            NotificationCenter.leaveRoom(allPlayersInGame, player.getUdid());
-
+            NotificationCenter.standUp(allPlayersInGame, player.getUdid());
+            RoomDao.updateCurrentPlayerCount(gc.getId(), activePlayers.size() + waitingPlayers.size());
             player.setSeatIndex(Config.SEAT_INDEX_NOTSITTED);
             standingPlayers.put(player.getUdid(), player);
 
-
+            result = true;
         }
 
+        return result;
 
     }
 

@@ -41,6 +41,7 @@ public class RoomDao {
 
     public static void init() {
 //        delete();
+        deleteRooms();
         insertNormal(Config.NORMAL_ROOM_LEVEL_BEGINNER);
         insertNormal(Config.NORMAL_ROOM_LEVEL_MASTER);
         insertNormal(Config.NORMAL_ROOM_LEVEL_PROFESSIONAL);
@@ -52,7 +53,7 @@ public class RoomDao {
         insertFast(Config.FAST_ROOM_LEVEL_VIP);
     }
 
-    public static void delete() {
+    public static void deleteRooms() {
         deleteByIp(ServerConfig.gameServerAddress, ServerConfig.gameServerPort);
     }
 
