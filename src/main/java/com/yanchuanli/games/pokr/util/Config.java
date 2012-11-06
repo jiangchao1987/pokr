@@ -45,6 +45,7 @@ public class Config {
     public static final int TYPE_GAMESTATUS_INGAME = 28;
     public static final int TYPE_DEALERSAYS_INGAME = 29;
     public static final int TYPE_VOICECHAT_INGAME=30;
+    public static final int TYPE_LOGIN_MANAGE=31;
 
 
 

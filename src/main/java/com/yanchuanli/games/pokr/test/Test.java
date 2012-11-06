@@ -7,6 +7,7 @@ import com.yanchuanli.games.pokr.model.Table;
 import com.yanchuanli.games.pokr.model.event.Event;
 import com.yanchuanli.games.pokr.model.event.LoginEvent;
 import com.yanchuanli.games.pokr.util.Config;
+import com.yanchuanli.games.pokr.util.Util;
 import org.apache.log4j.Logger;
 import sun.misc.BASE64Encoder;
 
@@ -66,6 +67,9 @@ public class Test {
         }
         c = c * 100;
         log.debug(b + " " + c);
+
+        byte[] arr = Util.stringToByteArray(1, "12");
+        log.info("12".getBytes().length + ":" + arr.length);
     }
 
 

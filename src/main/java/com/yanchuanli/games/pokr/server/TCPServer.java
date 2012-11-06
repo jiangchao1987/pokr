@@ -1,6 +1,7 @@
 package com.yanchuanli.games.pokr.server;
 
 import com.yanchuanli.games.pokr.core.GameEngine;
+import com.yanchuanli.games.pokr.dao.RoomDao;
 import com.yanchuanli.games.pokr.game.Game;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.util.Memory;
@@ -105,6 +106,7 @@ public class TCPServer {
         dcfg.setKeepAlive(true);
         dcfg.setReuseAddress(true);
 
+
         try {
             acceptor.bind(new InetSocketAddress(ServerConfig.gameServerPort));
             log.info("TCPServer is listening on " + ServerConfig.gameServerAddress + ":" + ServerConfig.gameServerPort);
@@ -118,6 +120,7 @@ public class TCPServer {
     public static void shutdown() {
         acceptor.unbind();
         acceptor.dispose();
+        RoomDao.deleteRooms();
     }
 
     private static String getIPAddress() {

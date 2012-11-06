@@ -45,6 +45,7 @@ public class ServerHandler extends IoHandlerAdapter {
         if (message instanceof IoBuffer) {
 
             IoBuffer buffer = (IoBuffer) message;
+            buffer.setAutoExpand(true);
 //            log.debug("remaining:" + buffer.remaining());
 
             SocketAddress remoteAddress = session.getRemoteAddress();

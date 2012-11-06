@@ -3,6 +3,7 @@ package com.yanchuanli.games.pokr.util;
 import com.yanchuanli.games.pokr.basic.Dealer;
 import com.yanchuanli.games.pokr.core.GameEngine;
 import com.yanchuanli.games.pokr.dao.EventDao;
+import com.yanchuanli.games.pokr.dao.ManagerDao;
 import com.yanchuanli.games.pokr.dao.PlayerDao;
 import com.yanchuanli.games.pokr.dao.RoomDao;
 import com.yanchuanli.games.pokr.game.Game;
@@ -88,8 +89,12 @@ public class ServiceCenter {
                     addFriendRequest(session, map.get(key));
                     break;
                 case Config.TYPE_VOICECHAT_INGAME:
-                    voiceChat(session,map.get(key));
+                    voiceChat(session, map.get(key));
                     break;
+                case Config.TYPE_LOGIN_MANAGE:
+                    adminlogin(session, map.get(key));
+                    break;
+
             }
         }
     }
@@ -304,8 +309,16 @@ public class ServiceCenter {
     }
 
     private void voiceChat(IoSession session, String info) {
-        log.debug("voice chat:"+info);
-        //TODO: generate the caf audio file
+        log.debug("voice chat:" + info);
+    }
+
+    private void adminlogin(IoSession session, String info) {
+        String[] msgs = info.split(",");
+        String udid = String.valueOf(msgs[0]);
+        String password = String.valueOf(msgs[1]);
+        if (ManagerDao.validateAdmin(udid, password)) {
+
+        }
     }
 
     private void createRoom() {
