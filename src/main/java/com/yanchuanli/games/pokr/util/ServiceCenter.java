@@ -9,6 +9,7 @@ import com.yanchuanli.games.pokr.dao.RoomDao;
 import com.yanchuanli.games.pokr.game.Game;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.model.Room;
+import com.yanchuanli.games.pokr.server.FireWall;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.session.IoSession;
@@ -62,37 +63,63 @@ public class ServiceCenter {
                     login(session, map.get(key));
                     break;
                 case Config.TYPE_ACTION_INGAME:
-                    action(session, map.get(key));
+                    if (FireWall.validate(session)) {
+                        action(session, map.get(key));
+                    }
+
                     break;
                 case Config.TYPE_LIST_INGAME:
-                    listRooms(session, map.get(key));
+                    if (FireWall.validate(session)) {
+                        listRooms(session, map.get(key));
+                    }
                     break;
                 case Config.TYPE_JOIN_INGAME:
-                    join(session, map.get(key));
+                    if (FireWall.validate(session)) {
+                        join(session, map.get(key));
+                    }
                     break;
                 case Config.TYPE_USERSTANDBY_INGAME:
-                    userStandBy(session, map.get(key));
+                    if (FireWall.validate(session)) {
+                        userStandBy(session, map.get(key));
+                    }
                     break;
                 case Config.TYPE_LEAVEROOM_INGAME:
-                    leaveRoom(session, map.get(key));
+                    if (FireWall.validate(session)) {
+                        leaveRoom(session, map.get(key));
+                    }
                     break;
                 case Config.TYPE_CHAT_INGAME:
-                    chat(session, map.get(key));
+                    if (FireWall.validate(session)) {
+                        chat(session, map.get(key));
+                    }
                     break;
                 case Config.TYPE_BUYIN_INGAME:
-                    buyIn(session, map.get(key));
+                    if (FireWall.validate(session)) {
+                        buyIn(session, map.get(key));
+                    }
                     break;
                 case Config.TYPE_STANDUP_INGAME:
-                    standUp(session, map.get(key));
+                    if (FireWall.validate(session)) {
+                        standUp(session, map.get(key));
+                    }
                     break;
                 case Config.TYPE_ADDFRIENDREQUEST:
-                    addFriendRequest(session, map.get(key));
+                    if (FireWall.validate(session)) {
+                        addFriendRequest(session, map.get(key));
+                    }
                     break;
                 case Config.TYPE_VOICECHAT_INGAME:
-                    voiceChat(session, map.get(key));
+                    if (FireWall.validate(session)) {
+                        voiceChat(session, map.get(key));
+                    }
                     break;
                 case Config.TYPE_LOGIN_MANAGE:
-                    adminlogin(session, map.get(key));
+                    if (FireWall.validate(session)) {
+                        adminlogin(session, map.get(key));
+                    }
+                    break;
+                default:
+                    session.close(true);
                     break;
 
             }
@@ -317,7 +344,7 @@ public class ServiceCenter {
         String udid = String.valueOf(msgs[0]);
         String password = String.valueOf(msgs[1]);
         if (ManagerDao.validateAdmin(udid, password)) {
-
+            Memory.adminSessionsOnServer.put(String.valueOf(session.getId()), session);
         }
     }
 

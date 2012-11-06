@@ -10,6 +10,10 @@ import org.apache.mina.core.session.IoSession;
  */
 public class FireWall {
     public static boolean validate(IoSession session) {
-        return Memory.sessionsOnServer.containsKey(String.valueOf(session.getId()));
+        boolean result = Memory.sessionsOnServer.containsKey(String.valueOf(session.getId())) || Memory.adminSessionsOnServer.containsKey(String.valueOf(session.getId()));
+        if (!result) {
+            session.close(true);
+        }
+        return result;
     }
 }
