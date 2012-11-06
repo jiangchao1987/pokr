@@ -337,6 +337,15 @@ public class ServiceCenter {
 
     private void voiceChat(IoSession session, String info) {
         log.debug("voice chat:" + info);
+        String[] msgs = info.split(",");
+        String udid = String.valueOf(msgs[0]);
+        String roomid = String.valueOf(msgs[1]);
+        String filepath = String.valueOf(msgs[2]);
+        Game game = GameEngine.getGame(Integer.parseInt(roomid));
+        Player player = Memory.playersOnServer.get(udid);
+        if (game != null && player != null) {
+            game.voiceChat(player, filepath);
+        }
     }
 
     private void adminlogin(IoSession session, String info) {

@@ -12,6 +12,7 @@ import com.yanchuanli.games.pokr.dto.PlayerDTO;
 import com.yanchuanli.games.pokr.game.workers.AddFriendRequestWorker;
 import com.yanchuanli.games.pokr.game.workers.ChatThreadWorker;
 import com.yanchuanli.games.pokr.game.workers.DealerSaysWorker;
+import com.yanchuanli.games.pokr.game.workers.VoiceChatThreadWorker;
 import com.yanchuanli.games.pokr.model.Action;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.model.Pot;
@@ -865,7 +866,7 @@ public class Game implements Runnable {
                 } else {
                     // 如果当前是A玩家在思考，B玩家站起，需变化该轮还剩下的步数。
                     if (activePlayers.size() == 1) {
-                        log.debug(actor.getName()+" should be stopped now while he's the only player left ...");
+                        log.debug(actor.getName() + " should be stopped now while he's the only player left ...");
                         actor.stopNow();
                     }
                 }
@@ -897,6 +898,12 @@ public class Game implements Runnable {
     public void chat(Player player, String content) {
         log.debug(player.getName() + " says:[" + content + "]");
         ChatThreadWorker ctw = new ChatThreadWorker(player, content, allPlayersInGame);
+        pool.submit(ctw);
+    }
+
+    public void voiceChat(Player player, String content) {
+        log.debug(player.getName() + " says in voice:[" + content + "]");
+        VoiceChatThreadWorker ctw = new VoiceChatThreadWorker(player, content, allPlayersInGame);
         pool.submit(ctw);
     }
 

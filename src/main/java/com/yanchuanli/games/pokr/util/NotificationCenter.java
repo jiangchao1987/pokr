@@ -39,6 +39,16 @@ public class NotificationCenter {
     }
 
     /**
+     * 转发语音聊天信息
+     *
+     * @param players 所有玩家
+     * @param info    转发的消息
+     */
+    public static void voicechat(List<Player> players, String info) {
+        notifyAllOnTable(players, info, Config.TYPE_VOICECHAT_INGAME);
+    }
+
+    /**
      * 通知所有玩家谁是dealer
      *
      * @param players 所有玩家
