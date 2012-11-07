@@ -109,14 +109,12 @@ public class ServiceCenter {
                     }
                     break;
                 case Config.TYPE_VOICECHAT_INGAME:
-                    if (FireWall.validate(session)) {
-                        voiceChat(session, map.get(key));
-                    }
+
+                    voiceChat(session, map.get(key));
+
                     break;
                 case Config.TYPE_LOGIN_MANAGE:
-                    if (FireWall.validate(session)) {
-                        adminlogin(session, map.get(key));
-                    }
+                    adminlogin(session, map.get(key));
                     break;
                 default:
                     session.close(true);
@@ -139,7 +137,10 @@ public class ServiceCenter {
         Game game = GameEngine.getGame(Integer.parseInt(roomid));
         Player targetPlayer = Memory.playersOnServer.get(targetUdid);
         Player fromPlayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
-        game.forwardAddFriendRequest(fromPlayer, targetPlayer);
+        if (game != null && fromPlayer != null && targetPlayer != null) {
+            game.forwardAddFriendRequest(fromPlayer, targetPlayer);
+        }
+
     }
 
     /**
@@ -152,7 +153,10 @@ public class ServiceCenter {
         String[] cmds = info.split(",");
         Game game = GameEngine.getGame(Integer.parseInt(cmds[0]));
         Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
-        game.standUp(newplayer);
+        if (game != null && newplayer != null) {
+            game.standUp(newplayer);
+        }
+
     }
 
     /**
@@ -185,8 +189,8 @@ public class ServiceCenter {
     private void chat(IoSession session, String info) {
         String[] cmds = info.split(",");
         Game game = GameEngine.getGame(Integer.parseInt(cmds[0]));
-        if (game != null) {
-            Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
+        Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
+        if (game != null && player != null) {
             game.chat(player, cmds[2]);
         }
 
@@ -201,8 +205,8 @@ public class ServiceCenter {
     public void leaveRoom(IoSession session, String info) {
         String[] cmds = info.split(",");
         Game game = GameEngine.getGame(Integer.parseInt(cmds[0]));
-        if (game != null) {
-            Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
+        Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
+        if (game != null && player != null) {
             log.debug("Player " + player.getName() + " is leaving " + cmds[0]);
             game.removePlayer(player);
         }
@@ -216,8 +220,8 @@ public class ServiceCenter {
      */
     private void join(IoSession session, String info) {
         Game game = GameEngine.getGame(Integer.parseInt(info));
-        if (game != null) {
-            Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
+        Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
+        if (game != null && newplayer != null) {
             game.enterRoom(newplayer);
             log.info(String.format("%s 进入了 %s 号房间", newplayer.getName(), info));
         } else {
@@ -234,8 +238,9 @@ public class ServiceCenter {
     private void userStandBy(IoSession session, String info) {
         String[] cmds = info.split(",");
         Game game = GameEngine.getGame(Integer.parseInt(cmds[0]));
-        if (game != null) {
-            Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
+        Player newplayer = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
+        if (game != null && newplayer != null) {
+
             log.debug("user" + newplayer.getName() + "stand by");
             log.info(String.format("%s 就坐成功", newplayer.getName()));
             game.sitDown(newplayer, Integer.parseInt(cmds[1]));
@@ -271,7 +276,10 @@ public class ServiceCenter {
      */
     private void action(IoSession session, String info) {
         Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
-        player.setInput(info);
+        if (player != null) {
+            player.setInput(info);
+        }
+
     }
 
     /**
@@ -354,6 +362,7 @@ public class ServiceCenter {
         String password = String.valueOf(msgs[1]);
         if (ManagerDao.validateAdmin(udid, password)) {
             Memory.adminSessionsOnServer.put(String.valueOf(session.getId()), session);
+            log.debug("admin:" + udid + " has logged in ...");
         }
     }
 
