@@ -317,7 +317,7 @@ public class PlayerDao {
         DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
         DBObject searchQuery = new BasicDBObject();
         DBObject setQuery = new BasicDBObject("$set", new BasicDBObject("elapsedTimeToday", 0));
-        coll.update(searchQuery, setQuery, true, true);
+        coll.update(searchQuery, setQuery, false, true);
     }
 
     /**
@@ -339,7 +339,7 @@ public class PlayerDao {
         DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
         DBObject searchQuery = new BasicDBObject();
         DBObject setQuery = new BasicDBObject("$set", new BasicDBObject("timeLevelToday", 0));
-        coll.update(searchQuery, setQuery, true, true);
+        coll.update(searchQuery, setQuery, false, true);
     }
 
     /**
@@ -354,7 +354,7 @@ public class PlayerDao {
         setValue.put("roomId", 0);
         DBObject setQuery = new BasicDBObject();
         setQuery.put("$set", setValue);
-        coll.update(searchQuery, setQuery, true, true);
+        coll.update(searchQuery, setQuery, false, true);
     }
 
     /**
@@ -366,7 +366,7 @@ public class PlayerDao {
         DBCollection coll = MongoDBFactory.getCollection(MongoDB.DBNAME, MongoDB.COLL_USER);
         DBObject searchQuery = new BasicDBObject(new BasicDBObject("udid", player.getUdid()));
         DBObject setQuery = new BasicDBObject("$set", new BasicDBObject("roomId", player.getRoomId()));
-        coll.update(searchQuery, setQuery, true, true);
+        coll.update(searchQuery, setQuery, false, true);
     }
     
     public static boolean insert(Dummy dummy) {
