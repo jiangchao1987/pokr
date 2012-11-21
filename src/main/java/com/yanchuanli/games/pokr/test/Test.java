@@ -7,7 +7,6 @@ import com.yanchuanli.games.pokr.model.Table;
 import com.yanchuanli.games.pokr.model.event.Event;
 import com.yanchuanli.games.pokr.model.event.LoginEvent;
 import com.yanchuanli.games.pokr.util.Config;
-import com.yanchuanli.games.pokr.util.Util;
 import org.apache.log4j.Logger;
 import sun.misc.BASE64Encoder;
 
@@ -21,7 +20,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -58,18 +56,7 @@ public class Test {
 //        testPot6();
 
 
-        int a = 8385;
-        int b = (int) Math.floor(a / 100);
-        Random ran = new Random();
-        int c = ran.nextInt(b);
-        if (c == 0) {
-            c = c + 1;
-        }
-        c = c * 100;
-        log.debug(b + " " + c);
-
-        byte[] arr = Util.stringToByteArray(1, "12");
-        log.info("12".getBytes().length + ":" + arr.length);
+        log.info("大家好");
     }
 
 
