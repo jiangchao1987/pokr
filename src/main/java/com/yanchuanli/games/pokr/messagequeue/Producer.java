@@ -1,12 +1,11 @@
 package com.yanchuanli.games.pokr.messagequeue;
 
-import com.rabbitmq.client.*;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 import org.apache.log4j.Logger;
-import org.junit.internal.matchers.StringContains;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.util.Map;
 
 /**
  * Author: Yanchuan Li
@@ -19,7 +18,9 @@ public class Producer {
 
     public static void main(String[] args) throws IOException {
         ConnectionFactory factory = new ConnectionFactory();
+
         factory.setHost("localhost");
+
 
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();

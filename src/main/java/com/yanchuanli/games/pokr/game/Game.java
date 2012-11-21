@@ -667,7 +667,7 @@ public class Game implements Runnable {
                 actions.add(Action.CHECK);
                 actions.add(Action.RAISE);
             } else {
-                if (player.getMoneyInGame() >= bet) {
+                if (player.getMoneyInGame() >= bet - player.getBetThisRound()) {
                     actions.add(Action.CALL);
                 }
                 if (player.getMoneyInGame() >= bet * 2) {
@@ -809,8 +809,6 @@ public class Game implements Runnable {
     }
 
     public void removePlayer(Player player) {
-
-
         boolean activeOrWaitingPlayerLeft = standUp(player);
 
 
