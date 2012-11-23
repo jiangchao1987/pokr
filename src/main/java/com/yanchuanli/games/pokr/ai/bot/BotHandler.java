@@ -85,6 +85,7 @@ public class BotHandler extends IoHandlerAdapter {
                             while (buyinMoney < room.getMinHolding()) {
                                 buyinMoney = ran.nextInt(maxBuyinNum);
                             }
+                            buyinMoney = 1000;
                             log.debug("I would buyin " + String.valueOf(buyinMoney) + " chips ...");
                             buyin(buyinMoney);
                             break;
@@ -113,20 +114,13 @@ public class BotHandler extends IoHandlerAdapter {
                             }
                             break;
                         case Config.TYPE_SHOWBROKENPLAYERS_INGAME:
-                            ObjectMapper newmapper = new ObjectMapper();
-                            PlayerDTO[] newplayers = newmapper.readValue(info, PlayerDTO[].class);
-                            for (PlayerDTO aplayer : newplayers) {
-                                if (aplayer.getUdid().equals(player.getUdid())) {
-                                    player.setMoneyInGame(aplayer.getMoneyInGame());
-                                    player.setName(aplayer.getName());
-                                    player.setCustomAvatar(aplayer.getCustomAvatar());
-                                    player.setAvatar(aplayer.getAvatar());
-                                    player.setSex(aplayer.getSex());
-                                    player.setAddress(aplayer.getAddress());
-                                    player.setSeatIndex(aplayer.getSeatIndex());
-                                    player.setMoney(aplayer.getMoney());
-                                    player.setLevel(aplayer.getLevel());
-                                    log.debug("Player data updated ...");
+                            String[] udids = info.split(";");
+                            for (String udid : udids) {
+                                if (udid.equals(username)) {
+                                    log.debug("I am broken and I will buy chips now ...");
+                                    sendMsg(String.valueOf(room.getId()) + "," + player.getUdid() + "," + player.getName(), Config.TYPE_LEAVEROOM_INGAME);
+                                    Thread.sleep(5000);
+                                    listRooms();
                                     break;
                                 }
                             }
@@ -231,7 +225,7 @@ public class BotHandler extends IoHandlerAdapter {
 
     private void login() {
         log.debug("tries login ...");
-        sendMsg(username + "," + password + "," + Config.SRC_IPHONE_GUEST, Config.TYPE_LOGIN_INGAME);
+        sendMsg(username + "," + password + "," + Config.SRC_BOT, Config.TYPE_LOGIN_INGAME);
     }
 
     private void buyin(int buyin) {
