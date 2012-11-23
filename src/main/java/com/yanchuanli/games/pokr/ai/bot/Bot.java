@@ -24,6 +24,7 @@ public class Bot implements Runnable {
     private NioSocketConnector connector;
     private BotHandler bh;
 
+
     public Bot(String username, String password, int roomId) {
         this.username = username;
         this.password = password;

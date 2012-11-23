@@ -674,11 +674,9 @@ public class Game implements Runnable {
                 }
                 if (player.getMoneyInGame() >= bet * 2) {
                     actions.add(Action.RAISE);
-                } else if (player.getMoneyInGame() > 0) {
-                    actions.add(Action.ALLIN);
                 }
             }
-
+            actions.add(Action.ALLIN);
             actions.add(Action.FOLD);
         } else {
             actions.add(Action.CONTINUE);

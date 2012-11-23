@@ -17,9 +17,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -56,7 +54,11 @@ public class Test {
 //        testPot6();
 
 
-        log.info("大家好");
+        Random ran = new Random();
+        for (int i = 0; i < 10; i++) {
+            log.debug(ran.nextDouble());
+        }
+
     }
 
 

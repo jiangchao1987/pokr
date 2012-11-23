@@ -13,9 +13,7 @@ import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Author: Yanchuan Li
@@ -31,6 +29,12 @@ public class BotHandler extends IoHandlerAdapter {
     private Player player;
     private Random ran;
     private Room room;
+    private double probabilityToFold = 0.15;
+    private double probabilityToAllIn = 0.3;
+    private double probabilityToRaise = 0.6;
+    private double probabilityToCall = 0.5;
+    private double probabilityToCheck = 0.8;
+    private double probabilityToFoldAfterPreflop = 0.25;
 
 
     public BotHandler(String username, String password) {
@@ -75,6 +79,7 @@ public class BotHandler extends IoHandlerAdapter {
                                 int selectedRoom = Integer.parseInt(roomIDs[ran.nextInt(roomIDs.length)]);
                                 player.setRoomId(selectedRoom);
                             }
+                            log.debug("entering room " + player.getRoomId());
                             sendMsg(String.valueOf(player.getRoomId()), Config.TYPE_JOIN_INGAME);
                             room = RoomDao.getRoom(player.getRoomId());
                             while (room.getCurrentPlayerCount() >= room.getMaxPlayersCount()) {
@@ -139,13 +144,36 @@ public class BotHandler extends IoHandlerAdapter {
                         case Config.TYPE_ACTION_INGAME:
                             int timeToThink = (int) (room.getBettingDuration() * 0.2);
                             timeToThink = ran.nextInt(timeToThink) + 1;
-                            timeToThink = 10;
+                            timeToThink = 100;
                             log.debug("I have to think for " + String.valueOf(timeToThink) + " milli seconds ...");
                             Thread.sleep(timeToThink);
-
+                            log.debug("action!");
                             String[] infos = info.split(",");
                             String[] actions = infos[2].split("_");
-                            String action = actions[ran.nextInt(actions.length)];
+                            List<String> allowedactions = new ArrayList<>();
+                            for (String ac : actions) {
+                                allowedactions.add(ac);
+                            }
+
+                            String action = "f";
+                            if (allowedactions.contains("c")) {
+                                action = "c";
+                            } else if (allowedactions.contains("ca")) {
+                                action = "ca";
+                            }
+
+
+                            if (allowedactions.contains("r") && doable(probabilityToRaise)) {
+                                action = "r";
+                            } else if (allowedactions.contains("ca") && doable(probabilityToCall)) {
+                                action = "ca";
+                            } else if (allowedactions.contains("c") && doable(probabilityToCheck)) {
+                                action = "c";
+                            } else if (allowedactions.contains("a") && doable(probabilityToAllIn)) {
+                                action = "a";
+                            }
+
+
                             String input = "";
 
                             switch (action) {
@@ -241,6 +269,10 @@ public class BotHandler extends IoHandlerAdapter {
         sendMsg(String.valueOf(Config.NORMAL_ROOM_LEVEL_BEGINNER), Config.TYPE_LIST_INGAME);
     }
 
+    private void chat(String msg) {
+        sendMsg(String.valueOf(player.getRoomId()) + "," + String.valueOf(player.getUdid()) + "," + msg, Config.TYPE_CHAT_INGAME);
+    }
+
     private void sendMsg(String msg, int type) {
         Util.sendMsg(session, msg, type);
     }
@@ -263,5 +295,9 @@ public class BotHandler extends IoHandlerAdapter {
         player.setSession(session);
         player.setOnline(true);
         log.debug(player.toString());
+    }
+
+    private boolean doable(double probability) {
+        return ran.nextDouble() <= probability;
     }
 }
