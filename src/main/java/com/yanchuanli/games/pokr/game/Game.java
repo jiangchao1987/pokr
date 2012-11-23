@@ -491,8 +491,10 @@ public class Game implements Runnable {
             }
         }
 
+        if (brokenPlayersUDID.length() > 0) {
+            NotificationCenter.showBrokenPlayers(allPlayersInGame, brokenPlayersUDID);
+        }
 
-        NotificationCenter.showBrokenPlayers(allPlayersInGame, brokenPlayersUDID);
 
         results.clear();
         gaming = false;
