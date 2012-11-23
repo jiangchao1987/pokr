@@ -85,7 +85,7 @@ public class BotHandler extends IoHandlerAdapter {
                             while (buyinMoney < room.getMinHolding()) {
                                 buyinMoney = ran.nextInt(maxBuyinNum);
                             }
-                            buyinMoney = 1000;
+
                             log.debug("I would buyin " + String.valueOf(buyinMoney) + " chips ...");
                             buyin(buyinMoney);
                             break;
@@ -139,6 +139,7 @@ public class BotHandler extends IoHandlerAdapter {
                         case Config.TYPE_ACTION_INGAME:
                             int timeToThink = (int) (room.getBettingDuration() * 0.2);
                             timeToThink = ran.nextInt(timeToThink) + 1;
+                            timeToThink = 10;
                             log.debug("I have to think for " + String.valueOf(timeToThink) + " milli seconds ...");
                             Thread.sleep(timeToThink);
 
