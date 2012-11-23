@@ -144,7 +144,7 @@ public class BotHandler extends IoHandlerAdapter {
                         case Config.TYPE_ACTION_INGAME:
                             int timeToThink = (int) (room.getBettingDuration() * 0.2);
                             timeToThink = ran.nextInt(timeToThink) + 1;
-                            timeToThink = 100;
+                            timeToThink = 2000;
                             log.debug("I have to think for " + String.valueOf(timeToThink) + " milli seconds ...");
                             Thread.sleep(timeToThink);
                             log.debug("action!");
