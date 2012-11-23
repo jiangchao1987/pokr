@@ -21,6 +21,7 @@ public class FireWall {
         }
 
         if (!result) {
+            log.debug("illegal access from " + session.getRemoteAddress());
             session.close(true);
         }
         return result;
