@@ -4,6 +4,8 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
+import com.yanchuanli.games.pokr.conf.Configure;
+import com.yanchuanli.games.pokr.util.ServerConfig;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -20,25 +22,33 @@ public class Consummer {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("localhost");
+//        factory.setHost(Configure.getProperty("rabbitmq_server_address"));
+//        factory.setVirtualHost("texas");
+//        factory.setUsername("texas");
+//        factory.setPassword("arubatexas");
+
+        factory.setHost(ServerConfig.rabbitMQServerAddress);
+        factory.setVirtualHost(ServerConfig.rabbitMQServerVhost);
+        factory.setUsername(ServerConfig.rabbitMQServerUsername);
+        factory.setPassword(ServerConfig.rabbitMQServerPassword);
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 
-        channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
+        channel.exchangeDeclare(Configure.getProperty("game_server_address"), "fanout");
         String queueName = channel.queueDeclare().getQueue();
-        channel.queueBind(queueName, EXCHANGE_NAME, "");
+        channel.queueBind(queueName, Configure.getProperty("game_server_address"), "");
 
         log.info(" [*] Waiting for messages. To exit press CTRL+C");
 
         QueueingConsumer consumer = new QueueingConsumer(channel);
         channel.basicConsume(queueName, true, consumer);
 
-        while (true) {
+//        while (true) {
             QueueingConsumer.Delivery delivery = consumer.nextDelivery();
             String message = new String(delivery.getBody());
 
             log.info(" [x] Received '" + message + "'");
-        }
+//        }
     }
 
 }

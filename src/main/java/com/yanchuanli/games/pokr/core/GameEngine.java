@@ -5,6 +5,7 @@ import com.yanchuanli.games.pokr.dao.PlayerDao;
 import com.yanchuanli.games.pokr.dao.RoomDao;
 import com.yanchuanli.games.pokr.game.Game;
 import com.yanchuanli.games.pokr.game.GameConfig;
+import com.yanchuanli.games.pokr.messagequeue.VoiceChatEventConsumer;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.model.Room;
 import com.yanchuanli.games.pokr.util.Config;
@@ -59,7 +60,7 @@ public void handle(Signal sig) {
         roomsToPrepare.addAll(RoomDao.getRooms(Config.FAST_ROOM_LEVEL_VIP));
 
 
-        pool = Executors.newFixedThreadPool(roomsToPrepare.size() + 1);
+        pool = Executors.newFixedThreadPool(roomsToPrepare.size() + 10);
 
         for (Room room : roomsToPrepare) {
             GameConfig gc = new GameConfig(room.getId(), room.getName(), room.getSmallBlindAmount(), room.getBigBlindAmount(), room.getMinHolding(), room.getMaxHolding(), room.getMaxPlayersCount(), Duration.millis(room.getBettingDuration()), Duration.millis(room.getInactivityCheckInterval()), Duration.millis(room.getGameCheckInterval()));
@@ -72,10 +73,16 @@ public void handle(Signal sig) {
         LiveTimeChecker lec = new LiveTimeChecker();
         pool.execute(lec);
 
+        VoiceChatEventConsumer vcec = new VoiceChatEventConsumer();
+        pool.execute(vcec);
+
     }
 
     public static Game getGame(Integer roomId) {
-        return games.get(roomId);
+        if (games != null) {
+            return games.get(roomId);
+        }
+        return null;
     }
 
     public static void stop() {

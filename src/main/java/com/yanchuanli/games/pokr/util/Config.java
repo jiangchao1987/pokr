@@ -8,7 +8,7 @@ package com.yanchuanli.games.pokr.util;
  */
 public class Config {
 
-    public static final String MQ_EXCHANGE = "texas";
+
     public static final byte START = '$' & 0xFF;
     public static final byte SPLIT = '|' & 0xFF;
     public static final byte END = '#' & 0xFF;

@@ -36,6 +36,5 @@ public class VoiceChatThreadWorker implements Runnable {
         log.debug(player);
         NotificationCenter.voicechat(players, player.getUdid() + ";" + content);
         players.clear();
-        players = null;
     }
 }

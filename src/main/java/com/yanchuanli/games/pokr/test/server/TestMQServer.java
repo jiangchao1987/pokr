@@ -4,8 +4,8 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
-import com.yanchuanli.games.pokr.messagequeue.EventConsumer;
-import com.yanchuanli.games.pokr.util.Config;
+import com.yanchuanli.games.pokr.conf.Configure;
+import com.yanchuanli.games.pokr.messagequeue.VoiceChatEventConsumer;
 import com.yanchuanli.games.pokr.util.ServerConfig;
 import org.apache.log4j.Logger;
 
@@ -29,7 +29,7 @@ public class TestMQServer {
     private static QueueingConsumer consumer;
 
     public static void main(String[] args) throws IOException {
-        EventConsumer ec = new EventConsumer();
+        VoiceChatEventConsumer ec = new VoiceChatEventConsumer();
         Thread t = new Thread(ec);
         t.start();
 
@@ -39,12 +39,12 @@ public class TestMQServer {
         connection = factory.newConnection();
         channel = connection.createChannel();
 
-        channel.exchangeDeclare(Config.MQ_EXCHANGE, "fanout");
+        channel.exchangeDeclare(Configure.getProperty("game_server_address"), "fanout");
 
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
         while (!input.equals("quit")) {
-            channel.basicPublish(Config.MQ_EXCHANGE, "", null, input.getBytes());
+            channel.basicPublish(Configure.getProperty("game_server_address"), "", null, input.getBytes());
             input = scanner.nextLine();
         }
 
@@ -58,11 +58,11 @@ public class TestMQServer {
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 
-        channel.exchangeDeclare(Config.MQ_EXCHANGE, "fanout");
+        channel.exchangeDeclare(Configure.getProperty("game_server_address"), "fanout");
 
         String message = "123";
 
-        channel.basicPublish(Config.MQ_EXCHANGE, "", null, message.getBytes());
+        channel.basicPublish(Configure.getProperty("game_server_address"), "", null, message.getBytes());
         System.out.println(" [x] Sent '" + message + "'");
 
         channel.close();
