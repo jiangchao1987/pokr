@@ -64,7 +64,6 @@ public class HeartBeatsChecker implements Runnable {
                 log.error(ExceptionUtils.getStackTrace(e));
             }
 
-            log.debug(Memory.heartbeatsMap);
             for (String udid : Memory.playersOnServer.keySet()) {
                 Integer heartbeatStatus = Memory.heartbeatsMap.get(udid);
                 if (heartbeatStatus != null && heartbeatStatus != Config.HEARTBEAT_CONFIRMED) {
