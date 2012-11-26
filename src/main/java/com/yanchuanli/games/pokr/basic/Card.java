@@ -35,6 +35,13 @@ Ac = 12    Ad = 25    Ah = 38    As = 51
 
 */
 
+/*
+    hearts 红桃
+    diamonds 方片
+    clubs 梅花
+    spades 黑桃
+ */
+
 
 public class Card {
     public final static int CLUBS = 0;      //梅花

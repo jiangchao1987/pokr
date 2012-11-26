@@ -455,8 +455,8 @@ public class Player {
     public int getGIndexesForOwnCardsUsedInBestFive() {
         int result = 0;
         int[] ownCards = hand.getCardArray();
-        int firstCard = ownCards[0];
-        int secondCard = ownCards[1];
+        int firstCard = ownCards[1];
+        int secondCard = ownCards[2];
         boolean firstCardIncluded = false;
         boolean secondCardIncluded = false;
         int[] bestHandCardArray = bestHand.getCardArray();
