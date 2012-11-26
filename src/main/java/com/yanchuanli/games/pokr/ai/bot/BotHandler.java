@@ -236,7 +236,9 @@ public class BotHandler extends IoHandlerAdapter {
                             }
                             break;
 
-
+                        case Config.TYPE_HEARTBEAT_MANAGE:
+                            sendMsg("", Config.TYPE_HEARTBEAT_MANAGE);
+                            break;
                     }
                 }
             }
