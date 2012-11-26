@@ -132,6 +132,7 @@ public class NotificationCenter {
     public static void standUp(List<Player> players, String info) {
         notifyAllOnTable(players, info, Config.TYPE_STANDUP_INGAME);
     }
+
     /*
     * sample msg: id,action:[bet],moneyontable
     */
@@ -243,6 +244,10 @@ public class NotificationCenter {
 
     public static void notifyUserAboutGameStatus(IoSession session, String info) {
         notifySpecificOnTable(session, info, Config.TYPE_GAMESTATUS_INGAME);
+    }
+
+    public static void sendHeartBeat(IoSession session) {
+        notifySpecificOnTable(session, "", Config.TYPE_HEARTBEAT_MANAGE);
     }
 
 

@@ -76,6 +76,8 @@ public void handle(Signal sig) {
         VoiceChatEventConsumer vcec = new VoiceChatEventConsumer();
         pool.execute(vcec);
 
+        HeartBeatsChecker hbc = new HeartBeatsChecker();
+        pool.execute(hbc);
     }
 
     public static Game getGame(Integer roomId) {

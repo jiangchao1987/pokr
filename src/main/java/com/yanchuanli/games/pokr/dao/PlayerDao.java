@@ -3,6 +3,7 @@ package com.yanchuanli.games.pokr.dao;
 import com.mongodb.*;
 import com.yanchuanli.games.pokr.model.Dummy;
 import com.yanchuanli.games.pokr.model.Player;
+import com.yanchuanli.games.pokr.server.ServerConfig;
 import com.yanchuanli.games.pokr.util.*;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonNode;

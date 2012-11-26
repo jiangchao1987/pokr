@@ -6,7 +6,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
 import com.yanchuanli.games.pokr.conf.Configure;
 import com.yanchuanli.games.pokr.messagequeue.VoiceChatEventConsumer;
-import com.yanchuanli.games.pokr.util.ServerConfig;
+import com.yanchuanli.games.pokr.server.ServerConfig;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;

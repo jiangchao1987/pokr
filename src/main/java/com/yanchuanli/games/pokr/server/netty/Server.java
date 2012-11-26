@@ -1,6 +1,6 @@
 package com.yanchuanli.games.pokr.server.netty;
 
-import com.yanchuanli.games.pokr.util.ServerConfig;
+import com.yanchuanli.games.pokr.server.ServerConfig;
 import org.apache.log4j.Logger;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.*;

@@ -8,7 +8,7 @@ import com.yanchuanli.games.pokr.model.Room;
 import com.yanchuanli.games.pokr.util.Config;
 import com.yanchuanli.games.pokr.util.MongoDB;
 import com.yanchuanli.games.pokr.util.MongoDBFactory;
-import com.yanchuanli.games.pokr.util.ServerConfig;
+import com.yanchuanli.games.pokr.server.ServerConfig;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;

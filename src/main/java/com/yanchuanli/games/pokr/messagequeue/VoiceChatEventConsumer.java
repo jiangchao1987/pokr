@@ -6,7 +6,7 @@ import com.yanchuanli.games.pokr.core.GameEngine;
 import com.yanchuanli.games.pokr.game.Game;
 import com.yanchuanli.games.pokr.model.Player;
 import com.yanchuanli.games.pokr.util.Memory;
-import com.yanchuanli.games.pokr.util.ServerConfig;
+import com.yanchuanli.games.pokr.server.ServerConfig;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;

@@ -7,6 +7,7 @@ import com.yanchuanli.games.pokr.model.Table;
 import com.yanchuanli.games.pokr.model.event.Event;
 import com.yanchuanli.games.pokr.model.event.LoginEvent;
 import com.yanchuanli.games.pokr.util.Config;
+import com.yanchuanli.games.pokr.util.Memory;
 import org.apache.log4j.Logger;
 import sun.misc.BASE64Encoder;
 
@@ -54,10 +55,8 @@ public class Test {
 //        testPot6();
 
 
-        Random ran = new Random();
-        for (int i = 0; i < 10; i++) {
-            log.debug(ran.nextDouble());
-        }
+        Integer a = Memory.heartbeatsMap.get("123");
+        log.debug(a);
 
     }
 

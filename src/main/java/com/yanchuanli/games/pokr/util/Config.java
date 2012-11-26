@@ -44,9 +44,8 @@ public class Config {
     public static final int TYPE_YOUAREDISCONNECTEDBYNEWLOGIN = 27;
     public static final int TYPE_GAMESTATUS_INGAME = 28;
     public static final int TYPE_DEALERSAYS_INGAME = 29;
-    public static final int TYPE_VOICECHAT_INGAME=30;
-    public static final int TYPE_LOGIN_MANAGE=31;
-
+    public static final int TYPE_VOICECHAT_INGAME = 30;
+    public static final int TYPE_HEARTBEAT_MANAGE = 31;
 
 
     public static final int RESULT_BUYINSUCCESS = 1;
@@ -92,5 +91,8 @@ public class Config {
     public static final String EMPTY_SEAT = "empty";
     public static final int SEAT_INDEX_NOTSITTED = 0;
 
+    public static int HEARTBEAT_SENT = 0;
+    public static int HEARTBEAT_RESENT = 1;
+    public static int HEARTBEAT_CONFIRMED = 2;
 
 }

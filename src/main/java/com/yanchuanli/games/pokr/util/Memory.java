@@ -17,5 +17,5 @@ public class Memory {
     public static Map<String, IoSession> adminSessionsOnServer = new HashMap<>();
     public static Map<String, IoSession> sessionsOnClient = new HashMap<String, IoSession>();
     public static Map<String, Player> playersOnServer = new HashMap<>();
-
+    public static Map<String, Integer> heartbeatsMap = new HashMap<>();
 }

@@ -4,7 +4,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.yanchuanli.games.pokr.conf.Configure;
-import com.yanchuanli.games.pokr.util.ServerConfig;
+import com.yanchuanli.games.pokr.server.ServerConfig;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;

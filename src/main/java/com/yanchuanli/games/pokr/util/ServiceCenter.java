@@ -3,7 +3,6 @@ package com.yanchuanli.games.pokr.util;
 import com.yanchuanli.games.pokr.basic.Dealer;
 import com.yanchuanli.games.pokr.core.GameEngine;
 import com.yanchuanli.games.pokr.dao.EventDao;
-import com.yanchuanli.games.pokr.dao.ManagerDao;
 import com.yanchuanli.games.pokr.dao.PlayerDao;
 import com.yanchuanli.games.pokr.dao.RoomDao;
 import com.yanchuanli.games.pokr.game.Game;
@@ -108,13 +107,10 @@ public class ServiceCenter {
                         addFriendRequest(session, map.get(key));
                     }
                     break;
-                case Config.TYPE_VOICECHAT_INGAME:
-
-                    voiceChat(session, map.get(key));
-
-                    break;
-                case Config.TYPE_LOGIN_MANAGE:
-                    adminlogin(session, map.get(key));
+                case Config.TYPE_HEARTBEAT_MANAGE:
+                    if (FireWall.validate(session)) {
+                        heartbeatAck(session,map.get(key));
+                    }
                     break;
                 default:
                     session.close(true);
@@ -209,6 +205,7 @@ public class ServiceCenter {
         if (game != null && player != null) {
             log.debug("Player " + player.getName() + " is leaving " + cmds[0]);
             game.removePlayer(player);
+            Util.disconnectUser(player.getSession());
         }
     }
 
@@ -307,13 +304,12 @@ public class ServiceCenter {
                 }
 
 
-                Memory.playersOnServer.put(udid, player);
                 log.debug(player.getName() + " has logged in ...");
                 log.info(String.format("%s 登录成功", player.getName()));
                 player.setSession(session);
                 player.setOnline(true);
+                Memory.playersOnServer.put(udid, player);
                 Memory.sessionsOnServer.put(String.valueOf(session.getId()), player);
-
                 PlayerDao.updateOnlineStatus(player);
 
 
@@ -343,28 +339,15 @@ public class ServiceCenter {
 
     }
 
-    private void voiceChat(IoSession session, String info) {
-        log.debug("voice chat:" + info);
-        String[] msgs = info.split(",");
-        String udid = String.valueOf(msgs[0]);
-        String roomid = String.valueOf(msgs[1]);
-        String filepath = String.valueOf(msgs[2]);
-        Game game = GameEngine.getGame(Integer.parseInt(roomid));
-        Player player = Memory.playersOnServer.get(udid);
-        if (game != null && player != null) {
-            game.voiceChat(player, filepath);
+
+    private void heartbeatAck(IoSession session,String content) {
+        Player player = Memory.sessionsOnServer.get(String.valueOf(session.getId()));
+        Integer heartbeatStatus = Memory.heartbeatsMap.get(player.getUdid());
+        if (heartbeatStatus != null && (heartbeatStatus == Config.HEARTBEAT_SENT || heartbeatStatus == Config.HEARTBEAT_RESENT)) {
+            Memory.heartbeatsMap.put(player.getUdid(), Config.HEARTBEAT_CONFIRMED);
         }
     }
 
-    private void adminlogin(IoSession session, String info) {
-        String[] msgs = info.split(",");
-        String udid = String.valueOf(msgs[0]);
-        String password = String.valueOf(msgs[1]);
-        if (ManagerDao.validateAdmin(udid, password)) {
-            Memory.adminSessionsOnServer.put(String.valueOf(session.getId()), session);
-            log.debug("admin:" + udid + " has logged in ...");
-        }
-    }
 
     private void createRoom() {
         Dealer dealer = dealers.get(0);

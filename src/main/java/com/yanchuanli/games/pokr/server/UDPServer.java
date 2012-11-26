@@ -1,7 +1,6 @@
 package com.yanchuanli.games.pokr.server;
 
 import com.yanchuanli.games.pokr.util.Memory;
-import com.yanchuanli.games.pokr.util.ServerConfig;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder;
 import org.apache.mina.filter.executor.ExecutorFilter;

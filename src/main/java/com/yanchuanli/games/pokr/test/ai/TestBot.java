@@ -15,7 +15,7 @@ public class TestBot {
         if (args.length == 3) {
             bot = new Bot(args[0], args[1], Integer.parseInt(args[2]));
         } else {
-            bot = new Bot("b", "b123", 21688649);
+            bot = new Bot("b", "b123", 21689083);
         }
 
         Thread botThread = new Thread(bot);
