@@ -123,9 +123,19 @@ public class BotHandler extends IoHandlerAdapter {
                             for (String udid : udids) {
                                 if (udid.equals(username)) {
                                     log.debug("I am broken and I will buy chips now ...");
-                                    sendMsg(String.valueOf(room.getId()) + "," + player.getUdid() + "," + player.getName(), Config.TYPE_LEAVEROOM_INGAME);
                                     Thread.sleep(5000);
-                                    listRooms();
+                                    room = RoomDao.getRoom(player.getRoomId());
+                                    while (room.getCurrentPlayerCount() >= room.getMaxPlayersCount()) {
+                                        Thread.sleep(1000);
+                                    }
+                                    maxBuyinNum = room.getMaxHolding() >= player.getMoney() ? player.getMoney() : room.getMaxHolding();
+                                    buyinMoney = ran.nextInt(maxBuyinNum);
+                                    while (buyinMoney < room.getMinHolding()) {
+                                        buyinMoney = ran.nextInt(maxBuyinNum);
+                                    }
+
+                                    log.debug("I would buyin " + String.valueOf(buyinMoney) + " chips ...");
+                                    buyin(buyinMoney);
                                     break;
                                 }
                             }
@@ -237,6 +247,7 @@ public class BotHandler extends IoHandlerAdapter {
                             break;
 
                         case Config.TYPE_HEARTBEAT_MANAGE:
+                            log.debug("respond to heartbeat ...");
                             sendMsg("", Config.TYPE_HEARTBEAT_MANAGE);
                             break;
                     }
@@ -253,6 +264,7 @@ public class BotHandler extends IoHandlerAdapter {
         log.debug("session opened ...");
         login();
     }
+
 
     private void login() {
         log.debug("tries login ...");
