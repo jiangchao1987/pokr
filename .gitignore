@@ -1,6 +1,19 @@
 pokr.iml
 pokr.ipr
 pokr.iws
-target/
 
 123.ipa
+
+*.class
+
+# Package Files #
+*.war
+*.ear
+
+# Eclipse Files #
+.checkstyle
+.classpath
+.project
+/target/
+/bin/
+/.settings/
